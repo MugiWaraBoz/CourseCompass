@@ -1,20 +1,31 @@
-require("dotenv").config({path: "../.env"}) // loads .env file
+require("dotenv").config() // loads .env file
 
 const connect = require("./config/connect") // runs connect.js
 const express = require("express")
 const cors = require("cors")
 
+// Routes
+// const auth = require("./routes/authRoutes")
+const course = require("./routes/courseRoutes")
+// const user = require("./routes/userRoutes")
+// const review = require("./routes/reviewRoutes")
+// const votes = require("./routes/voteRoutes")
+
 const app = express()
-const PORT = process.env.API_PORT || 5000
+const PORT = 3000
 
 app.use(cors())
 app.use(express.json())
 
-connect.connectToServer().then(()=>{
-    app.listen(PORT, ()=>{
-        console.log(`Server is running! on port ${PORT}`)
-    }) // creates the server
-}).catch((error)=>{
-    console.error("Failed to connect to database", error)
-    process.exit(1)
+// routes use
+// app.use(auth)
+app.use(course)
+// app.use(user)
+// app.use(review)
+// app.use(votes)
+
+
+app.listen(PORT, ()=>{
+    connect.connectToServer()
+    console.log(`Server is running on port ${PORT}`)
 })
