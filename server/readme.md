@@ -1,0 +1,50 @@
+
+# Folder Structure:
+```
+server/
+│
+├── node_modules/
+│
+├── src/
+│   │
+│   ├── config/
+│   │   └── db.js              # MongoDB connection
+│   │
+│   ├── models/
+│   │   ├── Student.js
+│   │   ├── Course.js
+│   │   ├── Faculty.js
+│   │   ├── Review.js
+│   │   ├── Vote.js
+│   │   └── ClassTake.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── courseRoutes.js
+│   │   ├── facultyRoutes.js
+│   │   ├── reviewRoutes.js
+│   │   └── voteRoutes.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── courseController.js
+│   │   ├── facultyController.js
+│   │   ├── reviewController.js
+│   │   └── voteController.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── errorMiddleware.js
+│   │
+│   ├── utils/
+│   │   ├── generateToken.js
+│   │   └── hashPassword.js
+│   │
+│   ├── app.js
+│   └── server.js
+│
+├── .env
+├── package.json
+└── README.md
+```
+
