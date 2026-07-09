@@ -14,5 +14,10 @@ courseRouter.route("/courses").get(getCourses);
 courseRouter.route("/courses/:id").get(getCourse);
 
 
+// For future
+// POST one Courses
+// UPDATE one Courses
+// DELETE one Courses
+
 
 module.exports = courseRouter;
