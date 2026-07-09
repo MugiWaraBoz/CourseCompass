@@ -5,7 +5,7 @@ const express = require("express")
 const cors = require("cors")
 
 // Routes
-// const auth = require("./routes/authRoutes")
+const auth = require("./routes/authRoutes")
 const course = require("./routes/courseRoutes")
 const faculty = require("./routes/facultyRoutes")
 // const user = require("./routes/userRoutes")
@@ -19,7 +19,7 @@ app.use(cors())
 app.use(express.json())
 
 // routes use
-// app.use(auth)
+app.use("/auth", auth)
 app.use(course)
 app.use(faculty)
 // app.use(user)
