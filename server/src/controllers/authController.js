@@ -115,7 +115,7 @@ const postLogin = async(req,res)=>{
 /*
     Authentication middleware to get the logged-in student information.
 */
-const getStudent = async(req,res)=>{
+const getStudent = (verifyToken) => async (req, res) => {
     let db = database.getDb();
     let data = await db.collection("Student").findOne({_id: new ObjectId(req.params.id)});
     if(data){
@@ -135,7 +135,7 @@ const getStudent = async(req,res)=>{
 }
 
 // Token verification middleware
-function verifyToken(req, res, next) {
+const verifyToken = (req, res, next) => {
     const authHeaders = req.headers['authorization']
     const token = authHeaders && authHeaders.split(' ')[1]
     if(!token){
