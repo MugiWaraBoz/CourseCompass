@@ -39,10 +39,7 @@ const postRegister = async(req,res)=>{
             jwt token expiration time set to 30 days.
         */
         const token = jwt.sign(
-            { 
-                email: email ,
-                studentId: studentIdNumber,
-            }, 
+            takenEmail, 
             process.env.JWT_SECRET, 
             { expiresIn: '30d' }
         )
@@ -88,10 +85,7 @@ const postLogin = async(req,res)=>{
         let confirmation = await bcrypt.compare(password, student.password);
         if(confirmation){
             const token = jwt.sign(
-                { 
-                    email: email, 
-                    studentId: student.studentIdNumber 
-                }, 
+                student, 
                 process.env.JWT_SECRET, 
                 { expiresIn: '30d' }
             )
@@ -127,39 +121,7 @@ const postLogin = async(req,res)=>{
     }
 }
 
-/*
-    Authentication middleware to get the logged-in student information.
-*/
-const getStudent = async (req, res) => {
-    
-    let db = database.getDb();
-    let data = await db
-        .collection("Student")
-        .findOne(
-            {
-                studentIdNumber: req.student.studentId
-            });
-
-    // console.log("req.params.id: ", req.student.studentId);
-    
-    if(data){
-        res.status(200).json({
-            success: true, 
-            student : data
-        });
-    } else {
-        res.status(404).json({
-            success: false, 
-            "error": {
-                "code": "NOT_FOUND",
-                "message": "Student not found"
-            }
-        });
-    }
-} 
-
 module.exports = {
     postRegister,
     postLogin,
-    getStudent
 };  

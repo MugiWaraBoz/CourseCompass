@@ -8,9 +8,8 @@ const cors = require("cors")
 const auth = require("./routes/authRoutes")
 const course = require("./routes/courseRoutes")
 const faculty = require("./routes/facultyRoutes")
-// const user = require("./routes/userRoutes")
+const student = require("./routes/studentRoutes")
 const review = require("./routes/reviewRoutes")
-// const votes = require("./routes/voteRoutes")
 
 const app = express()
 const PORT = 3000
@@ -20,11 +19,10 @@ app.use(express.json())
 
 // routes use
 app.use("/auth", auth)
-app.use(course)
-app.use(faculty)
-// app.use(user)
-app.use(review)
-// app.use(votes)
+app.use("/courses", course)
+app.use("/faculty", faculty)
+app.use("/students", student)
+app.use("/reviews", review)
 
 app.listen(PORT, ()=>{
     connect.connectToServer()

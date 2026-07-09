@@ -1,17 +1,17 @@
 const express = require("express");
 
 const ObjectId = require("mongodb").ObjectId;
-
+const verifyToken = require("../middleware/authMiddleware");
 const { postReview,postReviewVote } = require("../controllers/reviewController");
 
 
 let postRouter = express.Router();
 
 // Post a review
-postRouter.route("/reviews").post(postReview);
+postRouter.route("/").post(verifyToken, postReview);
 
 // post a vote for a review
-postRouter.route("/reviews/:id/vote").post(postReviewVote);
+postRouter.route("/:id/vote").post(verifyToken, postReviewVote);
 
 
 // For future

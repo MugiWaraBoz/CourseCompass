@@ -8,13 +8,13 @@ const { getCourses, getCourse, getCourseReview } = require("../controllers/cours
 let courseRouter = express.Router();
 
 // GET all courses
-courseRouter.route("/courses").get(getCourses);
+courseRouter.route("/").get(getCourses);
 
 // GET one Courses
-courseRouter.route("/courses/:id").get(getCourse);
+courseRouter.route("/:id").get(getCourse);
 
 // GET all reviews for a course
-courseRouter.route("/courses/:id/reviews").get(getCourseReview);
+courseRouter.route("/:id/reviews").get(getCourseReview);
 
 
 // For future

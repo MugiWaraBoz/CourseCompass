@@ -13,8 +13,6 @@ authRouter.route("/register").post(postRegister);
 // Login a user
 authRouter.route("/login").post(postLogin);
 
-// get a user
-authRouter.route("/me").get(verifyToken, getStudent);
 
 
 // For future

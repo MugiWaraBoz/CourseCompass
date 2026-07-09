@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 
 require("dotenv").config({ path: "../../.env" });
 
+// postReview function to handle posting a review
 const postReview = async(req,res)=>{
     let db = database.getDb();
     const { 
-        studentId, 
         courseId, 
         facultyId,
         rating,
@@ -15,52 +15,78 @@ const postReview = async(req,res)=>{
         semester, 
         comment } = req.body;
 
-    let courseObj = {
-        courseId: new ObjectId(courseId),
-        facultyId: new ObjectId(facultyId),
-    } 
-    
-    let course = await db
-        .collection("CourseTake")
-        .findOne({ courseId: new ObjectId(courseId), facultyId: new ObjectId(facultyId) });
-    
-    // console.log("course: ", course);
+    let chkReview = await db.collection("Review")
+        .findOne({
+            studentId: new ObjectId(req.student._id),
+            facultyId: new ObjectId(facultyId),
+        });
 
-    if(!course){
-        let insertCourse = await db
+    // console.log("chkReview: ", chkReview);
+    if(chkReview){
+        // console.log("Review already exists for this student and faculty");
+        res.status(400).json({
+            success: false,
+            "error": {
+                "code": "REVIEW_EXISTS",
+                "message": "You have already reviewed this course with this faculty"
+            }
+        });
+    } else {
+        let courseObj = {
+            courseId: new ObjectId(courseId),
+            facultyId: new ObjectId(facultyId),
+        } 
+        
+        let course = await db
             .collection("CourseTake")
-            .insertOne(courseObj);
+            .findOne({ courseId: new ObjectId(courseId), facultyId: new ObjectId(facultyId) });
+        
+        // console.log("course: ", course);
+
+        if(!course){
+            let insertCourse = await db
+                .collection("CourseTake")
+                .insertOne(courseObj);
+        }
+
+        // studentId = req.student.studentId;
+        // console.log(req.student)
+
+        let reviewObj = {
+            studentId: new ObjectId(req.student._id),
+            courseId: new ObjectId(courseId),
+            facultyId: new ObjectId(facultyId),
+            rating: rating,
+            difficultyRating: difficultyRating,
+            semester: semester,
+            comment: comment,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            upvotes: 0,
+            downvotes: 0,
+            votescore: 0,
+        };
+
+        let review = await db
+            .collection("Review")
+            .insertOne(reviewObj);
+        
+        res.status(201).json({
+            success: true,
+            data: {
+                review : reviewObj,
+            },
+            message: "Review posted successfully",
+        });
+
     }
-
-    let reviewObj = {
-        studentId: new ObjectId(studentId),
-        courseId: new ObjectId(courseId),
-        facultyId: new ObjectId(facultyId),
-        rating: rating,
-        difficultyRating: difficultyRating,
-        semester: semester,
-        comment: comment,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        upvotes: 0,
-        downvotes: 0,
-        votescore: 0,
-    };
-
-    let review = await db
-        .collection("Review")
-        .insertOne(reviewObj);
     
-    res.status(201).json({
-        success: true,
-        data: {
-            review : reviewObj,
-        },
-        message: "Review posted successfully",
-    });
+
+    
 
 }
 
+// postReviewVote function to handle voting on a review
 const postReviewVote = async(req,res)=>{
     let db = database.getDb();
     const { voteType } = req.body;
@@ -128,7 +154,9 @@ const postReviewVote = async(req,res)=>{
         });
 
     } else {
-
+        /*
+            if a vote exists, remove the vote and update the votecounts
+        */
         if(vote.voteType === "upvote") {
             let updateReview = await db
             .collection("Review")
@@ -153,12 +181,9 @@ const postReviewVote = async(req,res)=>{
             });
         }
             
-
         vote = await db
             .collection("Vote")
             .deleteOne(filter);
-        
-        
         
         res.status(200).json({
             success: true,
@@ -169,7 +194,15 @@ const postReviewVote = async(req,res)=>{
     }
 }
 
+// patchReview function to handle updating a review
+const patchReview = async(req,res)=>{
+
+}
+
+
 module.exports = {
     postReview,
-    postReviewVote
+    postReviewVote,
+    patchReview,
 };  
+
