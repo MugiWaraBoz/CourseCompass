@@ -1,7 +1,7 @@
 const express = require("express");
 
 const ObjectId = require("mongodb").ObjectId;
-
+const verifyToken = require("../middleware/authMiddleware");
 const { postRegister, postLogin, getStudent} = require("../controllers/authController");
 
 
@@ -14,7 +14,7 @@ authRouter.route("/register").post(postRegister);
 authRouter.route("/login").post(postLogin);
 
 // get a user
-authRouter.route("/me").get(getStudent);
+authRouter.route("/me").get(verifyToken, getStudent);
 
 
 // For future

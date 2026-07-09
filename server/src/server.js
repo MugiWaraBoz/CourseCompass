@@ -9,7 +9,7 @@ const auth = require("./routes/authRoutes")
 const course = require("./routes/courseRoutes")
 const faculty = require("./routes/facultyRoutes")
 // const user = require("./routes/userRoutes")
-// const review = require("./routes/reviewRoutes")
+const review = require("./routes/reviewRoutes")
 // const votes = require("./routes/voteRoutes")
 
 const app = express()
@@ -23,7 +23,7 @@ app.use("/auth", auth)
 app.use(course)
 app.use(faculty)
 // app.use(user)
-// app.use(review)
+app.use(review)
 // app.use(votes)
 
 app.listen(PORT, ()=>{

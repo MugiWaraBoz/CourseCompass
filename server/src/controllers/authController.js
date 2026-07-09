@@ -2,6 +2,7 @@ const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 require("dotenv").config({ path: "../../.env" });
 
 const postRegister = async(req,res)=>{
@@ -37,7 +38,14 @@ const postRegister = async(req,res)=>{
         /*
             jwt token expiration time set to 30 days.
         */
-        const token = jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: '30d' })
+        const token = jwt.sign(
+            { 
+                email: email ,
+                studentId: studentIdNumber,
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '30d' }
+        )
 
         let stdObj = {
             name: name,
@@ -79,7 +87,14 @@ const postLogin = async(req,res)=>{
     if(student){
         let confirmation = await bcrypt.compare(password, student.password);
         if(confirmation){
-            const token = jwt.sign({ email: email }, process.env.JWT_SECRET, { expiresIn: '30d' })
+            const token = jwt.sign(
+                { 
+                    email: email, 
+                    studentId: student.studentIdNumber 
+                }, 
+                process.env.JWT_SECRET, 
+                { expiresIn: '30d' }
+            )
             let isVerified = student.verified;
             res.status(200).json({
                 success: true,
@@ -115,9 +130,18 @@ const postLogin = async(req,res)=>{
 /*
     Authentication middleware to get the logged-in student information.
 */
-const getStudent = (verifyToken) => async (req, res) => {
+const getStudent = async (req, res) => {
+    
     let db = database.getDb();
-    let data = await db.collection("Student").findOne({_id: new ObjectId(req.params.id)});
+    let data = await db
+        .collection("Student")
+        .findOne(
+            {
+                studentIdNumber: req.student.studentId
+            });
+
+    // console.log("req.params.id: ", req.student.studentId);
+    
     if(data){
         res.status(200).json({
             success: true, 
@@ -132,38 +156,7 @@ const getStudent = (verifyToken) => async (req, res) => {
             }
         });
     }
-}
-
-// Token verification middleware
-const verifyToken = (req, res, next) => {
-    const authHeaders = req.headers['authorization']
-    const token = authHeaders && authHeaders.split(' ')[1]
-    if(!token){
-        return res.status(401).json({
-            success: false,
-            "error": { 
-                "code": "NO_TOKEN",
-                "message": "No token provided"
-            }
-        });
-    } else {
-        jwt.verify(token, process.env.JWT_SECRET,
-            (err, student) => {
-                if(err){
-                    return res.status(403).json({
-                        success: false,
-                        "error": {
-                            "code": "INVALID_TOKEN",
-                            "message": "Invalid token"
-                        }
-                    });
-                }
-                req.student = student;
-                next();
-            }
-        )
-    }
-}
+} 
 
 module.exports = {
     postRegister,

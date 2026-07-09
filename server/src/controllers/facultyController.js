@@ -1,6 +1,7 @@
 const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 
+
 const getFaculties = async(req,res)=>{
     let db = database.getDb();
     
@@ -47,7 +48,7 @@ const getFaculties = async(req,res)=>{
     const limitNumber = Number(limit)
     const skip = (pageNumber - 1) * limitNumber;
 
-    console.log(req.query);
+    
 
 
     let data = await db
@@ -60,8 +61,7 @@ const getFaculties = async(req,res)=>{
     
     
     const total = await db.collection("Faculty").countDocuments(filter);
-    console.log("Total faculties found: ", total);
-    console.log("data_block: ", data);
+
 
     if(data.length > 0){
         res.status(200).json({
@@ -77,7 +77,7 @@ const getFaculties = async(req,res)=>{
             },
         });
     } else {
-        console.log("No faculties found");
+        
         res.status(404).json({
             success: false,
             "error" :{
@@ -87,6 +87,7 @@ const getFaculties = async(req,res)=>{
         });
     }
 }
+
 
 const getFaculty = async(req,res)=>{
     let db = database.getDb();
@@ -107,7 +108,76 @@ const getFaculty = async(req,res)=>{
     }
 }
 
+const getFacultyReview = async(req,res)=>{
+    let db = database.getDb();
+    
+    const {
+        courseId,
+        sortBy,
+        order,
+        page,
+        limit
+    } = req.query;
+
+    
+    const filter = {
+        facultyId: new ObjectId(req.params.id)
+    }
+    
+    if(courseId){
+        filter.courseId = courseId;
+    }
+    
+    const sort ={};
+    sort[sortBy] = order === "desc" ? -1 : 1;
+    
+    const pageNumber = Number(page)
+    const limitNumber = Number(limit)
+    const skip = (pageNumber - 1) * limitNumber;
+    
+    let reviews = await db
+        .collection("Review")
+        .find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNumber)
+        .toArray();
+
+    
+    // console.log(reviews);
+    // console.log("faculty param:", req.params.id);
+    // console.log("filter:", filter);
+    // console.log("sample review:", await db.collection("Review").findOne({}));
+
+    const total = await db.collection("Review").countDocuments(filter);
+
+    if(reviews){
+        res.status(200).json({
+            success: true, 
+            data: {
+                reviews: reviews,
+                pagination: {
+                    page: pageNumber,
+                    limit: limitNumber,
+                    total,
+                    totalPages: Math.ceil(total / limitNumber)
+                },
+            }
+
+        });
+    } else {
+        res.status(500).json({
+            success: false,
+            "error": {
+                "code": "SERVER_ERROR",
+                "message": "An error occurred while fetching reviews"
+            }
+        });
+    }
+}
+
 module.exports = {
     getFaculties,
-    getFaculty 
+    getFaculty,
+    getFacultyReview
 };

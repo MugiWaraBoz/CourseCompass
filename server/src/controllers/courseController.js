@@ -42,7 +42,7 @@ const getCourses = async(req,res)=>{
     const limitNumber = Number(limit)
     const skip = (pageNumber - 1) * limitNumber;
 
-    console.log(req.query);
+    // console.log(req.query);
 
 
     let data = await db
@@ -55,8 +55,8 @@ const getCourses = async(req,res)=>{
     
     
     const total = await db.collection("Course").countDocuments(filter);
-    console.log("Total courses found: ", total);
-    console.log("data_block: ", data);
+    // console.log("Total courses found: ", total);
+    // console.log("data_block: ", data);
 
     if(data.length > 0){
         res.status(200).json({
@@ -72,7 +72,7 @@ const getCourses = async(req,res)=>{
             },
         });
     } else {
-        console.log("No courses found");
+        // console.log("No courses found");
         res.status(404).json({
             success: false, 
             message: "No courses found"
@@ -80,18 +80,93 @@ const getCourses = async(req,res)=>{
     }
 }
 
-
 const getCourse = async(req,res)=>{
     let db = database.getDb();
     let data = await db.collection("Course").findOne({_id: new ObjectId(req.params.id)});
+    let reviews = await db.collection("Review").find({courseId: new ObjectId(req.params.id)}).toArray();
+    
     if(data){
-        res.status(200).json({success: true, data: data});
+        res.status(200).json({
+            success: true, 
+            data: {
+                reviews: reviews,
+                course: data,
+            }
+        });
     } else {
-        res.status(404).json({success: false, message: "Course not found"});
+        res.status(404).json({
+            success: false,
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "Course not found"
+            }
+        });
+    }
+}
+
+const getCourseReview = async(req,res)=>{
+    let db = database.getDb();
+    
+    const {
+        facultyId,
+        sortBy,
+        order,
+        page,
+        limit
+    } = req.query;
+
+    const filter = {
+        courseId: new ObjectId(req.params.id)
+    }
+    
+    if(facultyId){
+        filter.facultyId = facultyId;
+    }
+    
+    const sort ={};
+    sort[sortBy] = order === "desc" ? -1 : 1;
+    
+    const pageNumber = Number(page)
+    const limitNumber = Number(limit)
+    const skip = (pageNumber - 1) * limitNumber;
+    
+    let reviews = await db
+        .collection("Review")
+        .find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNumber)
+        .toArray();
+
+    const total = await db.collection("Review").countDocuments(filter);
+
+    if(reviews){
+        res.status(200).json({
+            success: true, 
+            data: {
+                reviews: reviews,
+                pagination: {
+                    page: pageNumber,
+                    limit: limitNumber,
+                    total,
+                    totalPages: Math.ceil(total / limitNumber)
+                },
+            }
+
+        });
+    } else {
+        res.status(500).json({
+            success: false,
+            "error": {
+                "code": "SERVER_ERROR",
+                "message": "An error occurred while fetching reviews"
+            }
+        });
     }
 }
 
 module.exports = {
     getCourses,
-    getCourse
+    getCourse,
+    getCourseReview
 };

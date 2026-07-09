@@ -2,7 +2,7 @@ const express = require("express");
 
 const ObjectId = require("mongodb").ObjectId;
 
-const { getCourses, getCourse } = require("../controllers/courseController");
+const { getCourses, getCourse, getCourseReview } = require("../controllers/courseController");
 
 
 let courseRouter = express.Router();
@@ -12,6 +12,9 @@ courseRouter.route("/courses").get(getCourses);
 
 // GET one Courses
 courseRouter.route("/courses/:id").get(getCourse);
+
+// GET all reviews for a course
+courseRouter.route("/courses/:id/reviews").get(getCourseReview);
 
 
 // For future
