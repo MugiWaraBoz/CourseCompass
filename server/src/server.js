@@ -26,7 +26,6 @@ app.use(faculty)
 // app.use(review)
 // app.use(votes)
 
-
 app.listen(PORT, ()=>{
     connect.connectToServer()
     console.log(`Server is running on port ${PORT}`)

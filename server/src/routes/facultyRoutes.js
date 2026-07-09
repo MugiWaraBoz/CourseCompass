@@ -19,5 +19,4 @@ facultyRouter.route("/faculty/:id").get(getFaculty);
 // UPDATE one faculty
 // DELETE one faculty
 
-
 module.exports = facultyRouter;

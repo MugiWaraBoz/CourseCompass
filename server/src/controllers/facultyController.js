@@ -67,7 +67,7 @@ const getFaculties = async(req,res)=>{
         res.status(200).json({
             success: true, 
             data: {
-                faculties: data,
+                faculty: data,
                 pagination: {
                     page: pageNumber,
                     limit: limitNumber,
@@ -79,20 +79,31 @@ const getFaculties = async(req,res)=>{
     } else {
         console.log("No faculties found");
         res.status(404).json({
-            success: false, 
-            message: "No faculties found"
+            success: false,
+            "error" :{
+                "code": "NOT_FOUND",
+                "message": "No faculties found"
+            } 
         });
     }
 }
-
 
 const getFaculty = async(req,res)=>{
     let db = database.getDb();
     let data = await db.collection("Faculty").findOne({_id: new ObjectId(req.params.id)});
     if(data){
-        res.status(200).json({success: true, data: data});
+        res.status(200).json({
+            success: true, 
+            data: data
+        });
     } else {
-        res.status(404).json({success: false, message: "Faculty not found"});
+        res.status(404).json({
+            success: false, 
+            "error" :{
+                "code": "NOT_FOUND",
+                "message": "Faculty not found"
+            }
+        });
     }
 }
 
