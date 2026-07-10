@@ -9,7 +9,7 @@ const getStudent = async (req, res) => {
         .collection("Student")
         .findOne(
             {
-                studentIdNumber: req.params.studentId || req.user.studentId
+                studentIdNumber: req.params.studentId || req.student.studentIdNumber
             });
     
     if(data){
@@ -45,7 +45,7 @@ const patchStudent = async (req, res) => {
     let data = await db
         .collection("Student")
         .findOneAndUpdate(
-            { studentIdNumber: req.student.studentId },
+            { studentIdNumber: req.student.studentIdNumber },
             stdObj,
             { new: true }
         );
@@ -76,8 +76,9 @@ const patchStudent = async (req, res) => {
 // getStudentReviews function to handle getting all reviews by a student
 const getStudentReviews = async (req, res) => {
     let db = database.getDb();
-    const studentId = req.params.studentId || req.student.studentId;
-    // console.log("Student ID:", req.student.studentId);
+    const studentId = req.params.studentId || new ObjectId(req.student._id);
+    
+    // console.log("Student ID:", req.student._id);
     const {page, limit} = req.query;
     const pageNumber = Number(page)
     const limitNumber = Number(limit)

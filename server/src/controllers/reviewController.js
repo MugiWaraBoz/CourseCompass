@@ -19,9 +19,10 @@ const postReview = async(req,res)=>{
         .findOne({
             studentId: new ObjectId(req.student._id),
             facultyId: new ObjectId(facultyId),
+            courseId: new ObjectId(courseId)
         });
 
-    // console.log("chkReview: ", chkReview);
+    console.log("chkReview: ", chkReview);
     if(chkReview){
         // console.log("Review already exists for this student and faculty");
         res.status(400).json({
@@ -92,8 +93,8 @@ const postReviewVote = async(req,res)=>{
     const { voteType } = req.body;
 
     const reviewId = req.params.id;
-    const review = await db.collection("Review").findOne({_id: new ObjectId(reviewId)});
-    const studentId = review.studentId;
+    // const review = await db.collection("Review").findOne({_id: new ObjectId(reviewId)});
+    const studentId = req.student._id;
     
     const filter ={
         reviewId: new ObjectId(reviewId),
@@ -194,15 +195,97 @@ const postReviewVote = async(req,res)=>{
     }
 }
 
-// patchReview function to handle updating a review
-const patchReview = async(req,res)=>{
+// getAllReviews function to handle getting all reviews
+const getAllReviews = async(req,res)=>{
+    let db = database.getDb();
+    let reviews = await db.collection("Review").find({}).toArray();
+
+    if(reviews){
+        res.status(200).json({
+            success: true,
+            data: {
+                reviews: reviews,
+                message: "Reviews fetched successfully",
+            }
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "No reviews found"
+            }
+        });
+    }
 
 }
 
+// deleteReview function to handle deleting a review
+const deleteReview = async(req,res)=>{
+    let db = database.getDb();
+    let reviewId = new ObjectId(req.params.id);
+    let review = await db
+        .collection("Review")
+        .deleteOne({_id: reviewId});
+    
+    
+    res.status(200).json({
+        success: true,
+        data: {
+            message: "Review deleted successfully",
+        },
+    })
+}
+
+// patchReview function to handle updating a review
+const patchReview = async(req,res)=>{
+    let db = database.getDb();
+    let reviewId = new ObjectId(req.params.id);
+    console.log("reviewId: ", reviewId);
+    const { rating, difficultyRating, semester, comment } = req.body;
+    
+    let reviewObj = {
+        $set: {
+            rating: rating,
+            difficultyRating: difficultyRating,
+            semester: semester,
+            comment: comment,
+            updatedAt: new Date(),
+        }
+    }
+
+    let review = await db
+        .collection("Review")
+        .findOneAndUpdate(
+            { _id: reviewId },
+            reviewObj,
+            { new: true }
+        );
+    
+    if(review){
+        res.status(200).json({
+            success: true,
+            data: {
+                review: review,
+                message: "Review updated successfully",
+            },
+        });
+    } else {
+        res.status(404).json({
+            success: false,
+            "error": {
+                "code": "NOT_FOUND",
+                "message": "Review not found"
+            }
+        });
+    }
+}
 
 module.exports = {
     postReview,
     postReviewVote,
     patchReview,
+    deleteReview,
+    getAllReviews
 };  
 

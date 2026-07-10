@@ -89,7 +89,6 @@ const getCourse = async(req,res)=>{
         res.status(200).json({
             success: true, 
             data: {
-                reviews: reviews,
                 course: data,
             }
         });
@@ -120,11 +119,15 @@ const getCourseReview = async(req,res)=>{
     }
     
     if(facultyId){
-        filter.facultyId = facultyId;
+        filter.facultyId = new ObjectId(facultyId);
     }
     
     const sort ={};
-    sort[sortBy] = order === "desc" ? -1 : 1;
+    if(sortBy == "recent"){
+        sort["createdAt"] = order === "desc" ? -1 : 1;
+    } else {
+        sort[sortBy] = order === "desc" ? -1 : 1;
+    }
     
     const pageNumber = Number(page)
     const limitNumber = Number(limit)

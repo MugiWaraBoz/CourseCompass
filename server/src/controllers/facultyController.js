@@ -88,7 +88,6 @@ const getFaculties = async(req,res)=>{
     }
 }
 
-
 const getFaculty = async(req,res)=>{
     let db = database.getDb();
     let data = await db.collection("Faculty").findOne({_id: new ObjectId(req.params.id)});
@@ -125,7 +124,7 @@ const getFacultyReview = async(req,res)=>{
     }
     
     if(courseId){
-        filter.courseId = courseId;
+        filter.courseId = new ObjectId(courseId);
     }
     
     const sort ={};
