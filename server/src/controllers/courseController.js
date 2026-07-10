@@ -1,6 +1,7 @@
 const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 
+// Get all courses with optional filters, sorting, and pagination
 const getCourses = async(req,res)=>{
     let db = database.getDb();
     
@@ -80,6 +81,7 @@ const getCourses = async(req,res)=>{
     }
 }
 
+// Get a single course by ID
 const getCourse = async(req,res)=>{
     let db = database.getDb();
     let data = await db.collection("Course").findOne({_id: new ObjectId(req.params.id)});
@@ -103,13 +105,14 @@ const getCourse = async(req,res)=>{
     }
 }
 
+// Get reviews for a specific course with optional filters, sorting, and pagination
 const getCourseReview = async(req,res)=>{
     let db = database.getDb();
     
     const {
         facultyId,
         sortBy,
-        order,
+        order = "desc",
         page,
         limit
     } = req.query;
@@ -125,7 +128,10 @@ const getCourseReview = async(req,res)=>{
     const sort ={};
     if(sortBy == "recent"){
         sort["createdAt"] = order === "desc" ? -1 : 1;
-    } else {
+    } if (sortBy == "votes"){
+        sort["votescore"] = order === "desc" ? -1 : 1;
+    } 
+    else {
         sort[sortBy] = order === "desc" ? -1 : 1;
     }
     

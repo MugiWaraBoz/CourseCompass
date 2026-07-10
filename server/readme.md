@@ -48,3 +48,13 @@ server/
 └── README.md
 ```
 
+For future
+Authentication and Authorization:
+[] Email verification
+[] Password reset
+
+[] Role-based access control (Admin, Student, Moderator)
+
+Might consider using
+[] Firebase authentication
+[] Two-factor authentication (2FA)

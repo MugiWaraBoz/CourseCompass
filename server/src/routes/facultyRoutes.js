@@ -17,10 +17,4 @@ facultyRouter.route("/:id").get(getFaculty);
 // Get all reviews for a faculty
 facultyRouter.route("/:id/reviews").get(getFacultyReview);
 
-
-// For future
-// POST one faculty
-// UPDATE one faculty
-// DELETE one faculty
-
 module.exports = facultyRouter;

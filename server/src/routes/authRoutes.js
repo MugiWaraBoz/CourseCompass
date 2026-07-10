@@ -14,11 +14,4 @@ authRouter.route("/register").post(postRegister);
 authRouter.route("/login").post(postLogin);
 
 
-
-// For future
-// POST one Courses
-// UPDATE one Courses
-// DELETE one Courses
-
-
 module.exports = authRouter;

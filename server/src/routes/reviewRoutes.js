@@ -22,10 +22,5 @@ postRouter.route("/").get(getAllReviews)
 // patch a review
 postRouter.route("/:id").patch(verifyToken, patchReview)
 
-// For future
-// POST one Courses
-// UPDATE one Courses
-// DELETE one Courses
-
 
 module.exports = postRouter;

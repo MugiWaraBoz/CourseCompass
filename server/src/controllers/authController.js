@@ -5,12 +5,12 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config({ path: "../../.env" });
 
+// Register a new student
 const postRegister = async(req,res)=>{
     let db = database.getDb();
 
     const { name, studentIdNumber, email, password, cgpa=null } = req.body;
     const takenEmail = await db.collection("Student").findOne({email: email})
-
 
     if(takenEmail){
         res.status(400).json({
@@ -21,6 +21,9 @@ const postRegister = async(req,res)=>{
             }
         });
     } else {
+        /*
+            mail domain validation
+        */
         let email_tag = email.split("@");
         if(email_tag[1] !== "eastdelta.edu.bd"){
             res.status(400).json({
@@ -33,16 +36,11 @@ const postRegister = async(req,res)=>{
             return;
         }
 
+        // Password hashing
         const SALT_ROUNDS = 12;
         const hasedPass = await bcrypt.hash(password, SALT_ROUNDS);
-        /*
-            jwt token expiration time set to 30 days.
-        */
-        const token = jwt.sign(
-            takenEmail, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '30d' }
-        )
+        
+        
 
         let stdObj = {
             name: name,
@@ -56,17 +54,30 @@ const postRegister = async(req,res)=>{
             updatedAt: new Date(),
             courses: [],
         }
+        
         let data = await db
             .collection("Student")
             .insertOne(stdObj);
 
+        let student = {
+            _id: data.insertedId,
+            ...stdObj
+        }
+
+        
+        /*
+            jwt token expiration time set to 30 days.
+        */
+        const token = jwt.sign(
+            student, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '30d' }
+        )
+
         res.status(201).json({
             success: true,
             data: {
-                "student": {
-                    _id: data.insertedId,
-                    ...stdObj
-                },
+                "student": student,
                 "message": "Student registered successfully, please login to continue",
                 "info": "Add Student ID picture from dashboard to get a verified badge",
             },
@@ -75,6 +86,7 @@ const postRegister = async(req,res)=>{
     }
 }
 
+// login a student
 const postLogin = async(req,res)=>{
     let db = database.getDb();
     const { email, password } = req.body;
@@ -84,6 +96,10 @@ const postLogin = async(req,res)=>{
     if(student){
         let confirmation = await bcrypt.compare(password, student.password);
         if(confirmation){
+
+            /*
+                jwt token expiration time set to 30 days.
+            */
             const token = jwt.sign(
                 student, 
                 process.env.JWT_SECRET, 

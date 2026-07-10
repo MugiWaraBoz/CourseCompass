@@ -17,10 +17,4 @@ courseRouter.route("/:id").get(getCourse);
 courseRouter.route("/:id/reviews").get(getCourseReview);
 
 
-// For future
-// POST one Courses
-// UPDATE one Courses
-// DELETE one Courses
-
-
 module.exports = courseRouter;

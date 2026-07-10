@@ -3,7 +3,7 @@ const ObjectId = require("mongodb").ObjectId;
 
 // getStudent function to handle getting a student by studentId
 const getStudent = async (req, res) => {
-    
+    // console.log("req.params.studentId: ", req.params.studentId);
     let db = database.getDb();
     let data = await db
         .collection("Student")
@@ -69,9 +69,6 @@ const patchStudent = async (req, res) => {
     }
 };
 
-// ChangePassword
-// Change StudentID
-// Change Email
 
 // getStudentReviews function to handle getting all reviews by a student
 const getStudentReviews = async (req, res) => {
@@ -79,7 +76,10 @@ const getStudentReviews = async (req, res) => {
     const studentId = req.params.studentId || new ObjectId(req.student._id);
     
     // console.log("Student ID:", req.student._id);
-    const {page, limit} = req.query;
+    const {
+        page, 
+        limit
+    } = req.query;
     const pageNumber = Number(page)
     const limitNumber = Number(limit)
     const skip = (pageNumber - 1) * limitNumber;
