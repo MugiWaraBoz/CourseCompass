@@ -79,6 +79,11 @@ server/
 - [✅] Delete vote
 
 ---
+# Test
+- [ ] Write tests for all endpoints
+- [ ] CI - continious integration, setup for backend
+
+---
 
 # Planned Optimization (Current Project)
 - [ ] Database optimization
@@ -94,7 +99,14 @@ server/
 
 ---
 
+# Planned AI (Current Project)
+- [ ] Course detail from ai (GET /courses/:id/ai)
+- [ ] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
+
+---
+
 # Future Improvements
+ 
 
 ## Authentication & Security
 - [ ] Role-based access control (Admin, Student, Moderator)

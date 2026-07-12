@@ -42,7 +42,11 @@ const getFaculties = async(req,res)=>{
     }
 
     const sort ={};
-    sort[sortBy] = order === "desc" ? -1 : 1;
+    if(sortBy == "rating"){
+        sort["avgRating"] = order === "desc" ? -1 : 1;
+    } else {
+        sort[sortBy] = order === "desc" ? -1 : 1;
+    }
 
     const pageNumber = Number(page)
     const limitNumber = Number(limit)
