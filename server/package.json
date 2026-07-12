@@ -10,11 +10,15 @@
     "playwright": "^1.61.1"
   },
   "scripts": {
-    "srv": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch" : "jest --watch"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.6.0",
-    "globals": "^17.7.0"
+    "globals": "^17.7.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

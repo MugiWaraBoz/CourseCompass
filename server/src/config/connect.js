@@ -17,7 +17,8 @@ let database
 
 module.exports = {
     connectToServer: ()=>{
-        database = client.db("CourseCompass")
+        // database = client.db("CourseCompass")
+        database = client.db("TestDB")
     },
     getDb: ()=>{
         return database
