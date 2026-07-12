@@ -15,7 +15,6 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// routes use
 app.use("/auth", auth)
 app.use("/courses", course)
 app.use("/faculty", faculty)
