@@ -224,23 +224,41 @@ const getAllReviews = async(req,res)=>{
 const deleteReview = async(req,res)=>{
     let db = database.getDb();
     let reviewId = new ObjectId(req.params.id);
-    let review = await db
-        .collection("Review")
-        .deleteOne({_id: reviewId});
-    
-    
-    res.status(200).json({
-        success: true,
-        data: {
-            message: "Review deleted successfully",
-        },
-    })
+    let stdId = new ObjectId(req.student._id);
+
+    try {
+        let review = await db
+            .collection("Review")
+            .deleteOne({
+                _id: reviewId,
+                studentId: stdId
+            });
+        
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                message: "Review deleted successfully",
+            },
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            "error": {
+                "code": "INTERNAL_SERVER_ERROR",
+                "message": "An error occurred while deleting the review"
+            }
+        });
+    }
+
+
 }
 
 // patchReview function to handle updating a review
 const patchReview = async(req,res)=>{
     let db = database.getDb();
     let reviewId = new ObjectId(req.params.id);
+    let stdId = new ObjectId(req.student._id);
     console.log("reviewId: ", reviewId);
     const { rating, difficultyRating, semester, comment } = req.body;
     
@@ -253,29 +271,40 @@ const patchReview = async(req,res)=>{
             updatedAt: new Date(),
         }
     }
-
-    let review = await db
-        .collection("Review")
-        .findOneAndUpdate(
-            { _id: reviewId },
-            reviewObj,
-            { new: true }
-        );
     
-    if(review){
-        res.status(200).json({
-            success: true,
-            data: {
-                review: review,
-                message: "Review updated successfully",
-            },
-        });
-    } else {
-        res.status(404).json({
+    try {
+        let review = await db
+            .collection("Review")
+            .findOneAndUpdate(
+                { _id: reviewId, studentId: stdId },
+                reviewObj,
+                { new: true }
+            );
+        
+        
+        if(review){
+            res.status(200).json({
+                success: true,
+                data: {
+                    review: review,
+                    message: "Review updated successfully",
+                },
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "Review not found"
+                }
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
             success: false,
             "error": {
-                "code": "NOT_FOUND",
-                "message": "Review not found"
+                "code": "INTERNAL_SERVER_ERROR",
+                "message": "An error occurred while updating the review"
             }
         });
     }

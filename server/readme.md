@@ -47,14 +47,59 @@ server/
 ├── package.json
 └── README.md
 ```
+# Backend Progress
 
-For future
-Authentication and Authorization:
-[] Email verification
-[] Password reset
+## ✅ Finished
 
-[] Role-based access control (Admin, Student, Moderator)
+### Authentication
+- [✅] Register
+- [✅] Login
 
-Might consider using
-[] Firebase authentication
-[] Two-factor authentication (2FA)
+### Student
+- [✅] Student info
+- [✅] Student reviews
+- [✅] Student profile update
+
+### Courses
+- [✅] Course info
+- [✅] Course reviews
+
+### Faculty
+- [✅] Faculty info
+- [✅] Faculty reviews
+
+### Reviews
+- [✅] Create review
+- [✅] Update review
+- [✅] Delete review
+
+### Votes
+- [✅] Create vote
+- [✅] Update vote
+- [✅] Delete vote
+
+---
+
+# Planned Optimization (Current Project)
+- [ ] Database optimization
+
+---
+
+# Planned (Current Project)
+
+- [ ] Statistics endpoint (`GET /courses/:id/stats`) for charts
+- [ ] Recently reviewed endpoint (`GET /reviews/recent`)
+- [ ] Environment variable validation on server startup
+- [ ] Password reset
+
+---
+
+# Future Improvements
+
+## Authentication & Security
+- [ ] Role-based access control (Admin, Student, Moderator)
+- [ ] Bookmark/Favorite courses
+- [ ] Two-factor authentication (2FA)
+
+## Authentication Alternatives
+- [ ] Evaluate Firebase Authentication

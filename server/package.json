@@ -9,6 +9,9 @@
     "mongodb": "^7.5.0",
     "playwright": "^1.61.1"
   },
+  "scripts": {
+    "srv": "node src/server.js"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.6.0",
