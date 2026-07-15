@@ -1,0 +1,1492 @@
+[
+  {
+    "_id": {
+      "$oid": "ff12c2be3826aa9afb5a1813"
+    },
+    "code": "AA 099",
+    "name": "Academic Reading & Writing",
+    "department": "AA",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7fa5885e952e86d87e580513"
+    },
+    "code": "AA 150",
+    "name": "Fundamentals of Quantitative Reasoning",
+    "department": "AA",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "b1e9078df6287705944b865d"
+    },
+    "code": "AA 200",
+    "name": "Student Development Seminar",
+    "department": "AA",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "129565f75053d52eb531bd52"
+    },
+    "code": "ENG 111",
+    "name": "Advanced Academic Reading & Writing",
+    "department": "ENG",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "ff12c2be3826aa9afb5a1813"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "a2faf481fca96ab12816e8a3"
+    },
+    "code": "ENG 112",
+    "name": "Advanced Academic Listening & Speaking",
+    "department": "ENG",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f8b9e34dedeb2f6f19d21c46"
+    },
+    "code": "BNG 101",
+    "name": "Bangla Language and Literature",
+    "department": "BNG",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "999b6fe707e37d5c60872f91"
+    },
+    "code": "HIS 101",
+    "name": "History of the Emergence of Bangladesh",
+    "department": "HIS",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "32f8be9d96d27514341e9260"
+    },
+    "code": "PSC 100",
+    "name": "Introduction to Political Science",
+    "department": "PSC",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "4a47bf4f1eb27a00149b7ce3"
+    },
+    "code": "IGLE 300",
+    "name": "International graduate Leadership experience",
+    "department": "IGLE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "805333605f4245666fcb4b9e"
+    },
+    "code": "SOC 101",
+    "name": "Introduction to Sociology",
+    "department": "SOC",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "6f2728ce0c6f3f2dacaa8904"
+    },
+    "code": "JRN 101",
+    "name": "Mass Communication in Contemporary Society",
+    "department": "JRN",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "d4f7eb78b4e1359f6f2f1395"
+    },
+    "code": "BCH 101",
+    "name": "Bangladesh Culture and Heritage",
+    "department": "BCH",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "475bb0746fc2214227bf24a2"
+    },
+    "code": "BPH 101",
+    "name": "Bangladesh Political History",
+    "department": "BPH",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "502689808bcfefba709901ef"
+    },
+    "code": "PSY 101",
+    "name": "Principles of Psychology",
+    "department": "PSY",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "242b1ace95e5c0dbb317c5bb"
+    },
+    "code": "ANT 101",
+    "name": "Physical Anthropology",
+    "department": "ANT",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "ab75938f0a5fceffdfc8444d"
+    },
+    "code": "FRN 101",
+    "name": "Elementary French I",
+    "department": "FRN",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "3d1ff71c895272dbbff1419a"
+    },
+    "code": "SDA 101",
+    "name": "Public Speaking",
+    "department": "SDA",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "0e4ff89731c073496f61300c"
+    },
+    "code": "PHI 102",
+    "name": "Moral Problems",
+    "department": "PHI",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "e8bfedb38aae59a8c6b65bfe"
+    },
+    "code": "PSC 150",
+    "name": "World Politics",
+    "department": "PSC",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "ce268cb88024076c4e90d051"
+    },
+    "code": "ECO 203",
+    "name": "Bangladesh Economy",
+    "department": "ECO",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f26aa52ac86b6c3b8d7c26ab"
+    },
+    "code": "ENG 300",
+    "name": "Critical Reading and Writing Skills",
+    "department": "ENG",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f6569fd024e77f3c2c13696c"
+    },
+    "code": "IGS 101",
+    "name": "Introduction to Gender and Women's Studies",
+    "department": "IGS",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "539f29dfb22dd02a7e86158f"
+    },
+    "code": "IIR 101",
+    "name": "Introduction to International Relations Theory",
+    "department": "IIR",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "2d01106c2dce356764ab4f5a"
+    },
+    "code": "WPP 101",
+    "name": "Western Political Philosophy",
+    "department": "WPP",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "237e12496cbc5b2abf1dc9e0"
+    },
+    "code": "BUS 300",
+    "name": "Business Communication",
+    "department": "BUS",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "9a9876cc3599a624e2e2aa9f"
+    },
+    "code": "HUM 105",
+    "name": "Bangladesh Studies",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "96619f572c327bfff7cd5836"
+    },
+    "code": "HUM 107",
+    "name": "Industrial Management and Law",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "4f2026bf23e61b280f4f6faa"
+    },
+    "code": "HUM 201",
+    "name": "Macro & Microeconomics",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "ccf48a1e471c44ea4368af80"
+    },
+    "code": "HUM 203",
+    "name": "Communication Skills for Engineers",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "47ac67e0813305db4608726a"
+    },
+    "code": "HUM 211",
+    "name": "Entrepreneurship for Engineers",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "229bceaf62616c71d680c575"
+    },
+    "code": "HUM 301",
+    "name": "Financial & Managerial Accounting",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "565a814e0bbab65685833e1d"
+    },
+    "code": "HUM 303",
+    "name": "Sociology & Ethics",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "52939eb14cf7b4bddeca1621"
+    },
+    "code": "HUM 305",
+    "name": "Professional Ethics & Environmental Protection",
+    "department": "HUM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "089e45c43d957768683786d4"
+    },
+    "code": "IPD 400",
+    "name": "Integrated Professional Development",
+    "department": "IPD",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "b22274110942b1b033a93aa8"
+    },
+    "code": "PHY 101",
+    "name": "Physics",
+    "department": "PHY",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "572aeef4a8b924e6deca64ac"
+    },
+    "code": "PHY 102",
+    "name": "Physics Laboratory",
+    "department": "PHY",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "473e6a2c96a3cfb6e63fa479"
+    },
+    "code": "CHEM 201",
+    "name": "Chemistry",
+    "department": "CHEM",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1f9b0d9992e6922de5e96a14"
+    },
+    "code": "MATH 107",
+    "name": "MATH-I-Differential Calculus, Co-ordinate Geometry & Complex Variables",
+    "department": "MATH",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "7fa5885e952e86d87e580513"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "4415b4f2b676f0b59345c210"
+    },
+    "code": "MATH 207",
+    "name": "MATH-II-Integral Calculus, Vector Analysis & Linear Algebra",
+    "department": "MATH",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1f9b0d9992e6922de5e96a14"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "d65de00c5bc2ed798c01c276"
+    },
+    "code": "MATH 205",
+    "name": "MATH-III-Numerical Analysis",
+    "department": "MATH",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1f9b0d9992e6922de5e96a14"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "b91a63fdadb152b7041e2d06"
+    },
+    "code": "MATH 203",
+    "name": "MATH-IV-Fourier Analysis, Laplace Transform & Differential Equations",
+    "department": "MATH",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1f9b0d9992e6922de5e96a14"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "9cecdac0032a3dff66e00c7b"
+    },
+    "code": "MATH 301",
+    "name": "MATH-V-Probability & Statistics",
+    "department": "MATH",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1f9b0d9992e6922de5e96a14"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1eae71024bf3d921a67a33cc"
+    },
+    "code": "ME 102",
+    "name": "Engineering Drawing",
+    "department": "ME",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "61bea5da5194a265bde3edca"
+    },
+    "code": "EEE 111",
+    "name": "Introduction to Electrical Engineering",
+    "department": "EEE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7c6a5de08f27b169103847d1"
+    },
+    "code": "EEE 112",
+    "name": "Introduction to Electrical Engineering Laboratory",
+    "department": "EEE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "a2997862f608b6c5fca232a6"
+    },
+    "code": "CSE 223",
+    "name": "Digital Electronics & Pulse Technique",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "24f6be8592507244566652e7"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "136114cb7f52565e3ab48544"
+    },
+    "code": "CSE 224",
+    "name": "Digital Electronics & Pulse Technique Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "de7b0d93cbcefcb3b724e759"
+    },
+    "code": "CSE 111",
+    "name": "Computer Fundamentals and Programming Basics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "6ba27cc6d14126271a39ee25"
+    },
+    "code": "CSE 112",
+    "name": "Computer Fundamentals and Programming Basics Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "921a82d3dc12f89eb7df2c8b"
+    },
+    "code": "CSE 113",
+    "name": "Structured Programming Language",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "de7b0d93cbcefcb3b724e759"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "837d8a964fc2685f490eca40"
+    },
+    "code": "CSE 114",
+    "name": "Structured Programming Language Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "035daad3af8d5d82bed8de8a"
+    },
+    "code": "CSE 123",
+    "name": "Object Oriented Programming Language",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "921a82d3dc12f89eb7df2c8b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "30a55f763715e529a6ed5218"
+    },
+    "code": "CSE 124",
+    "name": "Object Oriented Programming Language Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "2b184db18dc2ba74429d2468"
+    },
+    "code": "CSE 115",
+    "name": "Discrete Mathematics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "921a82d3dc12f89eb7df2c8b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "code": "CSE 211",
+    "name": "Data Structure",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "921a82d3dc12f89eb7df2c8b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "e43364f43ad1e36edf6a4f56"
+    },
+    "code": "CSE 212",
+    "name": "Data Structure Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "24f6be8592507244566652e7"
+    },
+    "code": "CSE 215",
+    "name": "Digital Logic Design",
+    "department": "CSE",
+    "credit": 4,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "35c615f540236de65df2a673"
+    },
+    "code": "CSE 216",
+    "name": "Digital Logic Design Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "code": "CSE 221",
+    "name": "Algorithms",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "67691e8333c052608e259f6b"
+      },
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "9a8351e309f05a3bef29bf97"
+    },
+    "code": "CSE 222",
+    "name": "Algorithms Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1c990737812288a3ba710c4a"
+    },
+    "code": "CSE 225",
+    "name": "Database Management System",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "2169f141476f0c3ab95c113a"
+    },
+    "code": "CSE 226",
+    "name": "Database Management System Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "code": "CSE 242",
+    "name": "Web development",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [
+      {
+        "$oid": "1c990737812288a3ba710c4a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "93ddf0d8494339c93d6c016b"
+    },
+    "code": "CSE 311",
+    "name": "Operating System",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "8b12dc477f0f1a9061fef40c"
+    },
+    "code": "CSE 312",
+    "name": "Operating System Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "89fc1b41cda1706c4983f2c6"
+    },
+    "code": "CSE 313",
+    "name": "Data Communication",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "60a4635b415c834f401caaaf"
+    },
+    "code": "CSE 315",
+    "name": "Microprocessor and Interfacing",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "24f6be8592507244566652e7"
+      },
+      {
+        "$oid": "921a82d3dc12f89eb7df2c8b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f40b59efd3df3903fb5e2c2c"
+    },
+    "code": "CSE 316",
+    "name": "Microprocessor and Interfacing Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a18bede2cf157d377358776"
+    },
+    "code": "CSE 317",
+    "name": "Computer Organization and Architecture",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "67691e8333c052608e259f6b"
+      },
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "8fb818cda7df752ea89b03aa"
+    },
+    "code": "CSE 319",
+    "name": "Compiler Design",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      },
+      {
+        "$oid": "2b184db18dc2ba74429d2468"
+      },
+      {
+        "$oid": "67691e8333c052608e259f6b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "bc173db29d787e0c306a5b4b"
+    },
+    "code": "CSE 320",
+    "name": "Compiler Design Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "4bbd14ff8e571a4b3d3248f6"
+    },
+    "code": "CSE 321",
+    "name": "Computer Graphics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "035b67933e360651674c7acf"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "af42fd5df4a6f829fb2392f1"
+    },
+    "code": "CSE 322",
+    "name": "Computer Graphics Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "2c5c3ac615338bb6ae9160e1"
+    },
+    "code": "CSE 325",
+    "name": "Computer Networks",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "89fc1b41cda1706c4983f2c6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "e1a1d6edf07c31483708d478"
+    },
+    "code": "CSE 326",
+    "name": "Computer Networks Laboratory",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "a79ba385259ddfef80ef0495"
+    },
+    "code": "CSE 327",
+    "name": "Artificial Intelligence",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "2b184db18dc2ba74429d2468"
+      },
+      {
+        "$oid": "035b67933e360651674c7acf"
+      },
+      {
+        "$oid": "60a4635b415c834f401caaaf"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "331d95bf24ae0e153502f0c9"
+    },
+    "code": "CSE 328",
+    "name": "Artificial Intelligence Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "617eb7f21cfed2d7a3c6c77a"
+    },
+    "code": "CSE 342",
+    "name": "IoT based project development",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [
+      {
+        "$oid": "60a4635b415c834f401caaaf"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "e2e83b90e3ac9de06289560b"
+    },
+    "code": "CSE 411",
+    "name": "Software Engineering",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "035daad3af8d5d82bed8de8a"
+      },
+      {
+        "$oid": "67691e8333c052608e259f6b"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7ee86a713d93be86576d04c0"
+    },
+    "code": "CSE 463",
+    "name": "Machine Learning for Big Data Analytics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1c990737812288a3ba710c4a"
+      },
+      {
+        "$oid": "a79ba385259ddfef80ef0495"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "3892f26e0b5bc6add6f123a0"
+    },
+    "code": "CSE 464",
+    "name": "Python based project development",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [
+      {
+        "$oid": "a79ba385259ddfef80ef0495"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "d7c9041dcfada7b5ebc8be59"
+    },
+    "code": "CSE 466",
+    "name": "Mobile app development",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "bb74b817aed314a06513487a"
+    },
+    "code": "CSE 443",
+    "name": "Neural Network and Fuzzy Systems",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "a79ba385259ddfef80ef0495"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "499dd5b111ab19970f3ac766"
+    },
+    "code": "CSE 400",
+    "name": "Project / Thesis",
+    "department": "CSE",
+    "credit": 6,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "9eed6a84a56e340f68e32963"
+    },
+    "code": "CSE 301",
+    "name": "Data Warehousing and Mining",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "2c5c3ac615338bb6ae9160e1"
+      },
+      {
+        "$oid": "93ddf0d8494339c93d6c016b"
+      },
+      {
+        "$oid": "1c990737812288a3ba710c4a"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1fb337866ca622b9abe0effb"
+    },
+    "code": "CSE 303",
+    "name": "Introduction to Bioinformatics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "b47a90d708b5fb14b7a71c14"
+    },
+    "code": "CSE 307",
+    "name": "Mobile Computing and Applications",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7355961508382871360bca69"
+    },
+    "code": "CSE 308",
+    "name": "Mobile Computing and Applications Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "ab7ad3dbf1d082cf2289cf33"
+    },
+    "code": "CSE 309",
+    "name": "Distributed Systems",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1a7ea6019c32cb82330c2981"
+    },
+    "code": "CSE 337",
+    "name": "Multimedia Theory",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "f3a24a038d171e2f8ca0f1a1"
+    },
+    "code": "CSE 429",
+    "name": "Software Project Management",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1c990737812288a3ba710c4a"
+      },
+      {
+        "$oid": "035b67933e360651674c7acf"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "20c44b71de7510a6a0aad8ec"
+    },
+    "code": "CSE 435",
+    "name": "Pattern Recognition",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "a34b43dbd0859dcdfda47478"
+    },
+    "code": "CSE 436",
+    "name": "Pattern Recognition Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "96601832c2ec56f4cc2bfa00"
+    },
+    "code": "CSE 439",
+    "name": "Digital Image Processing",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "4bbd14ff8e571a4b3d3248f6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "8f577e713132795539bafdc0"
+    },
+    "code": "CSE 440",
+    "name": "Digital Image Processing Lab",
+    "department": "CSE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "adf14cc24249871cb4b1aeb6"
+    },
+    "code": "CSE 447",
+    "name": "Robotics",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "e3bc9dd1e0d67a5eee1ff488"
+    },
+    "code": "CSE 455",
+    "name": "Business Process Reengineering",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "1c990737812288a3ba710c4a"
+      },
+      {
+        "$oid": "a79ba385259ddfef80ef0495"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "183e7c92df4af0ac8ed700aa"
+    },
+    "code": "CSE 457",
+    "name": "Cyber Security",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "2c5c3ac615338bb6ae9160e1"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "482ae4e574aeac61f58c952f"
+    },
+    "code": "CSE 459",
+    "name": "Network Security",
+    "department": "CSE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "2c5c3ac615338bb6ae9160e1"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "4b6854f5ee221d5adb2b7412"
+    },
+    "code": "ETE 309",
+    "name": "Digital Signal Processing",
+    "department": "ETE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "89fc1b41cda1706c4983f2c6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "b14ef8520587f22d0f4c0139"
+    },
+    "code": "ETE 310",
+    "name": "Digital Signal Processing Laboratory",
+    "department": "ETE",
+    "credit": 1.5,
+    "prerequisiteId": [
+      {
+        "$oid": "89fc1b41cda1706c4983f2c6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1fc4af949dda0407aec8f731"
+    },
+    "code": "ETE 435",
+    "name": "Digital Communication",
+    "department": "ETE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "89fc1b41cda1706c4983f2c6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "fe1c4284520625993e87c1d7"
+    },
+    "code": "ETE 436",
+    "name": "Digital Communication Laboratory",
+    "department": "ETE",
+    "credit": 1.5,
+    "prerequisiteId": [
+      {
+        "$oid": "89fc1b41cda1706c4983f2c6"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7f3a802ee630e1467527a152"
+    },
+    "code": "EEE 213",
+    "name": "Electronics Devices & Circuits",
+    "department": "EEE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "61bea5da5194a265bde3edca"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "29dc56b6b47a177b8438f5f6"
+    },
+    "code": "EEE 214",
+    "name": "Electronics Devices & Circuits Lab",
+    "department": "EEE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "7f87e9e16e9931f3957bdb16"
+    },
+    "code": "EEE 317",
+    "name": "Electrical Drives & Instrumentation",
+    "department": "EEE",
+    "credit": 3,
+    "prerequisiteId": [
+      {
+        "$oid": "24f6be8592507244566652e7"
+      },
+      {
+        "$oid": "7f3a802ee630e1467527a152"
+      }
+    ],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "860bfa4443a4b85f5bf99943"
+    },
+    "code": "EEE 318",
+    "name": "Electrical Drives & Instrumentation Lab",
+    "department": "EEE",
+    "credit": 1.5,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  },
+  {
+    "_id": {
+      "$oid": "1bcf1909a11ce3a55d6a353a"
+    },
+    "code": "ETE 431",
+    "name": "Mobile Cellular & Wireless Communication",
+    "department": "ETE",
+    "credit": 3,
+    "prerequisiteId": [],
+    "avgRating": 0,
+    "reviewCount": 0
+  }
+]
