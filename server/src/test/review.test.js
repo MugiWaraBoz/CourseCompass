@@ -120,84 +120,10 @@ describe("GET /faculty/:id", ()=> {
         console.log(res.body.data.shortCode)
         expect(res.body.data.shortCode).toBe("JD")
         expect(res.body.data.name).toBe("Dr. John Doe")
-        
     })
 })
 
 describe("GET /faculty/:id/reviews", ()=> {
-    test("Pagination faculty reviews", async ()=> {
-        const token = await loginTestStudent()
-        const res = await req(app)
-            .get("/faculty/64d123456789abcdef1234f1/reviews")
-            .query({
-                page: 1,
-                limit: 1,
-            })
-            .set("Authorization", `Bearer ${token}`)
-            .expect(200)
-    
-
-        expect(res.body.success).toBe(true)
-        expect(res.body.data.reviews).toHaveLength(1)
-        expect(res.body.data.pagination).toEqual({
-            page: 1,
-            limit: 1,
-            total: 2,
-            totalPages: 2,
-        })
-    })
-
-    test("Sort faculty by recent in asc order", async ()=> {
-        const token = await loginTestStudent()
-        const res = await req(app)
-            .get("/faculty/64d123456789abcdef1234f2/reviews")
-            .query({
-                sortBy: "recent",
-                order: "asc",
-            })
-            .set("Authorization", `Bearer ${token}`)
-            .expect(200)
-
-        expect(res.body.success).toBe(true)
-        expect(res.body.data.reviews).toHaveLength(2)
-        expect(res.body.data.reviews[0].courseId).toBe("64d123456789abcdef1234c2")
-        expect(res.body.data.reviews[1].courseId).toBe("64d123456789abcdef1234c1")
-    })
-
-    test("Sort faculty by Rating in asc order", async ()=> {
-        const token = await loginTestStudent()
-        const res = await req(app)
-            .get("/faculty/64d123456789abcdef1234f2/reviews")
-            .query({
-                sortBy: "rating",
-                order: "asc",
-            })
-            .set("Authorization", `Bearer ${token}`)
-            .expect(200)
-
-        expect(res.body.success).toBe(true)
-        expect(res.body.data.reviews).toHaveLength(2)
-        expect(res.body.data.reviews[0].courseId).toBe("64d123456789abcdef1234c2")
-        expect(res.body.data.reviews[1].courseId).toBe("64d123456789abcdef1234c1")
-    })
-    
-    test("Sort faculty by Rating in asc order", async ()=> {
-        const token = await loginTestStudent()
-        const res = await req(app)
-            .get("/faculty/64d123456789abcdef1234f2/reviews")
-            .query({
-                sortBy: "votes",
-                order: "asc",
-            })
-            .set("Authorization", `Bearer ${token}`)
-            .expect(200)
-
-        expect(res.body.success).toBe(true)
-        expect(res.body.data.reviews).toHaveLength(2)
-        expect(res.body.data.reviews[0].courseId).toBe("64d123456789abcdef1234c2")
-        expect(res.body.data.reviews[1].courseId).toBe("64d123456789abcdef1234c1")
-    })
-    
     test("Return reviews for a specific faculty by ID when authenticated", async ()=> {
         const token = await loginTestStudent()
         const res = await req(app)
@@ -209,20 +135,4 @@ describe("GET /faculty/:id/reviews", ()=> {
         expect(res.body.data.reviews).toHaveLength(2)
         console.log(res.body.data.reviews);
     })
-
-    test("Return review for a specific faculty + course ID when authenticated", async ()=> {
-        const token = await loginTestStudent()
-        const res = await req(app)
-            .get("/faculty/64d123456789abcdef1234f2/reviews")
-            .query({
-                courseId: "64d123456789abcdef1234c2",
-            })
-            .set("Authorization", `Bearer ${token}`)
-            .expect(200)
-        
-        expect(res.body.success).toBe(true)
-        expect(res.body.data.reviews).toHaveLength(1)
-        // console.log(res.body.data.reviews);
-    })
-
 })

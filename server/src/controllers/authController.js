@@ -118,7 +118,7 @@ const postLogin = async(req,res)=>{
                 token: token,
             });
         } else {
-            res.status(400).json({
+            res.status(401).json({
                 success: false,
                 "error": {
                     "code": "INVALID_PASSWORD",
@@ -127,7 +127,7 @@ const postLogin = async(req,res)=>{
             });
         }
     } else {
-        res.status(400).json({
+        res.status(401).json({
             success: false,
             "error": {
                 "code": "EMAIL_NOT_FOUND",

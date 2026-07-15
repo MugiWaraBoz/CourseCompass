@@ -22,6 +22,9 @@ module.exports = {
     },
     getDb: ()=>{
         return database
+    },
+    closeDatabase: () => {
+        return client.close();
     }
 }
 

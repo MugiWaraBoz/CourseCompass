@@ -1,67 +1,6 @@
-require("dotenv").config({ path: "../../.env.test" })
 const req = require("supertest")
 const app = require("../app")
-const database = require("../config/connect")
-const ObjectId = require("mongodb").ObjectId
-
-/*
-    this beforeAll hook is used to set up the testing environment 
-    before any tests are run.
-*/
-beforeAll(async () => {
-    process.env.NODE_ENV = "test"
-    process.env.MONGO_URI = 
-        "mongodb://localhost:27017/MyLocalDatabase"
-
-    await database.connectToServer()
-})
-
-/*
-    beforeEach hook is used to set up the database 
-    state before each test is run.
-*/
-beforeEach(async () => {
-    const db = database.getDb()
-    await db.collection("Course").deleteMany({})
-    await db.collection("Course").insertMany([
-        {
-            _id: new ObjectId("64d123456789abcdef123451"),
-            code: "CSE 113",
-            name: "Structured Programming Language",
-            department: "CSE",
-            credit: 3,
-            avgRating: 4.5,
-            reviewCount: 0,
-        },
-        {
-            _id: new ObjectId("64d123456789abcdef123452"),
-            code: "CSE 221",
-            name: "Data Structures",
-            department: "CSE",
-            credit: 1,
-            avgRating: 1.2,
-            reviewCount: 10,
-        },
-        {
-            _id: new ObjectId("64d123456789abcdef123453"),
-            code: "EEE 101",
-            name: "Basic Electrical Engineering",
-            department: "EEE",
-            credit: 2,
-            avgRating: 5,
-            reviewCount: 5,
-        }
-    ])
-})
-
-/*
-    afterAll hook is used to clean up the database
-*/
-afterAll(async () => {
-    const db = database.getDb()
-    await db.collection("Course").deleteMany({})
-})
-
+const { loginTestStudent } = require("./authHelper")
 
 /*
     describe block is used to group related tests together.
@@ -189,12 +128,129 @@ describe("GET /courses", () => {
 describe("GET /courses/:id", ()=> {
     test("Return a specific course by ID", async ()=> {
         const res = await req(app)
-            .get("/courses/64d123456789abcdef123451")
+            .get("/courses/64d123456789abcdef1234c2")
             .expect(200)
         // console.log(res.body);
         expect(res.body.success).toBe(true)
         console.log(res.body.data.course.code)
-        expect(res.body.data.course.code).toBe("CSE 113")
-        expect(res.body.data.course.name).toBe("Structured Programming Language")
+        expect(res.body.data.course.code).toBe("CSE 221")
+        expect(res.body.data.course.name).toBe("Data Structures")
     })
+})
+
+describe("GET /courses/:id/reviews", ()=> {
+    test("Return reviews for a specific course by ID when authenticated", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+        
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(2)
+        console.log(res.body.data.reviews);
+    })
+})
+
+describe("GET /courses/:id/reviews", ()=> {
+    test("Pagination course reviews", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .query({
+                page: 1,
+                limit: 1,
+            })
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+    
+
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(1)
+        expect(res.body.data.pagination).toEqual({
+            page: 1,
+            limit: 1,
+            total: 2,
+            totalPages: 2,
+        })
+    })
+
+    test("Sort course by recent in asc order", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .query({
+                sortBy: "recent",
+                order: "asc",
+            })
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(2)
+        expect(res.body.data.reviews[0].facultyId).toBe("64d123456789abcdef1234f1")
+        expect(res.body.data.reviews[1].facultyId).toBe("64d123456789abcdef1234f2")
+    })
+
+    test("Sort course by Rating in asc order", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .query({
+                sortBy: "rating",
+                order: "asc",
+            })
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(2)
+        expect(res.body.data.reviews[0].facultyId).toBe("64d123456789abcdef1234f2")
+        expect(res.body.data.reviews[1].facultyId).toBe("64d123456789abcdef1234f1")
+    })
+    
+    test("Sort course by Votes in asc order", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .query({
+                sortBy: "votes",
+                order: "asc",
+            })
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(2)
+        expect(res.body.data.reviews[0].facultyId).toBe("64d123456789abcdef1234f2")
+        expect(res.body.data.reviews[1].facultyId).toBe("64d123456789abcdef1234f1")
+    })
+    
+    test("Return reviews for a specific course by ID when authenticated", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+        
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(2)
+        console.log(res.body.data.reviews);
+    })
+
+    test("Return review for a specific faculty + course ID when authenticated", async ()=> {
+        const token = await loginTestStudent()
+        const res = await req(app)
+            .get("/courses/64d123456789abcdef1234c2/reviews")
+            .query({
+                facultyId: "64d123456789abcdef1234f2",
+            })
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200)
+        
+        expect(res.body.success).toBe(true)
+        expect(res.body.data.reviews).toHaveLength(1)
+        // console.log(res.body.data.reviews);
+    })
+
 })
