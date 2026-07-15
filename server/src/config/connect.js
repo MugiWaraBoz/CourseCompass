@@ -1,8 +1,11 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-require("dotenv").config({path: "./.env"})
+require("dotenv").config({path: "../.env"}) // loads .env file
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(process.env.MONGO_URI, {
+if (!process.env.MONGO_URL) {
+  throw new Error("MONGO_URL is missing. Add it to server/.env before starting the server.");
+}
+
+const client = new MongoClient(process.env.MONGO_URL, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -14,10 +17,14 @@ let database
 
 module.exports = {
     connectToServer: ()=>{
-        database = client.db("TestData")
+        // database = client.db("CourseCompass")
+        database = client.db("TestDB")
     },
     getDb: ()=>{
         return database
+    },
+    closeDatabase: () => {
+        return client.close();
     }
 }
 
