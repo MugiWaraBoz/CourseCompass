@@ -21,11 +21,11 @@ const postReview = async(req,res)=>{
             facultyId: new ObjectId(facultyId),
             courseId: new ObjectId(courseId)
         });
-
-    console.log("chkReview: ", chkReview);
+    
+    // console.log("chkReview: ", chkReview);
     if(chkReview){
         // console.log("Review already exists for this student and faculty");
-        res.status(400).json({
+        res.status(409).json({
             success: false,
             "error": {
                 "code": "REVIEW_EXISTS",
@@ -40,7 +40,10 @@ const postReview = async(req,res)=>{
         
         let course = await db
             .collection("CourseTake")
-            .findOne({ courseId: new ObjectId(courseId), facultyId: new ObjectId(facultyId) });
+            .findOne({ 
+                courseId: new ObjectId(courseId), 
+                facultyId: new ObjectId(facultyId) 
+            });
         
         // console.log("course: ", course);
 
@@ -75,15 +78,15 @@ const postReview = async(req,res)=>{
         res.status(201).json({
             success: true,
             data: {
-                review : reviewObj,
+                review : { 
+                    _id: review.insertedId, 
+                    ...reviewObj 
+                },
             },
             message: "Review posted successfully",
         });
 
     }
-    
-
-    
 
 }
 

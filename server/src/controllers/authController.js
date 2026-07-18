@@ -2,7 +2,6 @@ const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 require("dotenv").config({ path: "../../.env" });
 
 // Register a new student
@@ -59,30 +58,41 @@ const postRegister = async(req,res)=>{
             .collection("Student")
             .insertOne(stdObj);
 
+        // sanitize student obj
+
         let student = {
             _id: data.insertedId,
             ...stdObj
         }
 
+        const sanitizeStudent = (student) => {
+            const { password, ...safeStudent } = student;
+            return safeStudent;
+        };
         
         /*
             jwt token expiration time set to 30 days.
         */
         const token = jwt.sign(
-            student, 
+            { 
+                _id: student._id.toString(),
+            },
             process.env.JWT_SECRET, 
             { expiresIn: '30d' }
         )
-
-        res.status(201).json({
-            success: true,
-            data: {
-                "student": student,
-                "message": "Student registered successfully, please login to continue",
-                "info": "Add Student ID picture from dashboard to get a verified badge",
-            },
-            token: token,
-        });
+        try {
+            res.status(201).json({
+                success: true,
+                data: {
+                    "student": sanitizeStudent(student),
+                    "message": "Student registered successfully, please login to continue",
+                    "info": "Add Student ID picture from dashboard to get a verified badge",
+                },
+                token: token,
+            });
+        } catch (error) {
+            console.error("Error sending response:", error);
+        }
     }
 }
 
@@ -101,15 +111,23 @@ const postLogin = async(req,res)=>{
                 jwt token expiration time set to 30 days.
             */
             const token = jwt.sign(
-                student, 
+                { 
+                    _id: student._id.toString(),
+                },
                 process.env.JWT_SECRET, 
                 { expiresIn: '30d' }
             )
+
+            const sanitizeStudent = (student) => {
+                const { password, ...safeStudent } = student;
+                return safeStudent;
+            }
+
             let isVerified = student.verified;
             res.status(200).json({
                 success: true,
                 data: {
-                    "student": student,
+                    "student": sanitizeStudent(student),
                     "message": "Student logged in successfully",
                     "info": !isVerified
                         ? "You are not verified. Please upload your student ID from the dashboard to receive a verified badge."

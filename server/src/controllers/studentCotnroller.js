@@ -9,13 +9,17 @@ const getStudent = async (req, res) => {
         .collection("Student")
         .findOne(
             {
-                studentIdNumber: req.params.studentId || req.student.studentIdNumber
+                _id: new ObjectId(req.student._id)
             });
+            
+    let student = data
     
     if(data){
         res.status(200).json({
             success: true, 
-            student : data
+            data :{
+                "student": student,
+            }
         });
     } else {
         res.status(404).json({
@@ -68,7 +72,6 @@ const patchStudent = async (req, res) => {
         });
     }
 };
-
 
 // getStudentReviews function to handle getting all reviews by a student
 const getStudentReviews = async (req, res) => {
