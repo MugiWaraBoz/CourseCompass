@@ -80,7 +80,10 @@ const getCourses = async(req,res)=>{
         // console.log("No courses found");
         res.status(404).json({
             success: false, 
-            message: "No courses found"
+            error: {
+                code: "NOT_FOUND",
+                message: "No courses found"
+            }
         });
     }
 }
@@ -101,9 +104,9 @@ const getCourse = async(req,res)=>{
     } else {
         res.status(404).json({
             success: false,
-            "error": {
-                "code": "NOT_FOUND",
-                "message": "Course not found"
+            error: {
+                code: "NOT_FOUND",
+                message: "Course not found"
             }
         });
     }
@@ -170,9 +173,9 @@ const getCourseReview = async(req,res)=>{
     } else {
         res.status(500).json({
             success: false,
-            "error": {
-                "code": "SERVER_ERROR",
-                "message": "An error occurred while fetching reviews"
+            error: {
+                code: "SERVER_ERROR",
+                message: "An error occurred while fetching reviews"
             }
         });
     }

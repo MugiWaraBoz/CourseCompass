@@ -132,7 +132,7 @@ describe("GET /courses/:id", ()=> {
             .expect(200)
         // console.log(res.body);
         expect(res.body.success).toBe(true)
-        console.log(res.body.data.course.code)
+        // console.log(res.body.data.course.code)
         expect(res.body.data.course.code).toBe("CSE 221")
         expect(res.body.data.course.name).toBe("Data Structures")
     })
@@ -148,7 +148,7 @@ describe("GET /courses/:id/reviews", ()=> {
         
         expect(res.body.success).toBe(true)
         expect(res.body.data.reviews).toHaveLength(2)
-        console.log(res.body.data.reviews);
+        // console.log(res.body.data.reviews);
     })
 })
 
@@ -235,7 +235,7 @@ describe("GET /courses/:id/reviews", ()=> {
         
         expect(res.body.success).toBe(true)
         expect(res.body.data.reviews).toHaveLength(2)
-        console.log(res.body.data.reviews);
+        // console.log(res.body.data.reviews);
     })
 
     test("Return review for a specific faculty + course ID when authenticated", async ()=> {

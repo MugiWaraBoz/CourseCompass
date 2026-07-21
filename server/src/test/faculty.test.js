@@ -117,7 +117,7 @@ describe("GET /faculty/:id", ()=> {
             .expect(200)
         // console.log(res.body);
         expect(res.body.success).toBe(true)
-        console.log(res.body.data.shortCode)
+        // console.log(res.body.data.shortCode)
         expect(res.body.data.shortCode).toBe("JD")
         expect(res.body.data.name).toBe("Dr. John Doe")
         
@@ -207,7 +207,7 @@ describe("GET /faculty/:id/reviews", ()=> {
         
         expect(res.body.success).toBe(true)
         expect(res.body.data.reviews).toHaveLength(2)
-        console.log(res.body.data.reviews);
+        // console.log(res.body.data.reviews);
     })
 
     test("Return review for a specific faculty + course ID when authenticated", async ()=> {

@@ -21,11 +21,11 @@ const postReview = async(req,res)=>{
             facultyId: new ObjectId(facultyId),
             courseId: new ObjectId(courseId)
         });
-
-    console.log("chkReview: ", chkReview);
+    
+    // console.log("chkReview: ", chkReview);
     if(chkReview){
         // console.log("Review already exists for this student and faculty");
-        res.status(400).json({
+        res.status(409).json({
             success: false,
             "error": {
                 "code": "REVIEW_EXISTS",
@@ -40,7 +40,10 @@ const postReview = async(req,res)=>{
         
         let course = await db
             .collection("CourseTake")
-            .findOne({ courseId: new ObjectId(courseId), facultyId: new ObjectId(facultyId) });
+            .findOne({ 
+                courseId: new ObjectId(courseId), 
+                facultyId: new ObjectId(facultyId) 
+            });
         
         // console.log("course: ", course);
 
@@ -75,15 +78,15 @@ const postReview = async(req,res)=>{
         res.status(201).json({
             success: true,
             data: {
-                review : reviewObj,
+                review : { 
+                    _id: review.insertedId, 
+                    ...reviewObj 
+                },
             },
             message: "Review posted successfully",
         });
 
     }
-    
-
-    
 
 }
 
@@ -140,6 +143,14 @@ const postReviewVote = async(req,res)=>{
                              votescore: -1
                          } 
                     });
+        } else {
+            return res.status(400).json({
+                success: false,
+                "error": {
+                    "code": "INVALID_VOTE_TYPE",
+                    "message": "Vote type must be either 'upvote' or 'downvote'"
+                }
+            });
         }
 
         let vote = await db
@@ -177,8 +188,16 @@ const postReviewVote = async(req,res)=>{
                 { 
                     $inc: { 
                         downvotes: -1,
-                        votescore: -1 
+                        votescore: +1 
                     },
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                "error": {
+                    "code": "INVALID_VOTE_TYPE",
+                    "message": "Vote type must be either 'upvote' or 'downvote'"
+                }
             });
         }
             
@@ -226,6 +245,26 @@ const deleteReview = async(req,res)=>{
     let reviewId = new ObjectId(req.params.id);
     let stdId = new ObjectId(req.student._id);
 
+    /*
+        check if the review exists and belongs to the student
+    */
+    let review = await db
+            .collection("Review")
+            .findOne({
+                _id: reviewId,
+                studentId: stdId
+            })
+
+    if(req.student._id.toString() !== review.studentId.toString()){
+        return res.status(403).json({
+            success: false,
+            "error": {
+                "code": "FORBIDDEN",
+                "message": "You are not authorized to update this review"
+            }
+        });
+    }
+
     try {
         let review = await db
             .collection("Review")
@@ -261,7 +300,27 @@ const patchReview = async(req,res)=>{
     let stdId = new ObjectId(req.student._id);
     console.log("reviewId: ", reviewId);
     const { rating, difficultyRating, semester, comment } = req.body;
-    
+
+    /*
+        check if the review exists and belongs to the student
+    */
+    let review = await db
+            .collection("Review")
+            .findOne({
+                _id: reviewId,
+                studentId: stdId
+            })
+
+    if(req.student._id.toString() !== review.studentId.toString()){
+        return res.status(403).json({
+            success: false,
+            "error": {
+                "code": "FORBIDDEN",
+                "message": "You are not authorized to update this review"
+            }
+        });
+    }
+
     let reviewObj = {
         $set: {
             rating: rating,
@@ -273,7 +332,7 @@ const patchReview = async(req,res)=>{
     }
     
     try {
-        let review = await db
+        review = await db
             .collection("Review")
             .findOneAndUpdate(
                 { _id: reviewId, studentId: stdId },
