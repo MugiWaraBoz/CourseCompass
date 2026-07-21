@@ -11,7 +11,9 @@ let studentRouter = express.Router();
 studentRouter.route("/me").get(verifyToken, getStudent);
 
 // Get a student by studentId
-studentRouter.route("/:studentId").get(getStudent);
+// Currently this route is not usable!!!
+// studentRouter.route("/:studentId").get(getStudent);
+
 
 // Update the student information of the logged-in user
 studentRouter.route("/me").patch(verifyToken, patchStudent);
