@@ -1,9 +1,6 @@
-const path = require("path");
-
 require("dotenv").config({
-  path: path.resolve(__dirname, "../../.env.test"),
-  quiet: true,
-})
+    path: __dirname + "/.env.test",
+});
 
 const database = require("../config/connect")
 const { seedDB, clearDB } = require("./seed.js")

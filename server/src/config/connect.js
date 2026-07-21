@@ -5,20 +5,21 @@ if (!process.env.MONGO_URL) {
   throw new Error("MONGO_URL is missing. Add it to server/.env before starting the server.");
 }
 
-const client = new MongoClient(process.env.MONGO_URL, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
 
+let client
 let database
 
 module.exports = {
     connectToServer: ()=>{
         // database = client.db("CourseCompass")
-        database = client.db("TestDB")
+        client = new MongoClient(process.env.MONGO_URL, {
+          serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+          }
+        });
+        database = client.db(process.env.DB_NAME)
     },
     getDb: ()=>{
         return database
