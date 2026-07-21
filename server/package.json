@@ -12,7 +12,7 @@
   "scripts": {
     "server": "node src/server.js",
     "test": "jest --runInBand --detectOpenHandles",
-    "test:watch" : "jest --watch"
+    "test:watch" : "jest --runInBand --detectOpenHandles --watch"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
