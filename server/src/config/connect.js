@@ -25,6 +25,72 @@ module.exports = {
     },
     closeDatabase: () => {
         return client.close();
+    },
+    createIndexes: async () => {
+      /*
+        Create indexes for the collections to enforce uniqueness 
+        and improve query performance.
+      */
+      const db = database;
+
+      await db.collection("Vote").createIndex(
+        {
+          studentId: 1,
+          reviewId: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+
+      await db.collection("Review").createIndex(
+        {
+          studentId: 1,
+          courseId: 1,
+          facultyId: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+      
+      await db.collection("Student").createIndex(
+        {
+          email: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+
+      await db.collection("Student").createIndex(
+        {
+          studentIdNumber: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+
+      await db.collection("Course").createIndex(
+        {
+          code: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+
+      await db.collection("CourseTake").createIndex(
+        {
+          facultyId: 1,
+          courseId: 1,
+        },
+        {
+          unique: true,
+        }
+      )
+
     }
 }
 

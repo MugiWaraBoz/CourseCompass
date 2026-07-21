@@ -6,8 +6,13 @@ const app = require("./app") // runs app.js
 const PORT = 3000
 
 app.listen(PORT, ()=>{
-    connect.connectToServer()
-    console.log(`
-        -> Server is running on port ${PORT}, 
-        -> connected to database: ${connect.getDb().databaseName}`)
+    try {
+        connect.connectToServer()
+        connect.createIndexes()
+        console.log(`
+            -> Server is running on port ${PORT}, 
+            -> connected to database: ${connect.getDb().databaseName}`)
+    } catch (err) {
+        console.error("Error connecting to database: ", err)
+    }
 })
