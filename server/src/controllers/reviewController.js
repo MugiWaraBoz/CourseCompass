@@ -1,4 +1,3 @@
-const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 
