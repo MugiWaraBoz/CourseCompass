@@ -1,4 +1,3 @@
-const database = require("../config/connect");
 const ObjectId = require("mongodb").ObjectId;
 
 // Get all faculties with optional filters, sorting, and pagination

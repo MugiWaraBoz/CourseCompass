@@ -1,117 +1,45 @@
-
-# Folder Structure:
+# Instructions
+## Env Setup
+create a copy of `.env_example` and name it `.env`
 ```
-server/
-│
-├── node_modules/
-│
-├── src/
-│   │
-│   ├── config/
-│   │   └── db.js              # MongoDB connection
-│   │
-│   ├── models/
-│   │   ├── Student.js
-│   │   ├── Course.js
-│   │   ├── Faculty.js
-│   │   ├── Review.js
-│   │   ├── Vote.js
-│   │   └── ClassTake.js
-│   │
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── courseRoutes.js
-│   │   ├── facultyRoutes.js
-│   │   ├── reviewRoutes.js
-│   │   └── voteRoutes.js
-│   │
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── courseController.js
-│   │   ├── facultyController.js
-│   │   ├── reviewController.js
-│   │   └── voteController.js
-│   │
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   └── errorMiddleware.js
-│   │
-│   ├── utils/
-│   │   ├── generateToken.js
-│   │   └── hashPassword.js
-│   │
-│   ├── app.js
-│   └── server.js
-│
-├── .env
-├── package.json
-└── README.md
+# Database connection string
+MONGO_URL= --your mongodb url--
+DB_NAME= --your database name--
+
+# Server port
+API_PORT=3000 -- dont change this!!
+
+# JWT secret key
+JWT_SECRET= --any-text-- -/or/- --generate-a-secreat-key--
 ```
-# Backend Progress
+**important: dont use space after equal(=) is env files** 
 
-## ✅ Finished
+## Server setup
+Run `npm init` first then,
 
-### Authentication
-- [✅] Register
-- [✅] Login
+Run the server using `npm run server` 
 
-### Student
-- [✅] Student info
-- [✅] Student reviews
-- [✅] Student profile update
+make sure to run the command inside the `server` folder
 
-### Courses
-- [✅] Course info
-- [✅] Course reviews
+Successfull connection example 
 
-### Faculty
-- [✅] Faculty info
-- [✅] Faculty reviews
+```
+◇ injected env (4) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from ..\.env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from ..\..\.env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from ..\..\.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
 
-### Reviews
-- [✅] Create review
-- [✅] Update review
-- [✅] Delete review
+            -> Server is running on port 3000,
+            -> connected to database: CourseCompass
 
-### Votes
-- [✅] Create vote
-- [✅] Update vote
-- [✅] Delete vote
+```
 
----
-# Test
-- [ ] Write tests for all endpoints
-- [ ] CI - continious integration, setup for backend
+## Mock Database Setup
+Upload the json files accordingly inside mongoDB
 
----
+**Courses** - courses_seed_with_prereq_ids.json
 
-# Planned Optimization (Current Project)
-- [ ] Database optimization
+**Faculty** - faculty_mongodb_seed_final.json
 
----
-
-# Planned (Current Project)
-
-- [ ] Statistics endpoint (`GET /courses/:id/stats`) for charts
-- [ ] Recently reviewed endpoint (`GET /reviews/recent`)
-- [ ] Environment variable validation on server startup
-- [ ] Password reset
-
----
-
-# Planned AI (Current Project)
-- [ ] Course detail from ai (GET /courses/:id/ai)
-- [ ] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
-
----
-
-# Future Improvements
- 
-
-## Authentication & Security
-- [ ] Role-based access control (Admin, Student, Moderator)
-- [ ] Bookmark/Favorite courses
-- [ ] Two-factor authentication (2FA)
-
-## Authentication Alternatives
-- [ ] Evaluate Firebase Authentication
+And the database is ready to go!
