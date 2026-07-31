@@ -2,6 +2,7 @@ const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config({ path: "../../.env" });
+const database = require("../config/connect");
 
 // Register a new student
 const postRegister = async(req,res)=>{

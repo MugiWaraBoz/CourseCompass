@@ -1,5 +1,5 @@
 const ObjectId = require("mongodb").ObjectId;
-
+const database = require("../config/connect");
 // Get all courses with optional filters, sorting, and pagination
 const getCourses = async(req,res)=>{
     let db = database.getDb();
@@ -141,17 +141,64 @@ const getCourseReview = async(req,res)=>{
         sort[sortBy] = order === "desc" ? -1 : 1;
     }
     
-    const pageNumber = Number(page)
-    const limitNumber = Number(limit)
+    const pageNumber = Number(page) || 1
+    const limitNumber = Number(limit) || 10
     const skip = (pageNumber - 1) * limitNumber;
     
-    let reviews = await db
-        .collection("Review")
-        .find(filter)
-        .sort(sort)
-        .skip(skip)
-        .limit(limitNumber)
-        .toArray();
+    /*
+        The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
+        for anonymity, if the review is anonymous, the author name will be set to "Anonymous", otherwise it will be set to the student's name.
+    */
+    let reviews = await db.collection("Review").aggregate([
+        {
+            $match: filter
+        },
+        {
+            $lookup: {
+                from: "Student",
+                localField: "studentId",
+                foreignField: "_id",
+                as: "student",
+            }
+        },
+        {
+            $unwind: {
+                path: "$student",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $addFields: {
+                verified: "$student.verified",
+                author: {
+                    $cond: {
+                        if: { $eq: ["$isAnonymous", true] },
+                        then: {
+                            name: "Anonymous",
+                        },
+                        else: {
+                            name: "$student.name",
+                        },
+                    },
+                },
+            }
+        },
+        {
+            $project: {
+                studentId: 0,
+                student: 0,
+            }
+        },
+        {
+            $sort: sort
+        },
+        {
+            $skip: skip
+        },
+        {
+            $limit: limitNumber
+        }
+    ]).toArray();
 
     const total = await db.collection("Review").countDocuments(filter);
 
@@ -179,6 +226,7 @@ const getCourseReview = async(req,res)=>{
         });
     }
 }
+
 
 module.exports = {
     getCourses,

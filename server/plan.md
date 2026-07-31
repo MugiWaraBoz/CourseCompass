@@ -80,13 +80,13 @@ server/
 
 ---
 # Test
-- [ ] Write tests for all endpoints
+- [ ] Write tests for all endpoints - 5 test created
 - [ ] CI - continious integration, setup for backend
 
 ---
 
 # Planned Optimization (Current Project)
-- [ ] Database optimization
+- [✅] Database optimization
 
 ---
 

@@ -1,5 +1,5 @@
 const ObjectId = require("mongodb").ObjectId;
-
+const database = require("../config/connect");
 // getStudent function to handle getting a student by studentId
 const getStudent = async (req, res) => {
     // console.log("req.params.studentId: ", req.params.studentId);
