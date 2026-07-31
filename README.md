@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./misc/course_compass_logo.png" alt="Course_compass_logo" width="300">
+<img src="./misc/course_compass_logo.png" alt="Course_compass_logo" width="500">
 
 # Course Compass
 
@@ -20,17 +20,31 @@ CourseCompass helps students make informed academic decisions by providing trans
 
 </div>
 
-## Tech Stack
+# Tech Stack
 | **Component** | **Technology** | **Description** |
 | :------------ | :------------- | :-------------- |
 | **Frontend** | <img src="https://skillicons.dev/icons?i=react,vite,tailwind" height="40" /> <img src="https://avatars.githubusercontent.com/u/139895814?s=200&v=4" height="40" /> | Modern and responsive user interface. |
 | **Backend** | <img src="https://skillicons.dev/icons?i=nodejs,express" height="40" /> | RESTful API and server-side logic. |
-| **Database** | <img src="https://skillicons.dev/icons?i=mongodb" height="40" /> | Stores application data and reviews. |
-| **Authentication** | <img src="https://skillicons.dev/icons?i=nodejs" height="40" /> <img src="https://jwt.io/img/pic_logo.svg" height="40" /> | Secure authentication and password hashing. |
+| **Database** | <img src="https://skillicons.dev/icons?i=mongodb" height="40" /> | MongoDB stores application data and reviews. |
+| **Authentication** | <img src="https://skillicons.dev/icons?i=nodejs" height="40" /> <img src="https://jwt.io/img/pic_logo.svg" height="40" /> | JWT for Secure authentication and password hashing. |
+| **Testing** | <img src="https://skillicons.dev/icons?i=jest" height="40" /> | Jest+Supertest for API testing and endpoint validation. |
 | **Development** | <img src="https://skillicons.dev/icons?i=git,github,vscode,postman" height="40" /> | Version control, development, and API testing. |
 
 
-## ⚡ Quick Start
+# Features
+* Student registration and JWT authentication
+* University email verification
+* Course and faculty browsing
+* Anonymous and public course reviews
+* Faculty and course rating system
+* Review upvote/downvote functionality
+* Filtering, sorting, and pagination
+* Duplicate review prevention
+* Automatic average rating and review count updates
+* RESTful API with consistent response structure
+
+
+# ⚡Quick Start
 ### Prerequisites
 
 - Node.js 24+
@@ -82,7 +96,7 @@ API_PORT=3000 -- dont change this!!
 JWT_SECRET= --any-text-- -/or/- --generate-a-secreat-key--
 ```
 
-## API Documentation
+# API Documentation
 
 ### Response Format
 
@@ -525,7 +539,7 @@ Content-Type: application/json
 
 ---
 
-## Badge References
+
 
 <!-- Icons -->
 <!-- Shild io -->
