@@ -2,6 +2,7 @@ const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const database = require("../config/connect");
 require("dotenv").config({ path: "../../.env" });
+const updateReviewStatus = require("../utils/updateReviewStatus.js");
 
 // postReview function to handle posting a review
 const postReview = async(req,res)=>{
@@ -75,6 +76,16 @@ const postReview = async(req,res)=>{
         let review = await db
             .collection("Review")
             .insertOne(reviewObj);
+
+        /* 
+            update review status for course and faculty
+        */
+
+        await updateReviewStatus(
+            db,
+            reviewObj.courseId,
+            reviewObj.facultyId
+        )
         
         res.status(201).json({
             success: true,
@@ -220,6 +231,7 @@ const getAllReviews = async(req,res)=>{
 
     /*
         The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
+        for anonymity, if the review is anonymous, the author name will be set to "Anonymous", otherwise it will be set to the student's name.
     */
     let reviews = await db.collection("Review").aggregate([
         {
@@ -309,13 +321,16 @@ const deleteReview = async(req,res)=>{
     }
 
     try {
-        let review = await db
-            .collection("Review")
-            .deleteOne({
+        await db.collection("Review").deleteOne({
                 _id: reviewId,
                 studentId: stdId
             });
         
+        await updateReviewStatus(
+            db,
+            review.courseId,
+            review.facultyId
+        )
         
         res.status(200).json({
             success: true,
@@ -373,6 +388,12 @@ const patchReview = async(req,res)=>{
             updatedAt: new Date(),
         }
     }
+
+    await updateReviewStatus(
+        db,
+        reviewObj.courseId,
+        reviewObj.facultyId
+    )
     
     try {
         review = await db

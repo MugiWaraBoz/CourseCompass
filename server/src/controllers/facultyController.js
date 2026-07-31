@@ -146,6 +146,10 @@ const getFacultyReview = async(req,res)=>{
     const limitNumber = Number(limit) || 10
     const skip = (pageNumber - 1) * limitNumber;
     
+    /*
+        The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
+        for anonymity, if the review is anonymous, the author name will be set to "Anonymous", otherwise it will be set to the student's name.
+    */
     let reviews = await db.collection("Review").aggregate([
         {
             $match: filter
@@ -196,14 +200,6 @@ const getFacultyReview = async(req,res)=>{
             $limit: limitNumber
         }
     ]).toArray();
-
-    // let reviews = await db
-    //     .collection("Review")
-    //     .find(filter)
-    //     .sort(sort)
-    //     .skip(skip)
-    //     .limit(limitNumber)
-    //     .toArray();
 
     
     // console.log(reviews);
