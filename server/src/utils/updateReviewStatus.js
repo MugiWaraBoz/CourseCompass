@@ -1,8 +1,8 @@
-// const ObjectId = require("mongodb").ObjectId;
+const ObjectId = require("mongodb").ObjectId;
 
 const updateReviewStatus = async(db, courseId, facultyId) => {
 
-    console.log("Updating review status for courseId: ", courseId, " and facultyId: ", facultyId);
+    // console.log("Updating review status for courseId: ", courseId, " and facultyId: ", facultyId);
 
     const courseObj = new ObjectId(courseId);
     const facultyObj = new ObjectId(facultyId);

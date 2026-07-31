@@ -12,7 +12,7 @@ API_PORT=3000 -- dont change this!!
 # JWT secret key
 JWT_SECRET= --any-text-- -/or/- --generate-a-secreat-key--
 ```
-**important: dont use space after equal(=) is env files** 
+**important: dont use space after equal(=) in env files** 
 
 ## Server setup
 Run `npm init` first then,
