@@ -1,6 +1,6 @@
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
-
+const database = require("../config/connect");
 require("dotenv").config({ path: "../../.env" });
 
 // postReview function to handle posting a review
@@ -12,7 +12,8 @@ const postReview = async(req,res)=>{
         rating,
         difficultyRating,
         semester, 
-        comment } = req.body;
+        comment,
+        isAnonymous = false } = req.body;
 
     let chkReview = await db.collection("Review")
         .findOne({
@@ -68,6 +69,7 @@ const postReview = async(req,res)=>{
             upvotes: 0,
             downvotes: 0,
             votescore: 0,
+            isAnonymous: isAnonymous,
         };
 
         let review = await db
@@ -78,8 +80,7 @@ const postReview = async(req,res)=>{
             success: true,
             data: {
                 review : { 
-                    _id: review.insertedId, 
-                    ...reviewObj 
+                    _id: review.insertedId,
                 },
             },
             message: "Review posted successfully",
@@ -216,7 +217,50 @@ const postReviewVote = async(req,res)=>{
 // getAllReviews function to handle getting all reviews
 const getAllReviews = async(req,res)=>{
     let db = database.getDb();
-    let reviews = await db.collection("Review").find({}).toArray();
+
+    /*
+        The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
+    */
+    let reviews = await db.collection("Review").aggregate([
+        {
+            $lookup: {
+                from: "Student",
+                localField: "studentId",
+                foreignField: "_id",
+                as: "student",
+            }
+        },
+        {
+            $unwind: {
+                path: "$student",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $addFields: {
+                verified: "$student.verified",
+                author: {
+                    $cond: {
+                        if: { $eq: ["$isAnonymous", true] },
+                        then: {
+                            name: "Anonymous",
+                        },
+                        else: {
+                            name: "$student.name",
+                        },
+                    },
+                },
+            }
+        },
+        {
+            $project: {
+                studentId: 0,
+                student: 0,
+            }
+        },
+    ]).toArray();
+
+    // let reviews = await db.collection("Review").find({}).toArray();
 
     if(reviews){
         res.status(200).json({
