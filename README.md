@@ -2,8 +2,6 @@
 
 <img src="./misc/course_compass_logo.png" alt="Course_compass_logo" width="500">
 
-# Course Compass
-
 ![React]
 ![vite]
 ![Tailwind CSS]
