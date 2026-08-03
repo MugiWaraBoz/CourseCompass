@@ -227,7 +227,16 @@ describe("GET /courses/:id/reviews", ()=> {
     })
     
     test("Return reviews for a specific course by ID when authenticated", async ()=> {
+        
         const token = await loginTestStudent()
+
+        if (!token) {
+            throw new Error(
+                `Login succeeded but token was missing: ${JSON.stringify(res.body)}`
+            );
+        }
+
+
         const res = await req(app)
             .get("/courses/64d123456789abcdef1234c2/reviews")
             .set("Authorization", `Bearer ${token}`)

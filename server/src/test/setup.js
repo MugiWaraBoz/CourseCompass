@@ -12,10 +12,8 @@ const { seedDB, clearDB } = require("./seed.js")
 */
 beforeAll(async () => {
     process.env.NODE_ENV = "test"
-    process.env.MONGO_URL = 
-        "mongodb://localhost:27017/MyLocalDatabase"
-
     await database.connectToServer()
+
 })
 
 
