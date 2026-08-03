@@ -100,9 +100,10 @@ server/
 ---
 
 # Planned AI (Current Project)
-- [ ] Course detail from ai (GET /courses/:id/ai)
-- [ ] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
-
+- [✅] Course detail from ai (GET /courses/:id/ai)
+- [✅] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
+- [ ] Let user choose AI model (Gemini 1.5, Gemini 1.5 Pro, Gemini 1.5 Turbo)
+- [ ] Let user provide their own Gemini API key for AI requests
 ---
 
 # Future Improvements
