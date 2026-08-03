@@ -92,10 +92,12 @@ server/
 
 # Planned (Current Project)
 
+- [✅] forgot password
+- [✅] Password reset
+- [✅] Change password
 - [ ] Statistics endpoint (`GET /courses/:id/stats`) for charts
 - [ ] Recently reviewed endpoint (`GET /reviews/recent`)
 - [ ] Environment variable validation on server startup
-- [ ] Password reset
 
 ---
 
