@@ -35,7 +35,7 @@ const getStudent = async (req, res) => {
 const patchStudent = async (req, res) => {
     let db = database.getDb();
 
-    const { name, cgpa=null, photoUrl } = req.body;
+    const { name, cgpa, photoUrl } = req.body;
 
     let stdObj = {
         $set: {
