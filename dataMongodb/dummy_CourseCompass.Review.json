@@ -1,0 +1,646 @@
+[
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000001"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000001"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 3.5,
+    "semester": "Spring 2026",
+    "comment": "The data structure concepts were explained clearly. The coding tasks were useful but required regular practice.",
+    "isAnonymous": false,
+    "upvotes": 1,
+    "downvotes": 2,
+    "votescore": -1,
+    "createdAt": {
+      "$date": "2026-02-01T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-01T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000002"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000002"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.0,
+    "difficultyRating": 4.0,
+    "semester": "Spring 2026",
+    "comment": "Lectures were organized and examples helped a lot. Exams were a little harder than the class examples.",
+    "isAnonymous": true,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-02T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-02T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000003"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000003"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 3.5,
+    "difficultyRating": 4.5,
+    "semester": "Fall 2025",
+    "comment": "Good course overall, but the pace became fast around trees and graphs.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-03T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-03T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000004"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000004"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 5.0,
+    "difficultyRating": 3.5,
+    "semester": "Fall 2025",
+    "comment": "Very practical teaching style. The linked list and tree demonstrations made the topics easy to understand.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-04T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-04T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000005"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000005"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 4.0,
+    "semester": "Summer 2025",
+    "comment": "Assignments were challenging but directly improved problem-solving skill.",
+    "isAnonymous": true,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-05T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-05T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000006"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000006"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 3.0,
+    "difficultyRating": 4.5,
+    "semester": "Summer 2025",
+    "comment": "The course needs consistent study. Missing a few classes made later topics difficult.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-06T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000007"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000007"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.0,
+    "difficultyRating": 3.5,
+    "semester": "Spring 2025",
+    "comment": "Clear explanations and useful lab-style examples during theory classes.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-07T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-07T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000008"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000008"
+    },
+    "courseId": {
+      "$oid": "67691e8333c052608e259f6b"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 4.0,
+    "semester": "Spring 2025",
+    "comment": "A strong course for building programming fundamentals beyond basic syntax.",
+    "isAnonymous": true,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-08T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-08T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000009"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000001"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.0,
+    "difficultyRating": 4.5,
+    "semester": "Spring 2026",
+    "comment": "The algorithm analysis part was explained well. Dynamic programming needed more examples.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-09T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-09T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000a"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000002"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 4.5,
+    "semester": "Spring 2026",
+    "comment": "The course was difficult, but the problem-solving approach was practical and useful.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-10T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-10T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000b"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000003"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 3.5,
+    "difficultyRating": 5.0,
+    "semester": "Fall 2025",
+    "comment": "A demanding course. Understanding the ideas was not enough; a lot of practice was necessary.",
+    "isAnonymous": true,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-11T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-11T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000c"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000004"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 4.0,
+    "semester": "Fall 2025",
+    "comment": "Greedy and graph algorithms were taught with good examples. The exams were fair.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-12T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-12T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000d"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000005"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 5.0,
+    "difficultyRating": 4.5,
+    "semester": "Summer 2025",
+    "comment": "One of the most useful courses in the program. It improved how I approach programming problems.",
+    "isAnonymous": true,
+    "upvotes": 1,
+    "downvotes": 2,
+    "votescore": -1,
+    "createdAt": {
+      "$date": "2026-02-13T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-13T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000e"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000006"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 3.0,
+    "difficultyRating": 5.0,
+    "semester": "Summer 2025",
+    "comment": "The workload was heavy and some topics moved too quickly.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-14T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-14T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b200000000000000000000f"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000007"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.0,
+    "difficultyRating": 4.5,
+    "semester": "Spring 2025",
+    "comment": "Good explanations, especially for complexity analysis and shortest-path algorithms.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-15T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-15T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000010"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000009"
+    },
+    "courseId": {
+      "$oid": "035b67933e360651674c7acf"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358789"
+    },
+    "rating": 4.5,
+    "difficultyRating": 4.0,
+    "semester": "Spring 2025",
+    "comment": "The classes focused on reasoning instead of memorizing code, which was helpful.",
+    "isAnonymous": true,
+    "upvotes": 1,
+    "downvotes": 1,
+    "votescore": 0,
+    "createdAt": {
+      "$date": "2026-02-16T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-16T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000011"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000001"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 4.5,
+    "difficultyRating": 3.0,
+    "semester": "Spring 2026",
+    "comment": "The project-based structure made the course enjoyable. Frontend and backend integration was explained clearly.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-17T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-17T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000012"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000002"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 4.0,
+    "difficultyRating": 3.5,
+    "semester": "Spring 2026",
+    "comment": "Useful course for beginners. More time on deployment would have made it better.",
+    "isAnonymous": true,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-18T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000013"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000003"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 3.5,
+    "difficultyRating": 3.0,
+    "semester": "Fall 2025",
+    "comment": "The basics were covered well, though some JavaScript concepts needed deeper explanation.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-19T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-19T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000014"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000004"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 4.5,
+    "difficultyRating": 3.5,
+    "semester": "Fall 2025",
+    "comment": "The assignments were practical and directly connected to the final project.",
+    "isAnonymous": false,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-20T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-20T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000015"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000005"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 5.0,
+    "difficultyRating": 3.0,
+    "semester": "Summer 2025",
+    "comment": "Very approachable teaching style and helpful feedback during project development.",
+    "isAnonymous": true,
+    "upvotes": 2,
+    "downvotes": 1,
+    "votescore": 1,
+    "createdAt": {
+      "$date": "2026-02-21T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-21T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000016"
+    },
+    "studentId": {
+      "$oid": "66cc00000000000000000007"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 4.0,
+    "difficultyRating": 3.5,
+    "semester": "Summer 2025",
+    "comment": "A balanced introduction to web development. Regular coding was enough to keep up.",
+    "isAnonymous": false,
+    "upvotes": 2,
+    "downvotes": 0,
+    "votescore": 2,
+    "createdAt": {
+      "$date": "2026-02-22T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-22T00:00:00Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6b2000000000000000000017"
+    },
+    "studentId": {
+      "$oid": "66cc0000000000000000000a"
+    },
+    "courseId": {
+      "$oid": "f59708aeb7c6a22169d0f0cb"
+    },
+    "facultyId": {
+      "$oid": "6a4f97e1adfa7aba44358786"
+    },
+    "rating": 3.5,
+    "difficultyRating": 4.0,
+    "semester": "Spring 2025",
+    "comment": "The final project took significant time, but it was the most valuable part of the course.",
+    "isAnonymous": true,
+    "upvotes": 3,
+    "downvotes": 0,
+    "votescore": 3,
+    "createdAt": {
+      "$date": "2026-02-23T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-02-23T00:00:00Z"
+    }
+  }
+]
