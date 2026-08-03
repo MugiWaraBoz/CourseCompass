@@ -1,8 +1,13 @@
+import Navbar from "@/components/layout/Navbar";
+
 function App() {
   return (
-    <main>
-      <h1 className="text-4xl font-bold text-blue-700">Course Compass</h1>
-    </main>
+    <>
+      <Navbar />
+      <main>
+        <h1>Course Compass</h1>
+      </main>
+    </>
   );
 }
 
