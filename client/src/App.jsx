@@ -1,11 +1,12 @@
 import Navbar from "@/components/layout/Navbar";
+import HeroSection from "@/components/home/HeroSection";
 
 function App() {
   return (
     <>
       <Navbar />
       <main>
-        <h1>Course Compass</h1>
+        <HeroSection />
       </main>
     </>
   );
