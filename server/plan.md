@@ -8,9 +8,9 @@ server/
 ├── src/
 │   │
 │   ├── config/
-│   │   └── db.js              # MongoDB connection
+│   │   └── db.js               # MongoDB connection
 │   │
-│   ├── models/
+│   ├── models/                 # For mongoose models -- not yet implemented 
 │   │   ├── Student.js
 │   │   ├── Course.js
 │   │   ├── Faculty.js
@@ -18,27 +18,27 @@ server/
 │   │   ├── Vote.js
 │   │   └── ClassTake.js
 │   │
-│   ├── routes/
+│   ├── routes/                 # For express routes
 │   │   ├── authRoutes.js
 │   │   ├── courseRoutes.js
 │   │   ├── facultyRoutes.js
 │   │   ├── reviewRoutes.js
 │   │   └── voteRoutes.js
 │   │
-│   ├── controllers/
+│   ├── controllers/            # For express controllers
 │   │   ├── authController.js
 │   │   ├── courseController.js
 │   │   ├── facultyController.js
 │   │   ├── reviewController.js
 │   │   └── voteController.js
 │   │
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   └── errorMiddleware.js
+│   ├── middleware/             # For express middleware
+|   |   ├── hashPassword.js        
+│   │   └── authMiddleware.js
 │   │
-│   ├── utils/
-│   │   ├── generateToken.js
-│   │   └── hashPassword.js
+│   ├── utils/                  # For utility functions
+│   │   └── updateReviewStatus.js
+│   │ 
 │   │
 │   ├── app.js
 │   └── server.js

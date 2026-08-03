@@ -2,7 +2,8 @@ const express = require("express");
 
 const ObjectId = require("mongodb").ObjectId;
 const verifyToken = require("../middleware/authMiddleware");
-const { postReview,postReviewVote,deleteReview,getAllReviews,patchReview } = require("../controllers/reviewController");
+const { postReview,deleteReview,getAllReviews,patchReview } = require("../controllers/reviewController");
+const { postReviewVote } = require("../controllers/voteController");
 
 
 let postRouter = express.Router();
