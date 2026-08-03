@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
 import { ArrowRight, Menu, X } from "lucide-react";
+import {useNavigate,Link} from "react-router-dom";
 
 const navLinks = [
   { label: "Courses", href: "#courses" },
