@@ -8,9 +8,9 @@ server/
 ├── src/
 │   │
 │   ├── config/
-│   │   └── db.js              # MongoDB connection
+│   │   └── db.js               # MongoDB connection
 │   │
-│   ├── models/
+│   ├── models/                 # For mongoose models -- not yet implemented 
 │   │   ├── Student.js
 │   │   ├── Course.js
 │   │   ├── Faculty.js
@@ -18,27 +18,27 @@ server/
 │   │   ├── Vote.js
 │   │   └── ClassTake.js
 │   │
-│   ├── routes/
+│   ├── routes/                 # For express routes
 │   │   ├── authRoutes.js
 │   │   ├── courseRoutes.js
 │   │   ├── facultyRoutes.js
 │   │   ├── reviewRoutes.js
 │   │   └── voteRoutes.js
 │   │
-│   ├── controllers/
+│   ├── controllers/            # For express controllers
 │   │   ├── authController.js
 │   │   ├── courseController.js
 │   │   ├── facultyController.js
 │   │   ├── reviewController.js
 │   │   └── voteController.js
 │   │
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   └── errorMiddleware.js
+│   ├── middleware/             # For express middleware
+|   |   ├── hashPassword.js        
+│   │   └── authMiddleware.js
 │   │
-│   ├── utils/
-│   │   ├── generateToken.js
-│   │   └── hashPassword.js
+│   ├── utils/                  # For utility functions
+│   │   └── updateReviewStatus.js
+│   │ 
 │   │
 │   ├── app.js
 │   └── server.js
@@ -92,17 +92,20 @@ server/
 
 # Planned (Current Project)
 
+- [✅] forgot password
+- [✅] Password reset
+- [✅] Change password
 - [ ] Statistics endpoint (`GET /courses/:id/stats`) for charts
 - [ ] Recently reviewed endpoint (`GET /reviews/recent`)
 - [ ] Environment variable validation on server startup
-- [ ] Password reset
 
 ---
 
 # Planned AI (Current Project)
-- [ ] Course detail from ai (GET /courses/:id/ai)
-- [ ] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
-
+- [✅] Course detail from ai (GET /courses/:id/ai)
+- [✅] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
+- [ ] Let user choose AI model (Gemini 1.5, Gemini 1.5 Pro, Gemini 1.5 Turbo)
+- [ ] Let user provide their own Gemini API key for AI requests
 ---
 
 # Future Improvements

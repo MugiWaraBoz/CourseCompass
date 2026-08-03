@@ -5,9 +5,15 @@ async function loginTestStudent(){
     const res = await req(app)
         .post("/auth/login")
         .send({
-            email: "test@eastdelta.edu.bd",
+            email: "johndoe@eastdelta.edu.bd",
             password: "password123"
         })
+
+    if (res.statusCode !== 200) {
+        throw new Error(
+            `Test login failed: ${res.statusCode} ${JSON.stringify(res.body)}`
+        );
+    }   
     return res.body.token
 }
 
