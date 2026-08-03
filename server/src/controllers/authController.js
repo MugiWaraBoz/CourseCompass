@@ -155,7 +155,201 @@ const postLogin = async(req,res)=>{
     }
 }
 
+// forgot password
+const forgotPassword = async(req,res)=>{
+    let db = database.getDb();
+    const { email } = req.body;
+    const student = await db.collection("Student").findOne({email: email});
+
+    if(!student){
+        res.status(404).json({
+            success: false,
+            "error": {
+                "code": "EMAIL_NOT_FOUND",
+                "message": "Email not found, please register first!"
+            }
+        });
+        return;
+    }
+
+    token = jwt.sign(
+        { 
+            id: student._id.toString(),
+            email,
+        },
+        process.env.JWT_SECRET, 
+        { expiresIn: '5m' }
+    )
+
+    res.status(200).json({
+        success: true,
+        "message": "Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.",
+        "resetLink": `${process.env.FRONTEND_URL}/auth/reset-password/${token}}`
+    });
+
+}
+
+// password reset
+const resetPassword = async(req,res)=>{
+    let db = database.getDb();
+    const { newPassword, confirmPassword } = req.body;
+    const token = req.params.token;
+
+
+    if(newPassword !== confirmPassword){
+        res.status(400).json({
+            success: false,
+            "error": {
+                "code": "PASSWORD_MISMATCH",
+                "message": "New password and confirm password do not match!"
+            }
+        });
+        return;
+    }
+    
+    if(!token) {
+        return res.status(400).json({
+            success: false,
+            "error": {
+                "code": "TOKEN_MISSING",
+                "message": "Token is missing from the request"
+            }
+        });
+    }
+    
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            "error": {
+                "code": "INVALID_TOKEN",
+                "message": "Token is invalid or has expired"
+            }
+        });
+    }
+
+    const email = jwt.verify(token, process.env.JWT_SECRET).email;
+    const student = await db.collection("Student").findOne({email: email});
+    if(!student){
+        return res.status(404).json({
+            success: false,
+            "error": {
+                "code": "EMAIL_NOT_FOUND",
+                "message": "Email not found, please register first!"
+            }
+        });
+    }
+
+    let isMatch = await bcrypt.compare(newPassword, student.password);
+    if(isMatch){
+        return res.status(400).json({
+            success: false,
+            "error": {
+                "code": "SAME_PASSWORD",
+                "message": "New password cannot be the same as the old password!"
+            }
+        });
+    }
+
+    if(decoded.id !== student._id.toString()){
+        return res.status(403).json({
+            success: false,
+            "error": {
+                "code": "FORBIDDEN",
+                "message": "You are not authorized to reset this student's password"
+            }
+        });
+    }
+
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await db.collection("Student").updateOne(
+        { _id: student._id },
+        { $set: { 
+            password: hashedPassword,
+            updatedAt: new Date()
+        } }
+    );
+    res.status(200).json({
+        success: true,
+        "message": "Password reset successfully"
+    });
+}
+
+// change password
+const changePassword = async(req,res)=>{
+    let db = database.getDb();
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+    const email = req.student.email;
+    const student = await db.collection("Student").findOne({email: email});
+    
+    if(req.student._id.toString() !== student._id.toString()){
+        return res.status(403).json({
+            success: false,
+            "error": {
+                "code": "FORBIDDEN",
+                "message": "You are not authorized to change this student's password"
+            }
+        });
+    }
+
+    if(newPassword !== confirmPassword){
+        return res.status(400).json({
+            success: false,
+            "error": {
+                "code": "PASSWORD_MISMATCH",
+                "message": "New password and confirm password do not match!"
+            }
+        });
+        return;
+    }
+
+    let isMatch = await bcrypt.compare(oldPassword, student.password);
+
+    if(!isMatch){
+        return res.status(401).json({
+            success: false,
+            "error": {
+                "code": "INVALID_PASSWORD",
+                "message": "Invalid old password, please try again!"
+            }
+        });
+        return;
+    }
+
+    isMatch = await bcrypt.compare(newPassword, student.password);
+    
+    if(isMatch){
+        return res.status(400).json({
+            success: false,
+            "error": {
+                "code": "SAME_PASSWORD",
+                "message": "New password cannot be the same as the old password!"
+            }
+        });
+        return;
+    }
+
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await db.collection("Student").updateOne(
+        { email: email },
+        { $set: { password: hashedPassword } }
+    );
+    res.status(200).json({
+        success: true,
+        "message": "Password changed successfully"
+    });
+}
+
 module.exports = {
     postRegister,
     postLogin,
+    forgotPassword,
+    resetPassword,
+    changePassword
 };  
