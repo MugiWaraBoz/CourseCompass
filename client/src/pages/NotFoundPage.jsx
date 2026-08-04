@@ -1,3 +1,24 @@
+// Gives visitors a helpful fallback when no application route matches.
 import { Link } from "react-router-dom";
 
-export default function NotFoundPage() { return <section className="grid min-h-[65vh] place-items-center bg-[#fbfdfb] px-4 text-center"><div><span className="text-sm font-semibold text-emerald-700">404</span><h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">This page lost its direction.</h1><p className="mt-4 text-slate-500">The page you requested does not exist.</p><Link to="/" className="mt-7 inline-flex rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-700">Return home</Link></div></section>; }
+export default function NotFoundPage() {
+  return (
+    <section className="grid min-h-[65vh] place-items-center bg-[#fbfdfb] px-4 text-center">
+      <div>
+        <span className="text-sm font-semibold text-emerald-700">404</span>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
+          This page lost its direction.
+        </h1>
+        <p className="mt-4 text-slate-500">
+          The page you requested does not exist.
+        </p>
+        <Link
+          to="/"
+          className="mt-7 inline-flex rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-700"
+        >
+          Return home
+        </Link>
+      </div>
+    </section>
+  );
+}

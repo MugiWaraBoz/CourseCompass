@@ -11,10 +11,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export function getErrorMessage(error, fallback = "Something went wrong. Please try again.") {
-  return error?.response?.data?.error?.message || error?.response?.data?.message || error?.message || fallback;
+export function getErrorMessage(
+  error,
+  fallback = "Something went wrong. Please try again.",
+) {
+  return (
+    error?.response?.data?.error?.message ||
+    error?.response?.data?.message ||
+    error?.message ||
+    fallback
+  );
 }
 
 export function isEmptyResponse(error) {
-  return error?.response?.status === 404 && error?.response?.data?.error?.code === "NOT_FOUND";
+  return (
+    error?.response?.status === 404 &&
+    error?.response?.data?.error?.code === "NOT_FOUND"
+  );
 }

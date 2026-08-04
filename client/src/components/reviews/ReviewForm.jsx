@@ -1,15 +1,194 @@
+// Handles creation and editing of course and faculty reviews.
 import { useEffect, useState } from "react";
 import { createReview, updateReview } from "@/api/reviewApi";
 import { getCourses, getFaculties } from "@/api/catalogApi";
 import { getErrorMessage } from "@/api/client";
-import { Field, inputClass, textareaClass } from "@/components/common/FormFields";
+import {
+  Field,
+  inputClass,
+  textareaClass,
+} from "@/components/common/FormFields";
 import { semesters } from "@/data/constants";
 
-export default function ReviewForm({ initial = {}, courseId = "", facultyId = "", onSuccess, onCancel }) {
-  const [form, setForm] = useState({ courseId: courseId || initial.courseId || "", facultyId: facultyId || initial.facultyId || "", rating: initial.rating || 5, difficultyRating: initial.difficultyRating || 3, semester: initial.semester || semesters[0], comment: initial.comment || "", isAnonymous: initial.isAnonymous || false });
-  const [courses, setCourses] = useState([]); const [faculty, setFaculty] = useState([]); const [error, setError] = useState(""); const [saving, setSaving] = useState(false);
-  useEffect(() => { Promise.all([getCourses({ limit: 500 }), getFaculties({ limit: 500 })]).then(([c, f]) => { setCourses(c.data.data.courses); setFaculty(f.data.data.faculty); }).catch(() => setError("Could not load course and faculty options.")); }, []);
-  const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
-  async function submit(e) { e.preventDefault(); setError(""); if (!form.courseId || !form.facultyId || !form.comment.trim()) { setError("Course, faculty, and comment are required."); return; } setSaving(true); try { const payload = { ...form, rating: Number(form.rating), difficultyRating: Number(form.difficultyRating) }; if (initial._id) await updateReview(initial._id, { rating: payload.rating, difficultyRating: payload.difficultyRating, semester: payload.semester, comment: payload.comment }); else await createReview(payload); onSuccess?.(); } catch (e2) { setError(getErrorMessage(e2)); } finally { setSaving(false); } }
-  return <form onSubmit={submit} className="rounded-3xl border border-emerald-100 bg-emerald-50/50 p-5 sm:p-7"><h3 className="text-xl font-semibold text-slate-950">{initial._id ? "Edit your review" : "Share your experience"}</h3>{error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}<div className="mt-6 grid gap-5 sm:grid-cols-2"><Field label="Course"><select disabled={Boolean(courseId) || Boolean(initial._id)} className={inputClass} value={form.courseId} onChange={e => set("courseId", e.target.value)}><option value="">Choose a course</option>{courses.map(c => <option key={c._id} value={c._id}>{c.code} — {c.name}</option>)}</select></Field><Field label="Faculty"><select disabled={Boolean(facultyId) || Boolean(initial._id)} className={inputClass} value={form.facultyId} onChange={e => set("facultyId", e.target.value)}><option value="">Choose faculty</option>{faculty.map(f => <option key={f._id} value={f._id}>{f.name} ({f.shortCode})</option>)}</select></Field><Field label="Overall rating"><input className={inputClass} type="number" min="1" max="5" step="0.5" value={form.rating} onChange={e => set("rating", e.target.value)} required/></Field><Field label="Difficulty rating"><input className={inputClass} type="number" min="1" max="5" step="0.5" value={form.difficultyRating} onChange={e => set("difficultyRating", e.target.value)} required/></Field><Field label="Semester"><select className={inputClass} value={form.semester} onChange={e => set("semester", e.target.value)}>{semesters.map(x => <option key={x}>{x}</option>)}</select></Field>{!initial._id && <label className="flex items-end gap-3 pb-3 text-sm text-slate-700"><input type="checkbox" checked={form.isAnonymous} onChange={e => set("isAnonymous", e.target.checked)} className="size-4 accent-emerald-700"/>Post anonymously</label>}<div className="sm:col-span-2"><Field label="Your review"><textarea className={textareaClass} minLength="10" maxLength="1000" value={form.comment} onChange={e => set("comment", e.target.value)} placeholder="What should other students know?" required/></Field></div></div><div className="mt-6 flex gap-3"><button disabled={saving} className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50">{saving ? "Saving..." : initial._id ? "Save changes" : "Post review"}</button>{onCancel && <button type="button" onClick={onCancel} className="rounded-full border bg-white px-6 py-2.5 text-sm font-medium text-slate-700">Cancel</button>}</div></form>;
+export default function ReviewForm({
+  initial = {},
+  courseId = "",
+  facultyId = "",
+  onSuccess,
+  onCancel,
+}) {
+  const [form, setForm] = useState({
+    courseId: courseId || initial.courseId || "",
+    facultyId: facultyId || initial.facultyId || "",
+    rating: initial.rating || 5,
+    difficultyRating: initial.difficultyRating || 3,
+    semester: initial.semester || semesters[0],
+    comment: initial.comment || "",
+    isAnonymous: initial.isAnonymous || false,
+  });
+  const [courses, setCourses] = useState([]);
+  const [faculty, setFaculty] = useState([]);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    Promise.all([getCourses({ limit: 500 }), getFaculties({ limit: 500 })])
+      .then(([c, f]) => {
+        setCourses(c.data.data.courses);
+        setFaculty(f.data.data.faculty);
+      })
+      .catch(() => setError("Could not load course and faculty options."));
+  }, []);
+  const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  async function submit(e) {
+    e.preventDefault();
+    setError("");
+    if (!form.courseId || !form.facultyId || !form.comment.trim()) {
+      setError("Course, faculty, and comment are required.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        ...form,
+        rating: Number(form.rating),
+        difficultyRating: Number(form.difficultyRating),
+      };
+      if (initial._id)
+        await updateReview(initial._id, {
+          rating: payload.rating,
+          difficultyRating: payload.difficultyRating,
+          semester: payload.semester,
+          comment: payload.comment,
+        });
+      else await createReview(payload);
+      onSuccess?.();
+    } catch (e2) {
+      setError(getErrorMessage(e2));
+    } finally {
+      setSaving(false);
+    }
+  }
+  return (
+    <form
+      onSubmit={submit}
+      className="rounded-3xl border border-emerald-100 bg-emerald-50/50 p-5 sm:p-7"
+    >
+      <h3 className="text-xl font-semibold text-slate-950">
+        {initial._id ? "Edit your review" : "Share your experience"}
+      </h3>
+      {error && (
+        <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+          {error}
+        </p>
+      )}
+      <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <Field label="Course">
+          <select
+            disabled={Boolean(courseId) || Boolean(initial._id)}
+            className={inputClass}
+            value={form.courseId}
+            onChange={(e) => set("courseId", e.target.value)}
+          >
+            <option value="">Choose a course</option>
+            {courses.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.code} — {c.name}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Faculty">
+          <select
+            disabled={Boolean(facultyId) || Boolean(initial._id)}
+            className={inputClass}
+            value={form.facultyId}
+            onChange={(e) => set("facultyId", e.target.value)}
+          >
+            <option value="">Choose faculty</option>
+            {faculty.map((f) => (
+              <option key={f._id} value={f._id}>
+                {f.name} ({f.shortCode})
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Overall rating">
+          <input
+            className={inputClass}
+            type="number"
+            min="1"
+            max="5"
+            step="0.5"
+            value={form.rating}
+            onChange={(e) => set("rating", e.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Difficulty rating">
+          <input
+            className={inputClass}
+            type="number"
+            min="1"
+            max="5"
+            step="0.5"
+            value={form.difficultyRating}
+            onChange={(e) => set("difficultyRating", e.target.value)}
+            required
+          />
+        </Field>
+        <Field label="Semester">
+          <select
+            className={inputClass}
+            value={form.semester}
+            onChange={(e) => set("semester", e.target.value)}
+          >
+            {semesters.map((x) => (
+              <option key={x}>{x}</option>
+            ))}
+          </select>
+        </Field>
+        {!initial._id && (
+          <label className="flex items-end gap-3 pb-3 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={form.isAnonymous}
+              onChange={(e) => set("isAnonymous", e.target.checked)}
+              className="size-4 accent-emerald-700"
+            />
+            Post anonymously
+          </label>
+        )}
+        <div className="sm:col-span-2">
+          <Field label="Your review">
+            <textarea
+              className={textareaClass}
+              minLength="10"
+              maxLength="1000"
+              value={form.comment}
+              onChange={(e) => set("comment", e.target.value)}
+              placeholder="What should other students know?"
+              required
+            />
+          </Field>
+        </div>
+      </div>
+      <div className="mt-6 flex gap-3">
+        <button
+          disabled={saving}
+          className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+        >
+          {saving ? "Saving..." : initial._id ? "Save changes" : "Post review"}
+        </button>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-full border bg-white px-6 py-2.5 text-sm font-medium text-slate-700"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+    </form>
+  );
 }

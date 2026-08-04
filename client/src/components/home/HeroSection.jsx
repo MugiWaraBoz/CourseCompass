@@ -1,3 +1,4 @@
+// Introduces CourseCompass with primary actions and rotating feature highlights.
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -19,7 +20,8 @@ const featureSlides = [
     icon: Search,
     eyebrow: "Course discovery",
     title: "Find the right course",
-    description: "Browse the course directory and quickly understand what each course offers.",
+    description:
+      "Browse the course directory and quickly understand what each course offers.",
     details: ["Course codes", "Credit hours", "Key topics", "Prerequisites"],
     statLabel: "Courses to explore",
     statValue: "120+",
@@ -28,8 +30,14 @@ const featureSlides = [
     icon: GraduationCap,
     eyebrow: "Faculty directory",
     title: "Know your faculty",
-    description: "Explore faculty profiles, teaching areas, and the courses connected to them.",
-    details: ["Faculty profiles", "Teaching areas", "Courses taught", "Department info"],
+    description:
+      "Explore faculty profiles, teaching areas, and the courses connected to them.",
+    details: [
+      "Faculty profiles",
+      "Teaching areas",
+      "Courses taught",
+      "Department info",
+    ],
     statLabel: "Faculty profiles",
     statValue: "45+",
   },
@@ -37,8 +45,14 @@ const featureSlides = [
     icon: Sparkles,
     eyebrow: "One clear platform",
     title: "Decide with confidence",
-    description: "Bring course and faculty information together before planning your semester.",
-    details: ["Simple search", "Useful filters", "Clear details", "Easy comparison"],
+    description:
+      "Bring course and faculty information together before planning your semester.",
+    details: [
+      "Simple search",
+      "Useful filters",
+      "Clear details",
+      "Easy comparison",
+    ],
     statLabel: "Built for students",
     statValue: "100%",
   },
@@ -84,11 +98,17 @@ function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <Link to="/courses" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg">
+            <Link
+              to="/courses"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg"
+            >
               Explore Courses
               <ArrowRight aria-hidden="true" />
             </Link>
-            <Link to="/faculty" className="inline-flex h-12 items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800">
+            <Link
+              to="/faculty"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+            >
               Meet the Faculty
             </Link>
           </div>
@@ -150,7 +170,9 @@ function HeroSection() {
                     </p>
 
                     <div className="mt-5 rounded-2xl bg-slate-950 p-5 text-white">
-                      <p className="text-sm text-slate-300">What you can discover</p>
+                      <p className="text-sm text-slate-300">
+                        What you can discover
+                      </p>
                       <div className="mt-4 grid grid-cols-2 gap-3">
                         {feature.details.map((detail) => (
                           <span
@@ -172,7 +194,10 @@ function HeroSection() {
                           {feature.statValue}
                         </p>
                       </div>
-                      <BookOpen className="size-7 text-emerald-600" aria-hidden="true" />
+                      <BookOpen
+                        className="size-7 text-emerald-600"
+                        aria-hidden="true"
+                      />
                     </div>
                   </article>
                 );

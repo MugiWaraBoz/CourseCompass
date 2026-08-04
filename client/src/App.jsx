@@ -1,3 +1,4 @@
+// Defines the application's public, authentication, and protected profile routes.
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "@/layouts/AppLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
@@ -16,16 +17,34 @@ import MyReviewsPage from "@/pages/profile/MyReviewsPage";
 import ChangePasswordPage from "@/pages/profile/ChangePasswordPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
-const protectedPage = (Page) => <ProtectedRoute><Page/></ProtectedRoute>;
-const router = createBrowserRouter([{ path: "/", element: <AppLayout/>, children: [
-  { index: true, element: <HomePage/> },
-  { path: "courses", element: <CoursesPage/> }, { path: "courses/:id", element: <CourseDetailPage/> },
-  { path: "faculty", element: <FacultyPage/> }, { path: "faculty/:id", element: <FacultyDetailPage/> },
-  { path: "auth/login", element: <LoginPage/> }, { path: "auth/register", element: <RegisterPage/> },
-  { path: "auth/forgot-password", element: <ForgotPasswordPage/> }, { path: "auth/reset-password/:token", element: <ResetPasswordPage/> },
-  { path: "profile", element: protectedPage(ProfilePage) }, { path: "profile/edit", element: protectedPage(EditProfilePage) },
-  { path: "profile/reviews", element: protectedPage(MyReviewsPage) }, { path: "profile/password", element: protectedPage(ChangePasswordPage) },
-  { path: "*", element: <NotFoundPage/> },
-]}]);
+const protectedPage = (Page) => (
+  <ProtectedRoute>
+    <Page />
+  </ProtectedRoute>
+);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "courses", element: <CoursesPage /> },
+      { path: "courses/:id", element: <CourseDetailPage /> },
+      { path: "faculty", element: <FacultyPage /> },
+      { path: "faculty/:id", element: <FacultyDetailPage /> },
+      { path: "auth/login", element: <LoginPage /> },
+      { path: "auth/register", element: <RegisterPage /> },
+      { path: "auth/forgot-password", element: <ForgotPasswordPage /> },
+      { path: "auth/reset-password/:token", element: <ResetPasswordPage /> },
+      { path: "profile", element: protectedPage(ProfilePage) },
+      { path: "profile/edit", element: protectedPage(EditProfilePage) },
+      { path: "profile/reviews", element: protectedPage(MyReviewsPage) },
+      { path: "profile/password", element: protectedPage(ChangePasswordPage) },
+      { path: "*", element: <NotFoundPage /> },
+    ],
+  },
+]);
 
-export default function App() { return <RouterProvider router={router}/>; }
+export default function App() {
+  return <RouterProvider router={router} />;
+}

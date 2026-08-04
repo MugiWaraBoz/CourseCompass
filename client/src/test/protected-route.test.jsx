@@ -10,12 +10,32 @@ describe("ProtectedRoute", () => {
   beforeEach(() => vi.clearAllMocks());
   it("redirects logged-out visitors to login", () => {
     useAuth.mockReturnValue({ token: null, loading: false });
-    render(<MemoryRouter initialEntries={["/profile"]}><Routes><Route path="/profile" element={<ProtectedRoute><div>Private</div></ProtectedRoute>}/><Route path="/auth/login" element={<div>Login page</div>}/></Routes></MemoryRouter>);
+    render(
+      <MemoryRouter initialEntries={["/profile"]}>
+        <Routes>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <div>Private</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/auth/login" element={<div>Login page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
     expect(screen.getByText("Login page")).toBeInTheDocument();
   });
   it("renders protected content for a session", () => {
     useAuth.mockReturnValue({ token: "token", loading: false });
-    render(<MemoryRouter><ProtectedRoute><div>Private</div></ProtectedRoute></MemoryRouter>);
+    render(
+      <MemoryRouter>
+        <ProtectedRoute>
+          <div>Private</div>
+        </ProtectedRoute>
+      </MemoryRouter>,
+    );
     expect(screen.getByText("Private")).toBeInTheDocument();
   });
 });
