@@ -122,9 +122,14 @@
     @apply border-border outline-ring/50;
     }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    min-width: 320px;
     }
   html {
     @apply font-sans;
     }
 }
+
+button, a, select { @apply focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-emerald-200; }
+button, select { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
