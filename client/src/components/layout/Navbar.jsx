@@ -1,8 +1,8 @@
+// This component displays the desktop and mobile navigation at the top of the site.
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
 import { ArrowRight, Menu, X } from "lucide-react";
-import {useNavigate,Link} from "react-router-dom";
 
 const navLinks = [
   { label: "Courses", href: "#courses" },
@@ -11,6 +11,7 @@ const navLinks = [
 ];
 
 function Navbar() {
+  // This value controls whether the mobile navigation menu is open or closed.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (

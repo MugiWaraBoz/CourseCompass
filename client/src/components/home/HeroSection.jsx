@@ -1,3 +1,4 @@
+// This component creates the large introduction area at the top of the homepage.
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -45,9 +46,11 @@ const featureSlides = [
 ];
 
 function HeroSection() {
+  // activeSlide remembers which feature card is currently visible.
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
+    // Automatically move the feature carousel every 4.5 seconds.
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % featureSlides.length);
     }, 4500);

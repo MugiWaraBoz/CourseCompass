@@ -1,3 +1,5 @@
+// Temporary course information used by the Featured Courses homepage section.
+// This sample array can be replaced with database results later.
 export const featuredCourses = [
   {
     id: 1,
@@ -7,8 +9,7 @@ export const featuredCourses = [
       "Build modern web applications using frontend, backend, and database technologies.",
     department: "Computer Science",
     credits: 3,
-    level: "Intermediate",
-    topics: ["React", "Node.js", "MongoDB"],
+    rating: 4.8,
   },
   {
     id: 2,
@@ -18,8 +19,7 @@ export const featuredCourses = [
       "Learn how to organize data and design efficient solutions to computational problems.",
     department: "Computer Science",
     credits: 3,
-    level: "Intermediate",
-    topics: ["Algorithms", "Trees", "Graphs"],
+    rating: 4.7,
   },
   {
     id: 3,
@@ -29,7 +29,6 @@ export const featuredCourses = [
       "Explore relational databases, data modeling, queries, and reliable information systems.",
     department: "Computer Science",
     credits: 3,
-    level: "Advanced",
-    topics: ["SQL", "Data Modeling", "Transactions"],
+    rating: 4.9,
   },
 ];
