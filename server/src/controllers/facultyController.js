@@ -4,6 +4,8 @@ const database = require("../config/connect");
 const getFaculties = async(req,res)=>{
     let db = database.getDb();
     
+    
+
     const {
         search,
         department,
@@ -64,6 +66,7 @@ const getFaculties = async(req,res)=>{
     
     
     const total = await db.collection("Faculty").countDocuments(filter);
+    
 
 
     if(data.length > 0){

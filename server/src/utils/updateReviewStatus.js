@@ -18,6 +18,7 @@ const updateReviewStatus = async(db, courseId, facultyId) => {
             $group: {
                 _id: null,
                 avgRating: { $avg: "$rating" },
+                avgDifficultyRating: { $avg: "$difficultyRating" },
                 reviewCount: { $sum: 1 }
             }
         }

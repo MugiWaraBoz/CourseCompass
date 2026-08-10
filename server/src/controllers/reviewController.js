@@ -86,7 +86,6 @@ const postReview = async(req,res)=>{
             reviewObj.courseId,
             reviewObj.facultyId
         )
-        
         res.status(201).json({
             success: true,
             data: {
