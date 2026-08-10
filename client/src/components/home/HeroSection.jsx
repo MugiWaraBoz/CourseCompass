@@ -8,7 +8,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 const highlights = [
   { icon: BookOpen, value: "120+", label: "Courses" },
@@ -87,16 +87,19 @@ function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <Button className="h-12 rounded-full bg-slate-900 px-6 text-base text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg">
+            <Link
+              to="/courses"
+              className="inline-flex h-12 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg"
+            >
               Explore Courses
-              <ArrowRight aria-hidden="true" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-12 rounded-full border-slate-300 bg-white/70 px-6 text-base text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+            <a
+              href="#faculty"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
             >
               Meet the Faculty
-            </Button>
+            </a>
           </div>
 
           <div className="mt-10 flex justify-center gap-8 lg:justify-start">

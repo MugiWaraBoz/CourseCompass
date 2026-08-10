@@ -4,6 +4,7 @@ import { featuredCourses } from "@/data/featuredCourses";
 import webTechnologiesImage from "@/assets/courses/web-technologies.png";
 import dataStructuresImage from "@/assets/courses/data-structures.png";
 import databaseSystemsImage from "@/assets/courses/database-systems.png";
+import { Link } from "react-router";
 
 const courseImages = [
   webTechnologiesImage,
@@ -30,10 +31,10 @@ function FeaturedCoursesSection() {
               faculty members students choose most often.
             </p>
           </div>
-          <div className="hidden items-center gap-2 text-sm font-medium text-emerald-700 md:flex">
+          <Link to="/courses" className="hidden items-center gap-2 text-sm font-medium text-emerald-700 md:flex">
             Browse the course catalog
             <ArrowUpRight className="size-4" aria-hidden="true" />
-          </div>
+          </Link>
         </div>
 
         {/* One card is created for every course in featuredCourses.js. */}

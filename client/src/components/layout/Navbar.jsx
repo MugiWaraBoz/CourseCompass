@@ -3,16 +3,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
 import { ArrowRight, Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router";
 
 const navLinks = [
-  { label: "Courses", href: "#courses" },
-  { label: "Faculty", href: "#faculty" },
-  { label: "About", href: "#about" },
+  { label: "Courses", href: "/courses" },
+  { label: "Faculty", href: "/#faculty" },
+  { label: "About", href: "/#about" },
 ];
 
 function Navbar() {
   // This value controls whether the mobile navigation menu is open or closed.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
@@ -20,8 +22,8 @@ function Navbar() {
         className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary navigation"
       >
-        <a
-          href="#"
+        <Link
+          to="/"
           className="group flex items-center gap-3"
           aria-label="Course Compass home"
         >
@@ -42,25 +44,24 @@ function Navbar() {
               Know Your Courses. Know Your Faculty.
             </span>
           </span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-3 md:flex">
           <div className="flex items-center rounded-full border border-slate-200/80 bg-white/70 p-1 shadow-sm">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
+                to={link.href}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-800 ${pathname === link.href ? "bg-emerald-50 text-emerald-800" : "text-slate-600"}`}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
 
-          <Button className="h-10 rounded-full bg-slate-900 px-5 text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md">
-            Explore Courses
-            <ArrowRight aria-hidden="true" />
-          </Button>
+          <Link to="/courses" className="inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md">
+            Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
         </div>
 
         <Button
@@ -121,9 +122,9 @@ function Navbar() {
           >
             <div className="grid grid-cols-3 rounded-full border border-slate-200/80 bg-slate-50/80 p-1">
               {navLinks.map((link, index) => (
-                <a
+                <Link
                   key={link.label}
-                  href={link.href}
+                  to={link.href}
                   tabIndex={isMenuOpen ? 0 : -1}
                   style={{
                     opacity: isMenuOpen ? 1 : 0,
@@ -134,22 +135,23 @@ function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 
-            <Button
+            <Link
+              to="/courses"
               tabIndex={isMenuOpen ? 0 : -1}
               style={{
                 opacity: isMenuOpen ? 1 : 0,
                 transform: isMenuOpen ? "translateY(0)" : "translateY(-1rem)",
                 transition: "opacity 450ms ease 550ms, transform 450ms ease 550ms",
               }}
-              className="mt-3 h-11 w-full rounded-full bg-slate-900 px-5 text-white shadow-sm hover:bg-emerald-700 hover:shadow-md"
+              className="mt-3 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-slate-900 px-5 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 hover:shadow-md"
+              onClick={() => setIsMenuOpen(false)}
             >
-              Explore Courses
-              <ArrowRight aria-hidden="true" />
-            </Button>
+              Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </div>

@@ -4,9 +4,9 @@ import logo from "@/assets/CourseCompass.png";
 // Footer links point to sections that already exist on the homepage.
 // Full page routes can replace these links during the routing phase.
 const footerLinks = [
-  { label: "Courses", href: "#courses", icon: BookOpen },
-  { label: "Faculty", href: "#faculty", icon: Users },
-  { label: "About", href: "#about", icon: Compass },
+  { label: "Courses", href: "/courses", icon: BookOpen },
+  { label: "Faculty", href: "/#faculty", icon: Users },
+  { label: "About", href: "/#about", icon: Compass },
 ];
 
 function Footer() {

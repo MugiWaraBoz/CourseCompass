@@ -8,21 +8,31 @@ import HowItWorksSection from "@/components/home/HowItWorksSection";
 import AboutSection from "@/components/home/AboutSection";
 import FinalCtaSection from "@/components/home/FinalCtaSection";
 import Footer from "@/components/layout/Footer";
+import { Route, Routes } from "react-router";
+import CoursesPage from "@/pages/CoursesPage";
+
+function HomePage() {
+  return (
+    <main>
+      <HeroSection />
+      <FeaturedCoursesSection />
+      <FeaturedFacultySection />
+      <PlatformBenefitsSection />
+      <HowItWorksSection />
+      <AboutSection />
+      <FinalCtaSection />
+    </main>
+  );
+}
 
 function App() {
   return (
     <>
       <Navbar />
-      <main>
-        {/* Homepage sections appear from top to bottom in this order. */}
-        <HeroSection />
-        <FeaturedCoursesSection />
-        <FeaturedFacultySection />
-        <PlatformBenefitsSection />
-        <HowItWorksSection />
-        <AboutSection />
-        <FinalCtaSection />
-      </main>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/courses" element={<CoursesPage />} />
+      </Routes>
       {/* The footer appears after all homepage content. */}
       <Footer />
     </>
