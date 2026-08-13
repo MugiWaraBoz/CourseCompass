@@ -7,7 +7,7 @@ const fallbackCourses = [
   { _id: "2", code: "CSE 242", name: "Web Technologies", department: "CSE", credit: 3, avgRating: 4.8, reviewCount: 36 },
   { _id: "3", code: "CSE 331", name: "Database Systems", department: "CSE", credit: 3, avgRating: 4.9, reviewCount: 51 },
   { _id: "4", code: "ENG 111", name: "Advanced Academic Reading & Writing", department: "ENG", credit: 3, avgRating: 4.4, reviewCount: 18 },
-  { _id: "5", code: "MAT 120", name: "Calculus and Analytical Geometry", department: "MAT", credit: 3, avgRating: 4.3, reviewCount: 27 },
+  { _id: "5", code: "MATH 120", name: "Calculus and Analytical Geometry", department: "MAT", credit: 3, avgRating: 4.3, reviewCount: 27 },
   { _id: "6", code: "PHY 107", name: "Physics I", department: "PHY", credit: 3, avgRating: 4.5, reviewCount: 24 },
 ];
 
