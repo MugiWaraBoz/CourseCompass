@@ -8,13 +8,14 @@ const getStudent = async (req, res) => {
     _id: new ObjectId(req.student._id),
   });
 
-  let student = data;
-
   if (data) {
+    // Password hashes must never leave the backend in an API response.
+    const { password, ...safeStudent } = data;
+
     res.status(200).json({
       success: true,
       data: {
-        student: student,
+        student: safeStudent,
       },
     });
   } else {
@@ -34,36 +35,26 @@ const patchStudent = async (req, res) => {
 
   const { name, cgpa, photoUrl } = req.body;
 
-  let stdObj = {
-    $set: {
-      name: name,
-      cgpa: cgpa,
-      photoUrl: photoUrl,
-    },
-  };
-  // console.log();
-  let data = await db
-    .collection('Student')
-    .findOneAndUpdate({ _id: new ObjectId(req.student._id) }, stdObj, {
-      new: true,
-    });
+  // Only accepted profile fields can be changed through this endpoint.
+  const updateFields = { updatedAt: new Date() };
+  if (name !== undefined) updateFields.name = name;
+  if (cgpa !== undefined) updateFields.cgpa = cgpa;
+  if (photoUrl !== undefined) updateFields.photoUrl = photoUrl;
 
-  let sanitizedData = {
-    _id: data.value._id,
-    name: data.value.name,
-    email: data.value.email,
-    cgpa: data.value.cgpa,
-    photoUrl: data.value.photoUrl,
-    verified: data.value.verified,
-    createdAt: data.value.createdAt,
-    updatedAt: data.value.updatedAt,
-  };
+  // MongoDB Driver 7 returns the updated document with returnDocument: "after".
+  const data = await db.collection('Student').findOneAndUpdate(
+    { _id: new ObjectId(req.student._id) },
+    { $set: updateFields },
+    { returnDocument: 'after' },
+  );
 
   if (data) {
+    const { password, ...safeStudent } = data;
+
     res.status(200).json({
       success: true,
       data: {
-        student: sanitizedData,
+        student: safeStudent,
         message: 'Student updated successfully',
       },
     });
