@@ -38,3 +38,19 @@ export async function getCoursesByIds(courseIds = []) {
     .map((result) => result.value?.data?.course)
     .filter(Boolean);
 }
+
+// Load a paginated review list for one course.
+// Reading reviews is public; posting and voting will require authentication later.
+export async function getCourseReviews(courseId, params = {}) {
+  const response = await api.get(`/courses/${courseId}/reviews`, {
+    params: {
+      page: 1,
+      limit: 5,
+      sortBy: "recent",
+      order: "desc",
+      ...params,
+    },
+  });
+
+  return response.data;
+}
