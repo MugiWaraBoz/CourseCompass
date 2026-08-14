@@ -48,11 +48,22 @@ const patchStudent = async (req, res) => {
       new: true,
     });
 
+  let sanitizedData = {
+    _id: data.value._id,
+    name: data.value.name,
+    email: data.value.email,
+    cgpa: data.value.cgpa,
+    photoUrl: data.value.photoUrl,
+    verified: data.value.verified,
+    createdAt: data.value.createdAt,
+    updatedAt: data.value.updatedAt,
+  };
+
   if (data) {
     res.status(200).json({
       success: true,
       data: {
-        student: data,
+        student: sanitizedData,
         message: 'Student updated successfully',
       },
     });
