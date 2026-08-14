@@ -11,6 +11,8 @@ import Footer from "@/components/layout/Footer";
 import { Route, Routes } from "react-router";
 import CoursesPage from "@/pages/CoursesPage";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
+import FacultyPage from "@/pages/FacultyPage";
+import FacultyDetailsPage from "@/pages/FacultyDetailsPage";
 
 function HomePage() {
   return (
@@ -37,6 +39,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:courseId" element={<CourseDetailsPage />} />
+        {/* The faculty directory loads its listing from the public faculty API. */}
+        <Route path="/faculty" element={<FacultyPage />} />
+        <Route path="/faculty/:facultyId" element={<FacultyDetailsPage />} />
       </Routes>
 
       {/* The footer appears after all homepage content. */}

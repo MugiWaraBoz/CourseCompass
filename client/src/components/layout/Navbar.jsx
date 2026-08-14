@@ -7,7 +7,7 @@ import { Link, useLocation } from "react-router";
 
 const navLinks = [
   { label: "Courses", href: "/courses" },
-  { label: "Faculty", href: "/#faculty" },
+  { label: "Faculty", href: "/faculty" },
   { label: "About", href: "/#about" },
 ];
 
