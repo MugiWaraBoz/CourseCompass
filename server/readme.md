@@ -15,7 +15,7 @@ JWT_SECRET= --any-text-- -/or/- --generate-a-secreat-key--
 **important: dont use space after equal(=) in env files** 
 
 ## Server setup
-Run `npm init` first then,
+Run `npm install` first then,
 
 Run the server using `npm run server` 
 

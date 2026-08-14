@@ -1,20 +1,23 @@
-const express = require("express");
+const express = require('express');
 
-const ObjectId = require("mongodb").ObjectId;
+const ObjectId = require('mongodb').ObjectId;
 
-const { getCourses, getCourse, getCourseReview } = require("../controllers/courseController");
-
+const {
+  getCourses,
+  getCourse,
+  getCourseReview,
+} = require('../controllers/courseController');
+const verifyToken = require('../middleware/authMiddleware');
 
 let courseRouter = express.Router();
 
 // GET all courses
-courseRouter.route("/").get(getCourses);
+courseRouter.route('/').get(getCourses);
 
 // GET one Courses
-courseRouter.route("/:id").get(getCourse);
+courseRouter.route('/:id').get(getCourse);
 
 // GET all reviews for a course
-courseRouter.route("/:id/reviews").get(getCourseReview);
-
+courseRouter.route('/:id/reviews').get(verifyToken, getCourseReview);
 
 module.exports = courseRouter;
