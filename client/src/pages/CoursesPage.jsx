@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, BookOpen, ChevronDown, ChevronLeft, ChevronRight, Clock3, Search, SlidersHorizontal, Star } from "lucide-react";
+import { Link } from "react-router";
 import { getCourses } from "@/api/courseApi";
 
 const PAGE_SIZE = 9;
@@ -38,9 +39,9 @@ function CourseCard({ course }) {
         <span className="flex items-center gap-1.5"><Star className={`size-4 ${rating ? "fill-amber-400 text-amber-400" : "text-slate-300"}`} />{rating ? rating.toFixed(1) : "Not rated"}</span>
         {course.reviewCount > 0 && <span>{course.reviewCount} reviews</span>}
       </div>
-      <button type="button" className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm font-semibold text-slate-700 transition-colors group-hover:text-emerald-700">
+      <Link to={`/courses/${course._id?.$oid ?? course._id}`} className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm font-semibold text-slate-700 transition-colors group-hover:text-emerald-700">
         View course details <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-      </button>
+      </Link>
     </article>
   );
 }

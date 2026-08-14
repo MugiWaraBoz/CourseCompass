@@ -13,3 +13,13 @@ export async function getCourses(params = {}) {
     throw error;
   }
 }
+
+export async function getCourseById(courseId) {
+  try {
+    const response = await api.get(`/courses/${courseId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to load course details:", error);
+    throw error;
+  }
+}

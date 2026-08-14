@@ -10,6 +10,7 @@ import FinalCtaSection from "@/components/home/FinalCtaSection";
 import Footer from "@/components/layout/Footer";
 import { Route, Routes } from "react-router";
 import CoursesPage from "@/pages/CoursesPage";
+import CourseDetailsPage from "@/pages/CourseDetailsPage";
 
 function HomePage() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/courses/:courseId" element={<CourseDetailsPage />} />
       </Routes>
       {/* The footer appears after all homepage content. */}
       <Footer />
