@@ -41,22 +41,22 @@ const patchStudent = async (req, res) => {
       photoUrl: photoUrl,
     },
   };
-  // console.log();
   let data = await db
     .collection('Student')
     .findOneAndUpdate({ _id: new ObjectId(req.student._id) }, stdObj, {
       new: true,
     });
+  //   console.log(data);
 
   let sanitizedData = {
-    _id: data.value._id,
-    name: data.value.name,
-    email: data.value.email,
-    cgpa: data.value.cgpa,
-    photoUrl: data.value.photoUrl,
-    verified: data.value.verified,
-    createdAt: data.value.createdAt,
-    updatedAt: data.value.updatedAt,
+    _id: data._id,
+    name: data.name,
+    email: data.email,
+    cgpa: data.cgpa,
+    photoUrl: data.photoUrl,
+    verified: data.verified,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
   };
 
   if (data) {
