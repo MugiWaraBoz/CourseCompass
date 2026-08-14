@@ -1,24 +1,26 @@
-const express = require("express");
+const express = require('express');
 
-const ObjectId = require("mongodb").ObjectId;
-const verifyToken = require("../middleware/authMiddleware");
-const { getStudent,getStudentReviews, patchStudent } = require("../controllers/studentCotnroller");
-
+const ObjectId = require('mongodb').ObjectId;
+const verifyToken = require('../middleware/authMiddleware');
+const {
+  getStudent,
+  getStudentReviews,
+  patchStudent,
+} = require('../controllers/studentCotnroller');
 
 let studentRouter = express.Router();
 
 // Get the student information of the logged-in user
-studentRouter.route("/me").get(verifyToken, getStudent);
+studentRouter.route('/me').get(verifyToken, getStudent);
 
 // Get a student by studentId
 // Currently this route is not usable!!!
 // studentRouter.route("/:studentId").get(getStudent);
 
-
 // Update the student information of the logged-in user
-studentRouter.route("/me").patch(verifyToken, patchStudent);
+studentRouter.route('/me').patch(verifyToken, patchStudent);
 
 // Get reviews for a specific student
-studentRouter.route("/me/reviews").get(verifyToken, getStudentReviews);
+studentRouter.route('/me/reviews').get(verifyToken, getStudentReviews);
 
 module.exports = studentRouter;
