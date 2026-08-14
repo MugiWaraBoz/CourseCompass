@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, LogIn, LogOut, Menu, UserPlus, UserRound, X } from "lucide-react";
 import { Link, useLocation } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Courses", href: "/courses" },
@@ -15,6 +16,15 @@ function Navbar() {
   // This value controls whether the mobile navigation menu is open or closed.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { pathname } = useLocation();
+  const { student, isAuthenticated, signOut } = useAuth();
+
+  // A short name keeps the desktop navigation balanced on medium-width screens.
+  const studentFirstName = student?.name?.split(" ")[0] || "Student";
+
+  function handleLogout() {
+    signOut();
+    setIsMenuOpen(false);
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
@@ -62,6 +72,45 @@ function Navbar() {
           <Link to="/courses" className="inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md">
             Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
+
+          {/* Authentication controls react immediately to the shared session state. */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 px-3 text-sm font-semibold text-slate-700 hover:text-emerald-700"
+              >
+                <UserRound className="size-4 text-emerald-700" aria-hidden="true" />
+                {studentFirstName}
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="grid size-8 place-items-center rounded-full text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                aria-label="Log out"
+                title="Log out"
+              >
+                <LogOut className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-emerald-300 hover:text-emerald-700"
+              >
+                <LogIn className="size-4" aria-hidden="true" />
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="inline-flex h-10 items-center gap-2 rounded-full bg-emerald-700 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-800"
+              >
+                <UserPlus className="size-4" aria-hidden="true" />
+                Register
+              </Link>
+            </div>
+          )}
         </div>
 
         <Button
@@ -152,6 +201,51 @@ function Navbar() {
             >
               Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
+
+            {/* Mobile users receive the same session controls as desktop users. */}
+            {isAuthenticated ? (
+              <div className="mt-3 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <Link
+                  to="/profile"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-slate-700 hover:text-emerald-700"
+                >
+                  <UserRound className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
+                  <span className="truncate">Signed in as {studentFirstName}</span>
+                </Link>
+                <button
+                  type="button"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={handleLogout}
+                  className="ml-3 inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-red-600"
+                >
+                  <LogOut className="size-4" aria-hidden="true" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Link
+                  to="/login"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:border-emerald-300 hover:text-emerald-700"
+                >
+                  <LogIn className="size-4" aria-hidden="true" />
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800"
+                >
+                  <UserPlus className="size-4" aria-hidden="true" />
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

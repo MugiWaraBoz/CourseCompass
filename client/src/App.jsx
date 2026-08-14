@@ -13,6 +13,11 @@ import CoursesPage from "@/pages/CoursesPage";
 import CourseDetailsPage from "@/pages/CourseDetailsPage";
 import FacultyPage from "@/pages/FacultyPage";
 import FacultyDetailsPage from "@/pages/FacultyDetailsPage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import GuestRoute from "@/components/auth/GuestRoute";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import StudentProfilePage from "@/pages/StudentProfilePage";
 
 function HomePage() {
   return (
@@ -42,6 +47,31 @@ function App() {
         {/* The faculty directory loads its listing from the public faculty API. */}
         <Route path="/faculty" element={<FacultyPage />} />
         <Route path="/faculty/:facultyId" element={<FacultyDetailsPage />} />
+        {/* Authentication pages remain public so signed-out students can enter. */}
+        <Route
+          path="/login"
+          element={
+            <GuestRoute>
+              <LoginPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <GuestRoute>
+              <RegisterPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <StudentProfilePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       {/* The footer appears after all homepage content. */}
