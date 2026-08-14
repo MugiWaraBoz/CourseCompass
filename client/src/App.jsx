@@ -29,12 +29,16 @@ function HomePage() {
 function App() {
   return (
     <>
+      {/* Shared navigation remains visible across every frontend page. */}
       <Navbar />
+
+      {/* URLs are mapped to page-level React components here. */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:courseId" element={<CourseDetailsPage />} />
       </Routes>
+
       {/* The footer appears after all homepage content. */}
       <Footer />
     </>

@@ -3,8 +3,10 @@ import { ArrowRight, BookOpen, ChevronDown, ChevronLeft, ChevronRight, Clock3, S
 import { Link } from "react-router";
 import { getCourses } from "@/api/courseApi";
 
+// Nine cards create three balanced rows on large screens.
 const PAGE_SIZE = 9;
 
+// Preview data keeps the directory demonstrable when the backend is offline.
 const fallbackCourses = [
   { _id: "1", code: "CSE 221", name: "Data Structures", department: "CSE", credit: 3, avgRating: 4.7, reviewCount: 42 },
   { _id: "2", code: "CSE 242", name: "Web Technologies", department: "CSE", credit: 3, avgRating: 4.8, reviewCount: 36 },
@@ -19,12 +21,14 @@ const fallbackDepartments = [
   ...new Set(fallbackCourses.map((course) => course.department)),
 ];
 
+// Translate UI choices into the sort parameters expected by Express.
 const sortOptions = {
   code: { sortBy: "code", order: "asc" },
   name: { sortBy: "name", order: "asc" },
   rating: { sortBy: "rating", order: "desc" },
 };
 
+// Render one course summary returned by the directory endpoint.
 function CourseCard({ course }) {
   const rating = Number(course.avgRating || 0);
   return (
@@ -47,19 +51,26 @@ function CourseCard({ course }) {
 }
 
 function CoursesPage() {
+  // API results and dynamically discovered department options.
   const [courses, setCourses] = useState([]);
   const [departments, setDepartments] = useState(fallbackDepartments);
+
+  // Search, filter, sorting, and pagination controlled by the user.
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [department, setDepartment] = useState("All departments");
   const [sort, setSort] = useState("code");
   const [page, setPage] = useState(1);
+
+  // Total counts and pages come from the backend response.
   const [pagination, setPagination] = useState({
     page: 1,
     limit: PAGE_SIZE,
     total: 0,
     totalPages: 1,
   });
+
+  // Request status controls skeleton cards and the preview warning.
   const [loading, setLoading] = useState(true);
   const [usingPreview, setUsingPreview] = useState(false);
 
@@ -129,6 +140,7 @@ function CoursesPage() {
       .catch((error) => {
         if (!active) return;
 
+        // A 404 means a valid query matched zero courses.
         if (error.response?.status === 404) {
           setCourses([]);
           setPagination({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
@@ -136,6 +148,7 @@ function CoursesPage() {
           return;
         }
 
+        // Network and server failures fall back to local preview courses.
         setCourses(fallbackCourses);
         setPagination({
           page: 1,
@@ -177,6 +190,7 @@ function CoursesPage() {
     setPage(nextPage);
   }
 
+  // Always render at least page 1, including for an empty result.
   const totalPages = Math.max(pagination.totalPages || 1, 1);
 
   return (
