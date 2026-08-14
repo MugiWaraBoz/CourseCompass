@@ -22,3 +22,14 @@ export async function getCurrentStudent(token) {
 
   return response.data;
 }
+
+// Update the editable fields of the currently authenticated student profile.
+export async function updateCurrentStudent(token, profileData) {
+  const response = await api.patch("/students/me", profileData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}

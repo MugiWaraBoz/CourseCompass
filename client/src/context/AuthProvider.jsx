@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { getCurrentStudent } from "@/api/authApi";
+import { useEffect, useState } from "react";
+import { getCurrentStudent, updateCurrentStudent } from "@/api/authApi";
 import { AuthContext } from "@/context/authContext";
 
 const TOKEN_KEY = "courseCompassToken";
@@ -91,17 +91,31 @@ function AuthProvider({ children }) {
     setAuthLoading(false);
   }
 
-  const value = useMemo(
-    () => ({
-      student,
-      token,
-      authLoading,
-      isAuthenticated: Boolean(token && student),
-      signIn,
-      signOut,
-    }),
-    [student, token, authLoading],
-  );
+  // Update the backend and synchronize every component with its returned profile.
+  async function updateProfile(profileData) {
+    if (!token) throw new Error("You must be logged in to update your profile.");
+
+    const response = await updateCurrentStudent(token, profileData);
+    const updatedStudent = sanitizeStudent(response?.data?.student);
+
+    if (!updatedStudent) {
+      throw new Error("The profile update response was incomplete.");
+    }
+
+    localStorage.setItem(STUDENT_KEY, JSON.stringify(updatedStudent));
+    setStudent(updatedStudent);
+    return response;
+  }
+
+  const value = {
+    student,
+    token,
+    authLoading,
+    isAuthenticated: Boolean(token && student),
+    signIn,
+    signOut,
+    updateProfile,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
