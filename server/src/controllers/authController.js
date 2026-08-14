@@ -166,7 +166,7 @@ const forgotPassword = async (req, res) => {
     return;
   }
 
-  token = jwt.sign(
+  const token = jwt.sign(
     {
       id: student._id.toString(),
       email,
@@ -179,7 +179,7 @@ const forgotPassword = async (req, res) => {
     success: true,
     message:
       'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/auth/reset-password/${token}}`,
+    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}}`,
   });
 };
 
@@ -189,6 +189,15 @@ const resetPassword = async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   const token = req.params.token;
 
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'TOKEN_MISSING',
+        message: 'Token is missing from the request',
+      },
+    });
+  }
   if (newPassword !== confirmPassword) {
     res.status(400).json({
       success: false,
@@ -198,16 +207,6 @@ const resetPassword = async (req, res) => {
       },
     });
     return;
-  }
-
-  if (!token) {
-    return res.status(400).json({
-      success: false,
-      error: {
-        code: 'TOKEN_MISSING',
-        message: 'Token is missing from the request',
-      },
-    });
   }
 
   let decoded;
