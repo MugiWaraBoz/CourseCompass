@@ -63,7 +63,7 @@ const postReviewVote = async (req, res) => {
       });
     }
 
-    let vote = await db.collection('Vote').insertOne(voteObj);
+    await db.collection('Vote').insertOne(voteObj);
 
     res.status(201).json({
       success: true,

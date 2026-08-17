@@ -1,6 +1,5 @@
 const req = require('supertest');
 const app = require('../app');
-const bcrypt = require('bcrypt');
 
 describe('POST /auth/register', () => {
   test('Register a new student', async () => {

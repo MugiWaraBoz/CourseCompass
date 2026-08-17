@@ -1,4 +1,4 @@
-const ObjectId = require('mongodb').ObjectId;
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({
@@ -7,6 +7,11 @@ require('dotenv').config({
 });
 const database = require('../config/connect');
 
+const sanitizeStudent = (student) => {
+      const safeStudent = { ...student };
+      delete safeStudent.password;
+      return safeStudent;
+};
 // Register a new student
 const postRegister = async (req, res) => {
   let db = database.getDb();
@@ -64,10 +69,7 @@ const postRegister = async (req, res) => {
       ...stdObj,
     };
 
-    const sanitizeStudent = (student) => {
-      const { password, ...safeStudent } = student;
-      return safeStudent;
-    };
+    student = sanitizeStudent(student);
 
     /*
             jwt token expiration time set to 30 days.
@@ -83,7 +85,7 @@ const postRegister = async (req, res) => {
       res.status(201).json({
         success: true,
         data: {
-          student: sanitizeStudent(student),
+          student: student,
           message: 'Student registered successfully, please login to continue',
           info: 'Add Student ID picture from dashboard to get a verified badge',
         },
@@ -99,7 +101,7 @@ const postRegister = async (req, res) => {
 const postLogin = async (req, res) => {
   let db = database.getDb();
   const { email, password } = req.body;
-  const student = await db.collection('Student').findOne({ email: email });
+  let student = await db.collection('Student').findOne({ email: email });
 
   if (student) {
     let confirmation = await bcrypt.compare(password, student.password);
@@ -115,16 +117,13 @@ const postLogin = async (req, res) => {
         { expiresIn: '30d' }
       );
 
-      const sanitizeStudent = (student) => {
-        const { password, ...safeStudent } = student;
-        return safeStudent;
-      };
+      student = sanitizeStudent(student);
 
       let isVerified = student.verified;
       res.status(200).json({
         success: true,
         data: {
-          student: sanitizeStudent(student),
+          student: student,
           message: 'Student logged in successfully',
           info: !isVerified
             ? 'You are not verified. Please upload your student ID from the dashboard to receive a verified badge.'
@@ -182,7 +181,7 @@ const forgotPassword = async (req, res) => {
     success: true,
     message:
       'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}}`,
+    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}`,
   });
 };
 
@@ -215,7 +214,7 @@ const resetPassword = async (req, res) => {
   let decoded;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
+  } catch {
     return res.status(400).json({
       success: false,
       error: {
@@ -225,7 +224,7 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const email = jwt.verify(token, process.env.JWT_SECRET).email;
+  const email = decoded.email;
   const student = await db.collection('Student').findOne({ email: email });
   if (!student) {
     return res.status(404).json({
@@ -301,7 +300,6 @@ const changePassword = async (req, res) => {
         message: 'New password and confirm password do not match!',
       },
     });
-    return;
   }
 
   let isMatch = await bcrypt.compare(oldPassword, student.password);
@@ -314,7 +312,6 @@ const changePassword = async (req, res) => {
         message: 'Invalid old password, please try again!',
       },
     });
-    return;
   }
 
   isMatch = await bcrypt.compare(newPassword, student.password);
@@ -327,7 +324,6 @@ const changePassword = async (req, res) => {
         message: 'New password cannot be the same as the old password!',
       },
     });
-    return;
   }
 
   const saltRounds = 12;
@@ -336,6 +332,7 @@ const changePassword = async (req, res) => {
   await db
     .collection('Student')
     .updateOne({ email: email }, { $set: { password: hashedPassword } });
+  
   res.status(200).json({
     success: true,
     message: 'Password changed successfully',

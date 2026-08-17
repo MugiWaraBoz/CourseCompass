@@ -1,5 +1,4 @@
 const ObjectId = require('mongodb').ObjectId;
-const bcrypt = require('bcrypt');
 const database = require('../config/connect');
 require('dotenv').config({ 
   path: '../../.env',
@@ -50,7 +49,7 @@ const postReview = async (req, res) => {
     // console.log("course: ", course);
 
     if (!course) {
-      let insertCourse = await db.collection('CourseTake').insertOne(courseObj);
+      await db.collection('CourseTake').insertOne(courseObj);
     }
 
     // studentId = req.student.studentId;
@@ -200,7 +199,7 @@ const deleteReview = async (req, res) => {
         message: 'Review deleted successfully',
       },
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({
       success: false,
       error: {
@@ -273,7 +272,7 @@ const patchReview = async (req, res) => {
         },
       });
     }
-  } catch (error) {
+  } catch {
     res.status(500).json({
       success: false,
       error: {

@@ -1,6 +1,5 @@
 const express = require('express');
 
-const ObjectId = require('mongodb').ObjectId;
 const verifyToken = require('../middleware/authMiddleware');
 const {
   getStudent,
