@@ -14,6 +14,7 @@ on:
 jobs: 
     test:
         runs-on: ubuntu-latest
+        environment: Jest
 
         defaults:
             run:
@@ -36,7 +37,7 @@ jobs:
             - name: Run tests
               run: npm test
               env:
-                MONGO_URL: ${{ secrets.MONGO_URL }}
-                DB_NAME: ${{ secrets.DB_NAME }}
+                MONGO_URL: ${{ vars.MONGO_URL }}
+                DB_NAME: ${{ vars.DB_NAME }}
                 JWT_SECRET: ${{ secrets.JWT_SECRET }}
             
