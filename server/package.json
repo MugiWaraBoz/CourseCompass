@@ -12,7 +12,8 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "jest --runInBand --detectOpenHandles",
-    "test:watch" : "jest --runInBand --detectOpenHandles --watch"
+    "test:watch" : "jest --runInBand --detectOpenHandles --watch",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
