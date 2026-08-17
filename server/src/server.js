@@ -5,14 +5,18 @@ const app = require('./app'); // runs app.js
 
 const PORT = process.env.API_PORT || 3000;
 
-app.listen(PORT, () => {
+const startServer = async () => {
   try {
-    connect.connectToServer(process.env.MONGO_URL, process.env.DB_NAME);
-    connect.createIndexes();
+    
+    await connect.connectToServer(process.env.MONGO_URL, process.env.DB_NAME);
+    await connect.createIndexes();
     console.log(`
             -> Server is running on port ${PORT}, 
             -> connected to database: ${connect.getDb().databaseName}`);
+    app.listen(PORT)
   } catch (err) {
     console.error('Error connecting to database: ', err);
   }
-});
+}
+
+startServer();

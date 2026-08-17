@@ -14,7 +14,7 @@ module.exports = {
       },
     });
 
-    // await client.connect();
+    await client.connect();
     database = client.db(dbName);
   },
   getDb: () => {
