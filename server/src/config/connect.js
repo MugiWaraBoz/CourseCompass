@@ -4,7 +4,7 @@ let client;
 let database;
 
 module.exports = {
-  connectToServer: (mongoUrl, dbName) => {
+  connectToServer: async (mongoUrl, dbName) => {
     // database = client.db("CourseCompass")
     client = new MongoClient(mongoUrl, {
       serverApi: {
@@ -13,6 +13,8 @@ module.exports = {
         deprecationErrors: true,
       },
     });
+
+    // await client.connect();
     database = client.db(dbName);
   },
   getDb: () => {

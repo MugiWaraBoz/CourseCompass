@@ -1,7 +1,10 @@
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const database = require('../config/connect');
-require('dotenv').config({ path: '../../.env' });
+require('dotenv').config({ 
+  path: '../../.env',
+  quiet: true, // Suppress warnings if the .env file is missing 
+});
 const updateReviewStatus = require('../utils/updateReviewStatus.js');
 
 // postReview function to handle posting a review

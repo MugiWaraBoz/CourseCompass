@@ -1,4 +1,4 @@
-require('dotenv').config(); // loads .env file
+require('dotenv').config({ quiet: true }); // loads .env file
 // console.log('MONGO_URL:', process.env.MONGO_URL); // Log the MONGO_URL to verify it's loaded
 const connect = require('./config/connect'); // runs connect.js
 const app = require('./app'); // runs app.js
