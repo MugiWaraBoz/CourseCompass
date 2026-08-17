@@ -84,7 +84,7 @@ const getCourse = async (req, res) => {
   let data = await db
     .collection('Course')
     .findOne({ _id: new ObjectId(req.params.id) });
-  
+
   if (data) {
     res.status(200).json({
       success: true,

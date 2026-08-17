@@ -1,16 +1,15 @@
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({
   path: '../../.env',
-  quiet: true, // Suppress warnings if the .env file is missing 
+  quiet: true, // Suppress warnings if the .env file is missing
 });
 const database = require('../config/connect');
 
 const sanitizeStudent = (student) => {
-      const safeStudent = { ...student };
-      delete safeStudent.password;
-      return safeStudent;
+  const safeStudent = { ...student };
+  delete safeStudent.password;
+  return safeStudent;
 };
 // Register a new student
 const postRegister = async (req, res) => {
@@ -79,7 +78,7 @@ const postRegister = async (req, res) => {
         _id: student._id.toString(),
       },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: '30d' },
     );
     try {
       res.status(201).json({
@@ -114,7 +113,7 @@ const postLogin = async (req, res) => {
           _id: student._id.toString(),
         },
         process.env.JWT_SECRET,
-        { expiresIn: '30d' }
+        { expiresIn: '30d' },
       );
 
       student = sanitizeStudent(student);
@@ -174,7 +173,7 @@ const forgotPassword = async (req, res) => {
       email,
     },
     process.env.JWT_SECRET,
-    { expiresIn: '5m' }
+    { expiresIn: '5m' },
   );
 
   res.status(200).json({
@@ -267,7 +266,7 @@ const resetPassword = async (req, res) => {
         password: hashedPassword,
         updatedAt: new Date(),
       },
-    }
+    },
   );
   res.status(200).json({
     success: true,
@@ -332,7 +331,7 @@ const changePassword = async (req, res) => {
   await db
     .collection('Student')
     .updateOne({ email: email }, { $set: { password: hashedPassword } });
-  
+
   res.status(200).json({
     success: true,
     message: 'Password changed successfully',

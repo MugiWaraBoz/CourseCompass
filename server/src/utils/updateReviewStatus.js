@@ -41,7 +41,7 @@ const updateReviewStatus = async (db, courseId, facultyId) => {
         avgRating: Number(courseResult.avgRating.toFixed(2)),
         reviewCount: courseResult.reviewCount,
       },
-    }
+    },
   );
 
   const facultyStat = await db
@@ -78,7 +78,7 @@ const updateReviewStatus = async (db, courseId, facultyId) => {
         avgRating: Number(facultyResult.avgRating.toFixed(2)),
         reviewCount: facultyResult.reviewCount,
       },
-    }
+    },
   );
 };
 

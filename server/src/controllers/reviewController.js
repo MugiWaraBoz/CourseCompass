@@ -1,8 +1,8 @@
 const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
-require('dotenv').config({ 
+require('dotenv').config({
   path: '../../.env',
-  quiet: true, // Suppress warnings if the .env file is missing 
+  quiet: true, // Suppress warnings if the .env file is missing
 });
 const updateReviewStatus = require('../utils/updateReviewStatus.js');
 

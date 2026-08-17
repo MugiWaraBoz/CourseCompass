@@ -39,7 +39,7 @@ const postReviewVote = async (req, res) => {
             upvotes: 1,
             votescore: 1,
           },
-        }
+        },
       );
     } else if (voteType === 'downvote') {
       await db.collection('Review').updateOne(
@@ -51,7 +51,7 @@ const postReviewVote = async (req, res) => {
             downvotes: 1,
             votescore: -1,
           },
-        }
+        },
       );
     } else {
       return res.status(400).json({

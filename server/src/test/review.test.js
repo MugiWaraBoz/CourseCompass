@@ -19,7 +19,7 @@ describe('GET /faculty', () => {
         department: expect.any(String),
         designation: expect.any(String),
         avgRating: expect.any(Number),
-      })
+      }),
     );
   });
 

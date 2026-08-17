@@ -37,7 +37,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Review').createIndex(
@@ -48,7 +48,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Student').createIndex(
@@ -57,7 +57,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Student').createIndex(
@@ -66,7 +66,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Course').createIndex(
@@ -75,7 +75,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('CourseTake').createIndex(
@@ -85,7 +85,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
   },
 };
