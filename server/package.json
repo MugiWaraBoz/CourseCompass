@@ -10,7 +10,7 @@
     "playwright": "^1.61.1"
   },
   "scripts": {
-    "server": "node src/server.js",
+    "start": "node src/server.js",
     "test": "jest --runInBand --detectOpenHandles",
     "test:watch" : "jest --runInBand --detectOpenHandles --watch"
   },

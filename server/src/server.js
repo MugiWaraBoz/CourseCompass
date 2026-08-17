@@ -1,13 +1,13 @@
 require('dotenv').config(); // loads .env file
-
+// console.log('MONGO_URL:', process.env.MONGO_URL); // Log the MONGO_URL to verify it's loaded
 const connect = require('./config/connect'); // runs connect.js
 const app = require('./app'); // runs app.js
 
-const PORT = 3000;
+const PORT = process.env.API_PORT || 3000;
 
 app.listen(PORT, () => {
   try {
-    connect.connectToServer();
+    connect.connectToServer(process.env.MONGO_URL, process.env.DB_NAME);
     connect.createIndexes();
     console.log(`
             -> Server is running on port ${PORT}, 
