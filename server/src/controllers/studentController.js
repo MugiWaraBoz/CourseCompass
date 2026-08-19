@@ -1,6 +1,8 @@
 const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
-const bcrypt = require('bcrypt');
+const { encryptApiKey } = require('../utils/encryptionUtils');
+
+
 // getStudent function to handle getting a student by studentId
 const getStudent = async (req, res) => {
   // console.log("req.params.studentId: ", req.params.studentId);
@@ -12,14 +14,14 @@ const getStudent = async (req, res) => {
   let student = data;
 
   if (data) {
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: {
         student: student,
       },
     });
   } else {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       error: {
         code: 'NOT_FOUND',
@@ -33,19 +35,13 @@ const getStudent = async (req, res) => {
 const patchStudent = async (req, res) => {
   let db = database.getDb();
 
-  const { name, cgpa, photoUrl, apiKey } = req.body;
-  let hashedApiKey = null;
-  if(apiKey){
-    hashedApiKey = await bcrypt.hash(apiKey, 10);
-  }
+  const { name, cgpa, photoUrl } = req.body;
 
   let stdObj = {
     $set: {
       name: name,
       cgpa: cgpa,
-      photoUrl: photoUrl,
-      apiKey: hashedApiKey,
-      updatedAt: new Date()
+      photoUrl: photoUrl
     },
   };
   let data = await db
@@ -132,45 +128,54 @@ const getStudentReviews = async (req, res) => {
   }
 };
 
-// Set API key for a student
 const setApiKey = async (req, res) => {
   let db = database.getDb();
   const { apiKey } = req.body;
 
-  if (!apiKey) {
-    return res.status(400).json({
-      success: false,
-      error: {
-        code: 'API_KEY_REQUIRED',
-        message: 'API key is required',
-      },
-    });
-  }
+  let hashedKey = encryptApiKey(apiKey);
 
-  const result = await db.collection('Student').updateOne(
+  let data = await db.collection('Student').findOneAndUpdate(
     { _id: new ObjectId(req.student._id) },
-    {
-      $set: {
-        apiKey: apiKey,
-        updatedAt: new Date(),
-      },
-    }
+    { $set: { 
+      apiKey: hashedKey,
+      updatedAt: new Date() 
+    } },
+    { returnDocument: 'after' }
   );
 
-  if (result.modifiedCount === 1) {
+  if (data) {
     res.status(200).json({
       success: true,
-      message: 'API key set successfully',
+      data: {
+        message: 'API key set successfully',
+      },
     });
   } else {
-    res.status(500).json({
+    res.status(404).json({
       success: false,
       error: {
-        code: 'API_KEY_SET_FAILED',
-        message: 'Failed to set API key',
+        code: 'NOT_FOUND',
+        message: 'Student not found',
       },
     });
   }
+
+}
+
+const removeApiKey = async (req, res) => {
+  let db = database.getDb();
+  await db.collection('Student').findOneAndUpdate(
+    { _id: new ObjectId(req.student._id) },
+    { $unset: { apiKey: "" }, $set: { updatedAt: new Date() } },
+    { returnDocument: 'after' }
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      message: 'API key removed successfully',
+    },
+  });
 }
 
 module.exports = {
@@ -178,4 +183,5 @@ module.exports = {
   patchStudent,
   getStudentReviews,
   setApiKey,
+  removeApiKey
 };

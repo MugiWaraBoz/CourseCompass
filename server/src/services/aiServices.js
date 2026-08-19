@@ -5,13 +5,12 @@ const { GoogleGenAI } = require("@google/genai");
 //     throw new Error("GEMINI_API_KEY is missing. Add it to server/.env before starting the server.");
 // }
 
-const ai = new GoogleGenAI({
-    apiKey: "demo",
-})
 
 async function generateAIResponse(prompt, key) {
     console.log("Generating AI response for prompt: ");
-    ai.apiKey = key;
+    const ai = new GoogleGenAI({
+        apiKey: key,
+    })
     const interaction = await ai.interactions.create({
         model: "gemini-3.6-flash",
         input: prompt,
