@@ -46,7 +46,7 @@ const verifyUser = async (req,res) => {
 
   if(student){
     await db.collection('Student').updateOne(
-      { _id: student._id },
+      { _id: std_id },
       {
         $set: {
           mailVerified: true,
@@ -373,7 +373,7 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const id = decoded._id;
+  const id = new ObjectId(decoded._id);
   student = await db.collection('Student').findOne({ _id: id });
   if (!student) {
     return res.status(404).json({
@@ -410,7 +410,7 @@ const resetPassword = async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
   await db.collection('Student').updateOne(
-    { _id: id },
+    { _id: new ObjectId(decoded._id) },
     {
       $set: {
         password: hashedPassword,

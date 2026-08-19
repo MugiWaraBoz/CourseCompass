@@ -27,7 +27,7 @@ authRouter.route('/reset-password/:token').post(resetPassword);
 authRouter.route('/reset-password/:token').get(showResetPassword);
 
 // Change password
-authRouter.route('/change-password').post(verifyToken, changePassword);
+authRouter.route('/change-password').patch(verifyToken, changePassword);
 
 // Verify email
 authRouter.route('/verify-email/:token').get(verifyUser);

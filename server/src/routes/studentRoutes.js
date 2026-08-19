@@ -5,7 +5,7 @@ const {
   getStudent,
   getStudentReviews,
   patchStudent,
-} = require('../controllers/studentCotnroller');
+} = require('../controllers/studentController');
 
 let studentRouter = express.Router();
 
