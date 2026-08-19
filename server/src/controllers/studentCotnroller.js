@@ -1,5 +1,6 @@
 const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
+const bcrypt = require('bcrypt');
 // getStudent function to handle getting a student by studentId
 const getStudent = async (req, res) => {
   // console.log("req.params.studentId: ", req.params.studentId);
@@ -32,13 +33,19 @@ const getStudent = async (req, res) => {
 const patchStudent = async (req, res) => {
   let db = database.getDb();
 
-  const { name, cgpa, photoUrl } = req.body;
+  const { name, cgpa, photoUrl, apiKey } = req.body;
+  let hashedApiKey = null;
+  if(apiKey){
+    hashedApiKey = await bcrypt.hash(apiKey, 10);
+  }
 
   let stdObj = {
     $set: {
       name: name,
       cgpa: cgpa,
       photoUrl: photoUrl,
+      apiKey: hashedApiKey,
+      updatedAt: new Date()
     },
   };
   let data = await db

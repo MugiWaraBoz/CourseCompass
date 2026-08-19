@@ -1,12 +1,13 @@
 const ObjectId = require("mongodb").ObjectId
 // require("dotenv").config({ path: "../../.env" })
 const database = require("../config/connect")
+const bcrypt = require("bcrypt")
 const generateAIResponse  = require("../services/aiServices")
 const  { buildReviewSummaryInput, generatePrompt }  = require("../utils/aiUtils")
 
 const testAIResponse = async (req, res) => {
     let db = database.getDb();
-    let key = req.student.apiKey
+    let key = await bcrypt.hash(req.student.apiKey, 10);
 
     if(!key) {
         return res.status(403).json({
@@ -90,7 +91,7 @@ const courseReviewAiResponse = async (req, res) => {
 
     try {
 
-        let key = req.student.apiKey
+        let key = await bcrypt.hash(req.student.apiKey, 10);
         if(!key) {
             return res.status(403).json({
                 success: false,
@@ -169,7 +170,7 @@ const facultyReviewAiResponse = async (req, res) => {
     }
 
     try {
-        let key = req.student.apiKey
+        let key = await bcrypt.hash(req.student.apiKey, 10);
         if(!key) {
             return res.status(403).json({
                 success: false,
