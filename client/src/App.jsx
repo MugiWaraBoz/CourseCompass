@@ -22,6 +22,7 @@ import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ChangePasswordPage from "@/pages/ChangePasswordPage";
 import WriteReviewPage from "@/pages/WriteReviewPage";
+import VerifyEmailPage from "@/pages/VerifyEmailPage";
 
 function HomePage() {
   return (
@@ -84,6 +85,7 @@ function App() {
             </GuestRoute>
           }
         />
+        <Route path="/auth/verify-email/:token" element={<VerifyEmailPage />} />
         <Route
           path="/profile"
           element={

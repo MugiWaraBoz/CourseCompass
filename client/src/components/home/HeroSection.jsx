@@ -9,10 +9,12 @@ import {
   Users,
 } from "lucide-react";
 import { Link } from "react-router";
+import { getCourses } from "@/api/courseApi";
+import { getFaculty } from "@/api/facultyApi";
 
 const highlights = [
-  { icon: BookOpen, value: "120+", label: "Courses" },
-  { icon: Users, value: "45+", label: "Faculty" },
+  { icon: BookOpen, key: "courses", label: "Courses" },
+  { icon: Users, key: "faculty", label: "Faculty" },
 ];
 
 const featureSlides = [
@@ -23,7 +25,7 @@ const featureSlides = [
     description: "Browse the course directory and quickly understand what each course offers.",
     details: ["Course codes", "Credit hours", "Key topics", "Prerequisites"],
     statLabel: "Courses to explore",
-    statValue: "120+",
+    statKey: "courses",
   },
   {
     icon: GraduationCap,
@@ -32,7 +34,7 @@ const featureSlides = [
     description: "Explore faculty profiles, teaching areas, and the courses connected to them.",
     details: ["Faculty profiles", "Teaching areas", "Courses taught", "Department info"],
     statLabel: "Faculty profiles",
-    statValue: "45+",
+    statKey: "faculty",
   },
   {
     icon: Sparkles,
@@ -41,13 +43,37 @@ const featureSlides = [
     description: "Bring course and faculty information together before planning your semester.",
     details: ["Simple search", "Useful filters", "Clear details", "Easy comparison"],
     statLabel: "Built for students",
-    statValue: "100%",
+    statKey: null,
   },
 ];
 
 function HeroSection() {
   // activeSlide remembers which feature card is currently visible.
   const [activeSlide, setActiveSlide] = useState(0);
+  const [stats, setStats] = useState({ courses: null, faculty: null });
+
+  useEffect(() => {
+    let active = true;
+
+    Promise.all([
+      getCourses({ page: 1, limit: 1 }),
+      getFaculty({ page: 1, limit: 1 }),
+    ])
+      .then(([courseResponse, facultyResponse]) => {
+        if (!active) return;
+        setStats({
+          courses: courseResponse?.data?.pagination?.total ?? null,
+          faculty: facultyResponse?.data?.pagination?.total ?? null,
+        });
+      })
+      .catch(() => {
+        if (active) setStats({ courses: null, faculty: null });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     // Automatically move the feature carousel every 4.5 seconds.
@@ -103,14 +129,14 @@ function HeroSection() {
           </div>
 
           <div className="mt-10 flex justify-center gap-8 lg:justify-start">
-            {highlights.map(({ icon: Icon, value, label }) => (
+            {highlights.map(({ icon: Icon, key, label }) => (
               <div key={label} className="flex items-center gap-3 text-left">
                 <span className="grid size-10 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <span>
                   <strong className="block text-lg font-semibold text-slate-900">
-                    {value}
+                    {stats[key] ?? "-"}
                   </strong>
                   <span className="text-sm text-slate-500">{label}</span>
                 </span>
@@ -178,7 +204,7 @@ function HeroSection() {
                           {feature.statLabel}
                         </p>
                         <p className="mt-1 text-2xl font-semibold text-emerald-950">
-                          {feature.statValue}
+                          {feature.statKey ? (stats[feature.statKey] ?? "-") : "Explore"}
                         </p>
                       </div>
                       <BookOpen className="size-7 text-emerald-600" aria-hidden="true" />

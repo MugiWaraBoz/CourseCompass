@@ -12,6 +12,12 @@ export async function loginStudent(credentials) {
   return response.data;
 }
 
+// Verify a newly registered student's email using the link token.
+export async function verifyEmail(token) {
+  const response = await api.get(`/auth/verify-email/${token}`);
+  return response.data;
+}
+
 // Request a short-lived password-reset link for a registered university email.
 export async function forgotPassword(email) {
   const response = await api.post("/auth/forgot-password", { email });
@@ -26,7 +32,7 @@ export async function resetPassword(token, passwordData) {
 
 // Change the password for the currently authenticated student session.
 export async function changePassword(token, passwordData) {
-  const response = await api.post("/auth/change-password", passwordData, {
+  const response = await api.patch("/auth/change-password", passwordData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -42,6 +48,55 @@ export async function createReview(token, reviewData) {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return response.data;
+}
+
+// Load reviews created by the currently authenticated student.
+export async function getCurrentStudentReviews(token, params = {}) {
+  const response = await api.get("/students/me/reviews", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: { page: 1, limit: 20, ...params },
+  });
+
+  return response.data;
+}
+
+// Update one review owned by the authenticated student.
+export async function updateReview(token, reviewId, reviewData) {
+  const response = await api.patch(`/reviews/${reviewId}`, reviewData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+// Delete one review owned by the authenticated student.
+export async function deleteReview(token, reviewId) {
+  const response = await api.delete(`/reviews/${reviewId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+// Toggle or switch the authenticated student's vote on one review.
+export async function voteReview(token, reviewId, voteType) {
+  const response = await api.post(
+    `/reviews/${reviewId}/vote`,
+    { voteType },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
 
   return response.data;
 }

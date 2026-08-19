@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, CheckCircle2, PenLine, Star } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { createReview } from "@/api/authApi";
-import { getCourses } from "@/api/courseApi";
-import { getFaculty } from "@/api/facultyApi";
+import { getCourseById, getCourses } from "@/api/courseApi";
+import { getFaculty, getFacultyById } from "@/api/facultyApi";
 import { useAuth } from "@/hooks/useAuth";
 
 const initialFormData = {
@@ -18,10 +18,14 @@ const initialFormData = {
 
 function WriteReviewPage() {
   const { token } = useAuth();
-  const [courses, setCourses] = useState([]);
-  const [faculty, setFaculty] = useState([]);
+  const [searchParams] = useSearchParams();
+  const initialCourseId = searchParams.get("courseId") || "";
+  const initialFacultyId = searchParams.get("facultyId") || "";
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [formData, setFormData] = useState(initialFormData);
-  const [loadingOptions, setLoadingOptions] = useState(true);
+  const [contextLoading, setContextLoading] = useState(true);
+  const [contextError, setContextError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -29,30 +33,40 @@ function WriteReviewPage() {
   useEffect(() => {
     let active = true;
 
-    // Both selectors are loaded once so the submitted IDs match the API contract.
-    Promise.all([
-      getCourses({ page: 1, limit: 200, sortBy: "code", order: "asc" }),
-      getFaculty({ page: 1, limit: 100, sortBy: "name", order: "asc" }),
-    ])
-      .then(([courseResponse, facultyResponse]) => {
-        if (!active) return;
+    const contextRequests = [];
+    if (initialCourseId) contextRequests.push(getCourseById(initialCourseId));
+    if (initialFacultyId) contextRequests.push(getFacultyById(initialFacultyId));
 
-        setCourses(courseResponse?.data?.courses ?? []);
-        setFaculty(facultyResponse?.data?.faculty ?? []);
-      })
-      .catch(() => {
-        if (active) {
-          setError("Course and faculty options could not be loaded right now.");
+    Promise.all(contextRequests)
+      .then((responses) => {
+        if (!active) return;
+        let responseIndex = 0;
+        if (initialCourseId) {
+          const course = responses[responseIndex++]?.data?.course;
+          if (course) {
+            setSelectedCourse(course);
+            setFormData((current) => ({ ...current, courseId: course._id }));
+          }
+        }
+        if (initialFacultyId) {
+          const faculty = responses[responseIndex]?.data;
+          if (faculty) {
+            setSelectedFaculty(faculty);
+            setFormData((current) => ({ ...current, facultyId: faculty._id }));
+          }
         }
       })
+      .catch(() => {
+        if (active) setContextError("The selected review context could not be loaded.");
+      })
       .finally(() => {
-        if (active) setLoadingOptions(false);
+        if (active) setContextLoading(false);
       });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [initialCourseId, initialFacultyId]);
 
   function handleInputChange(event) {
     const { name, value, checked, type } = event.target;
@@ -131,7 +145,7 @@ function WriteReviewPage() {
           Your feedback helps students understand both the course and classroom experience.
         </p>
 
-        {loadingOptions ? (
+        {contextLoading ? (
           <div className="mt-8 space-y-5 animate-pulse">
             <div className="h-12 rounded-2xl bg-slate-100" />
             <div className="h-12 rounded-2xl bg-slate-100" />
@@ -139,35 +153,49 @@ function WriteReviewPage() {
           </div>
         ) : (
           <form className="mt-8 grid gap-5 sm:grid-cols-2" onSubmit={handleSubmit}>
-            <SelectField
-              label="Course"
-              name="courseId"
-              value={formData.courseId}
-              onChange={handleInputChange}
-              disabled={submitting || courses.length === 0}
-            >
-              <option value="">Select a course</option>
-              {courses.map((course) => (
-                <option key={course._id} value={course._id}>
-                  {course.code} — {course.name}
-                </option>
-              ))}
-            </SelectField>
+            {contextError && (
+              <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2">
+                {contextError}
+              </p>
+            )}
 
-            <SelectField
+            <SearchField
+              label="Course"
+              placeholder="Search by course code or name"
+              selected={selectedCourse}
+              selectedId={formData.courseId}
+              contextLocked={Boolean(initialCourseId)}
+              search={getCourses}
+              getResults={(response) => response?.data?.courses ?? []}
+              getLabel={(course) => `${course.code} — ${course.name}`}
+              onSelect={(course) => {
+                setSelectedCourse(course);
+                setFormData((current) => ({
+                  ...current,
+                  courseId: course?._id || "",
+                }));
+              }}
+              disabled={submitting}
+            />
+
+            <SearchField
               label="Faculty member"
-              name="facultyId"
-              value={formData.facultyId}
-              onChange={handleInputChange}
-              disabled={submitting || faculty.length === 0}
-            >
-              <option value="">Select faculty</option>
-              {faculty.map((member) => (
-                <option key={member._id} value={member._id}>
-                  {member.name} — {member.department}
-                </option>
-              ))}
-            </SelectField>
+              placeholder="Search by faculty name"
+              selected={selectedFaculty}
+              selectedId={formData.facultyId}
+              contextLocked={Boolean(initialFacultyId)}
+              search={getFaculty}
+              getResults={(response) => response?.data?.faculty ?? []}
+              getLabel={(member) => `${member.name} — ${member.department || "Faculty"}`}
+              onSelect={(member) => {
+                setSelectedFaculty(member);
+                setFormData((current) => ({
+                  ...current,
+                  facultyId: member?._id || "",
+                }));
+              }}
+              disabled={submitting}
+            />
 
             <RatingField
               label="Overall rating"
@@ -238,7 +266,7 @@ function WriteReviewPage() {
 
             <button
               type="submit"
-              disabled={submitting || courses.length === 0 || faculty.length === 0}
+              disabled={submitting || !formData.courseId || !formData.facultyId}
               className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 sm:col-span-2"
             >
               <Star className="size-4" aria-hidden="true" />
@@ -251,17 +279,100 @@ function WriteReviewPage() {
   );
 }
 
-function SelectField({ label, children, ...selectProps }) {
+function SearchField({
+  label,
+  placeholder,
+  selected,
+  selectedId,
+  contextLocked,
+  search,
+  getResults,
+  getLabel,
+  onSelect,
+  disabled,
+}) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (contextLocked || query.trim().length < 2) {
+      return undefined;
+    }
+
+    let active = true;
+    const timer = window.setTimeout(() => {
+      setSearching(true);
+      search({ search: query.trim(), page: 1, limit: 8 })
+        .then((response) => {
+          if (active) setResults(getResults(response));
+        })
+        .catch(() => {
+          if (active) setResults([]);
+        })
+        .finally(() => {
+          if (active) setSearching(false);
+        });
+    }, 300);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [contextLocked, getResults, query, search]);
+
   return (
     <label className="block">
       <span className="text-sm font-semibold text-slate-700">{label}</span>
-      <select
-        {...selectProps}
-        required
-        className="mt-2 h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-slate-900 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 disabled:bg-slate-50"
-      >
-        {children}
-      </select>
+      {contextLocked && selected ? (
+        <span className="mt-2 flex min-h-12 items-center rounded-2xl border border-emerald-200 bg-emerald-50 px-4 text-sm font-medium text-emerald-900">
+          {getLabel(selected)}
+        </span>
+      ) : (
+        <span className="relative mt-2 block">
+          <input
+            value={selectedId && selected ? getLabel(selected) : query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setOpen(true);
+              if (selectedId) onSelect(null);
+            }}
+            onFocus={() => setOpen(true)}
+            placeholder={placeholder}
+            disabled={disabled}
+            required={!selectedId}
+            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-slate-900 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 disabled:bg-slate-50"
+          />
+          {open && query.trim().length >= 2 && (
+            <span className="absolute left-0 right-0 top-full z-10 mt-2 max-h-56 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-xl">
+              {searching ? (
+                <span className="block px-3 py-3 text-sm text-slate-500">Searching...</span>
+              ) : results.length === 0 ? (
+                <span className="block px-3 py-3 text-sm text-slate-500">No matches found.</span>
+              ) : (
+                results.map((result) => (
+                  <button
+                    key={result._id}
+                    type="button"
+                    onClick={() => {
+                      onSelect(result);
+                      setQuery("");
+                      setOpen(false);
+                    }}
+                    className="block w-full rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-emerald-50"
+                  >
+                    {getLabel(result)}
+                  </button>
+                ))
+              )}
+            </span>
+          )}
+        </span>
+      )}
+      {!contextLocked && selected && (
+        <p className="mt-2 text-xs text-emerald-700">Selected: {getLabel(selected)}</p>
+      )}
     </label>
   );
 }

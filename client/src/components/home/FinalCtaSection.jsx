@@ -1,8 +1,7 @@
 import { ArrowRight, BookOpen, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 // This is the final homepage prompt before the footer.
-// Its buttons are visual only until page routing is added later.
 function FinalCtaSection() {
   return (
     <section className="bg-white py-20 sm:py-24">
@@ -29,17 +28,16 @@ function FinalCtaSection() {
               </p>
             </div>
 
-            {/* Routing will be attached to these buttons during the functionality phase. */}
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <Button className="h-12 rounded-full bg-white px-6 text-base text-emerald-800 shadow-lg transition-all hover:-translate-y-0.5 hover:bg-emerald-50">
+              <Link to="/courses" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base text-emerald-800 shadow-lg transition-all hover:-translate-y-0.5 hover:bg-emerald-50">
                 <BookOpen aria-hidden="true" />
                 Explore Courses
                 <ArrowRight aria-hidden="true" />
-              </Button>
-              <Button variant="outline" className="h-12 rounded-full border-white/30 bg-white/10 px-6 text-base text-white transition-all hover:-translate-y-0.5 hover:bg-white/20 hover:text-white">
+              </Link>
+              <Link to="/faculty" className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 text-base text-white transition-all hover:-translate-y-0.5 hover:bg-white/20">
                 <Users aria-hidden="true" />
                 Browse Faculty
-              </Button>
+              </Link>
             </div>
           </div>
         </div>

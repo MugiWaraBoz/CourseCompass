@@ -6,15 +6,19 @@ import {
   ChevronDown,
   Clock3,
   Star,
+  ThumbsDown,
   ThumbsUp,
   UserRound,
 } from "lucide-react";
 import { Link, useParams } from "react-router";
+import { voteReview } from "@/api/authApi";
+import { getFacultyById } from "@/api/facultyApi";
 import {
   getCourseById,
   getCourseReviews,
   getCoursesByIds,
 } from "@/api/courseApi";
+import { useAuth } from "@/hooks/useAuth";
 
 // Convert an API timestamp into a readable date for review cards.
 function formatReviewDate(dateValue) {
@@ -30,6 +34,7 @@ function formatReviewDate(dateValue) {
 function CourseDetailsPage() {
   // Read the selected MongoDB course ID from /courses/:courseId.
   const { courseId } = useParams();
+  const { token } = useAuth();
 
   // Store the primary course, resolved prerequisites, and request status.
   const [course, setCourse] = useState(null);
@@ -42,6 +47,9 @@ function CourseDetailsPage() {
   const [reviewSort, setReviewSort] = useState("recent");
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reviewsError, setReviewsError] = useState("");
+  const [votingReviewId, setVotingReviewId] = useState(null);
+  const [voteError, setVoteError] = useState("");
+  const [reviewFacultyById, setReviewFacultyById] = useState({});
 
   useEffect(() => {
     let active = true;
@@ -78,10 +86,24 @@ function CourseDetailsPage() {
     let active = true;
 
     getCourseReviews(courseId, { sortBy: reviewSort })
-      .then((response) => {
+      .then(async (response) => {
         if (!active) return;
 
-        setReviews(response?.data?.reviews ?? []);
+        const loadedReviews = response?.data?.reviews ?? [];
+        setReviews(loadedReviews);
+        const facultyIds = [...new Set(loadedReviews.map((review) => review.facultyId).filter(Boolean))];
+        const relatedFaculty = await Promise.allSettled(
+          facultyIds.map(async (facultyId) => [facultyId, (await getFacultyById(facultyId))?.data]),
+        );
+        if (active) {
+          setReviewFacultyById(
+            Object.fromEntries(
+              relatedFaculty
+                .filter((result) => result.status === "fulfilled" && result.value[1])
+                .map((result) => result.value),
+            ),
+          );
+        }
         setReviewsError("");
       })
       .catch(() => {
@@ -102,6 +124,41 @@ function CourseDetailsPage() {
   function handleReviewSortChange(event) {
     setReviewsLoading(true);
     setReviewSort(event.target.value);
+  }
+
+  async function handleVote(reviewId, voteType) {
+    if (!token) {
+      setVoteError("Please log in to vote on reviews.");
+      return;
+    }
+
+    setVoteError("");
+    setVotingReviewId(reviewId);
+    try {
+      await voteReview(token, reviewId, voteType);
+      const response = await getCourseReviews(courseId, { sortBy: reviewSort });
+      const loadedReviews = response?.data?.reviews ?? [];
+      setReviews(loadedReviews);
+      const relatedFaculty = await Promise.allSettled(
+        [...new Set(loadedReviews.map((review) => review.facultyId).filter(Boolean))].map(
+          async (facultyId) => [facultyId, (await getFacultyById(facultyId))?.data],
+        ),
+      );
+      setReviewFacultyById(
+        Object.fromEntries(
+          relatedFaculty
+            .filter((result) => result.status === "fulfilled" && result.value[1])
+            .map((result) => result.value),
+        ),
+      );
+    } catch (requestError) {
+      setVoteError(
+        requestError.response?.data?.error?.message ||
+          "Your vote could not be recorded. Please try again.",
+      );
+    } finally {
+      setVotingReviewId(null);
+    }
   }
 
   // Keep the layout stable while course and prerequisite requests are loading.
@@ -258,6 +315,11 @@ function CourseDetailsPage() {
 
       {/* Reviews remain useful with an empty state before real records exist. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+        {voteError && (
+          <p role="alert" className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {voteError}
+          </p>
+        )}
         <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -267,6 +329,13 @@ function CourseDetailsPage() {
               Course reviews
             </h2>
           </div>
+
+          <Link
+            to={`/profile/write-review?courseId=${course._id}`}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-emerald-700"
+          >
+            Write a review
+          </Link>
 
           <label className="relative">
             <span className="sr-only">Sort reviews</span>
@@ -358,11 +427,22 @@ function CourseDetailsPage() {
                   {review.comment || "No written comment was provided."}
                 </p>
 
+                {reviewFacultyById[review.facultyId] && (
+                  <p className="mt-3 text-sm font-semibold text-emerald-700">
+                    Faculty: {reviewFacultyById[review.facultyId].name}
+                  </p>
+                )}
+
                 <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-slate-100 pt-4 text-sm text-slate-500">
                   <span>Difficulty: {review.difficultyRating ?? "Not rated"}/5</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <ThumbsUp className="size-4" aria-hidden="true" />
-                    {review.votescore ?? 0} helpful
+                  <span className="inline-flex items-center gap-2">
+                    <button type="button" onClick={() => handleVote(review._id, "upvote")} disabled={votingReviewId === review._id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-700 disabled:opacity-60" aria-label="Upvote review">
+                      <ThumbsUp className="size-3.5" aria-hidden="true" /> {review.upvotes ?? 0}
+                    </button>
+                    <button type="button" onClick={() => handleVote(review._id, "downvote")} disabled={votingReviewId === review._id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-red-300 hover:text-red-700 disabled:opacity-60" aria-label="Downvote review">
+                      <ThumbsDown className="size-3.5" aria-hidden="true" /> {review.downvotes ?? 0}
+                    </button>
+                    <span>{review.votescore ?? 0} helpful</span>
                   </span>
                 </div>
               </article>

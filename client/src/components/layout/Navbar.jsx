@@ -27,7 +27,7 @@ function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
+    <header id="top" className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <nav
         className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary navigation"
@@ -69,13 +69,15 @@ function Navbar() {
             ))}
           </div>
 
-          <Link to="/courses" className="inline-flex h-10 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md">
-            Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-
           {/* Authentication controls react immediately to the shared session state. */}
           {isAuthenticated ? (
             <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+              <Link
+                to="/profile/write-review"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-emerald-700"
+              >
+                Write a Review <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
               <Link
                 to="/profile"
                 className="inline-flex items-center gap-2 px-3 text-sm font-semibold text-slate-700 hover:text-emerald-700"
@@ -188,20 +190,6 @@ function Navbar() {
               ))}
             </div>
 
-            <Link
-              to="/courses"
-              tabIndex={isMenuOpen ? 0 : -1}
-              style={{
-                opacity: isMenuOpen ? 1 : 0,
-                transform: isMenuOpen ? "translateY(0)" : "translateY(-1rem)",
-                transition: "opacity 450ms ease 550ms, transform 450ms ease 550ms",
-              }}
-              className="mt-3 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-slate-900 px-5 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 hover:shadow-md"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Explore Courses <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
-
             {/* Mobile users receive the same session controls as desktop users. */}
             {isAuthenticated ? (
               <div className="mt-3 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
@@ -213,6 +201,14 @@ function Navbar() {
                 >
                   <UserRound className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
                   <span className="truncate">Signed in as {studentFirstName}</span>
+                </Link>
+                <Link
+                  to="/profile/write-review"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="ml-3 inline-flex shrink-0 items-center rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Write a Review
                 </Link>
                 <button
                   type="button"

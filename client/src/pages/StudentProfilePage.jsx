@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BadgeCheck,
   CalendarDays,
@@ -10,9 +10,16 @@ import {
   PenLine,
   Save,
   ShieldAlert,
+  Trash2,
   UserRound,
+  X,
 } from "lucide-react";
 import { Link } from "react-router";
+import {
+  deleteReview,
+  getCurrentStudentReviews,
+  updateReview,
+} from "@/api/authApi";
 import { useAuth } from "@/hooks/useAuth";
 
 // Format registration dates without exposing raw database timestamps.
@@ -26,7 +33,7 @@ function formatJoinDate(dateValue) {
 }
 
 function StudentProfilePage() {
-  const { student, updateProfile } = useAuth();
+  const { student, token, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: student.name || "",
@@ -35,6 +42,44 @@ function StudentProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [reviewsError, setReviewsError] = useState("");
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [reviewForm, setReviewForm] = useState({
+    rating: "",
+    difficultyRating: "",
+    semester: "",
+    comment: "",
+  });
+  const [reviewSaving, setReviewSaving] = useState(false);
+  const [reviewActionError, setReviewActionError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    getCurrentStudentReviews(token)
+      .then((response) => {
+        if (active) {
+          setReviews(response?.data?.reviews || []);
+          setReviewsError("");
+        }
+      })
+      .catch((requestError) => {
+        if (!active) return;
+        setReviewsError(
+          requestError.response?.data?.error?.message ||
+            "Your reviews could not be loaded right now.",
+        );
+      })
+      .finally(() => {
+        if (active) setReviewsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -45,6 +90,82 @@ function StudentProfilePage() {
     setFormData({ name: student.name || "", cgpa: student.cgpa ?? "" });
     setError("");
     setIsEditing(false);
+  }
+
+  function startReviewEditing(review) {
+    setReviewActionError("");
+    setEditingReviewId(review._id);
+    setReviewForm({
+      rating: review.rating ?? "",
+      difficultyRating: review.difficultyRating ?? "",
+      semester: review.semester ?? "",
+      comment: review.comment ?? "",
+    });
+  }
+
+  function cancelReviewEditing() {
+    setEditingReviewId(null);
+    setReviewActionError("");
+  }
+
+  function handleReviewInputChange(event) {
+    const { name, value } = event.target;
+    setReviewForm((current) => ({ ...current, [name]: value }));
+  }
+
+  async function handleReviewSave(event) {
+    event.preventDefault();
+    setReviewActionError("");
+
+    if (!reviewForm.comment.trim()) {
+      setReviewActionError("Review comment cannot be empty.");
+      return;
+    }
+
+    setReviewSaving(true);
+    try {
+      const response = await updateReview(token, editingReviewId, {
+        rating: Number(reviewForm.rating),
+        difficultyRating: Number(reviewForm.difficultyRating),
+        semester: reviewForm.semester.trim(),
+        comment: reviewForm.comment.trim(),
+      });
+      const updatedReview = response?.data?.review;
+
+      setReviews((current) =>
+        current.map((review) =>
+          review._id === editingReviewId
+            ? updatedReview || { ...review, ...reviewForm }
+            : review,
+        ),
+      );
+      setEditingReviewId(null);
+    } catch (requestError) {
+      setReviewActionError(
+        requestError.response?.data?.error?.message ||
+          "Review update failed. Please try again.",
+      );
+    } finally {
+      setReviewSaving(false);
+    }
+  }
+
+  async function handleReviewDelete(reviewId) {
+    if (!window.confirm("Delete this review? This action cannot be undone.")) return;
+
+    setReviewActionError("");
+    setReviewSaving(true);
+    try {
+      await deleteReview(token, reviewId);
+      setReviews((current) => current.filter((review) => review._id !== reviewId));
+    } catch (requestError) {
+      setReviewActionError(
+        requestError.response?.data?.error?.message ||
+          "Review deletion failed. Please try again.",
+      );
+    } finally {
+      setReviewSaving(false);
+    }
   }
 
   async function handleSubmit(event) {
@@ -148,6 +269,81 @@ function StudentProfilePage() {
 
       {/* Only backend-approved profile fields are editable in this form. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
+              Your reviews
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950">
+              Review history
+            </h2>
+          </div>
+
+          {reviewActionError && (
+            <p role="alert" className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {reviewActionError}
+            </p>
+          )}
+
+          {reviewsLoading ? (
+            <p className="mt-6 text-sm text-slate-500">Loading your reviews...</p>
+          ) : reviewsError ? (
+            <p role="alert" className="mt-6 text-sm text-red-700">{reviewsError}</p>
+          ) : reviews.length === 0 ? (
+            <p className="mt-6 text-sm text-slate-500">You have not written any reviews yet.</p>
+          ) : (
+            <div className="mt-6 grid gap-4">
+              {reviews.map((review) => (
+                <article key={review._id} className="rounded-2xl border border-slate-200 p-5">
+                  {editingReviewId === review._id ? (
+                    <form className="grid gap-4" onSubmit={handleReviewSave}>
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        <ReviewNumberInput label="Rating" name="rating" value={reviewForm.rating} onChange={handleReviewInputChange} />
+                        <ReviewNumberInput label="Difficulty" name="difficultyRating" value={reviewForm.difficultyRating} onChange={handleReviewInputChange} />
+                        <label className="block">
+                          <span className="text-sm font-semibold text-slate-700">Semester</span>
+                          <input name="semester" value={reviewForm.semester} onChange={handleReviewInputChange} className="mt-2 h-11 w-full rounded-xl border border-slate-200 px-3 outline-none focus:border-emerald-500" />
+                        </label>
+                      </div>
+                      <label className="block">
+                        <span className="text-sm font-semibold text-slate-700">Comment</span>
+                        <textarea name="comment" value={reviewForm.comment} onChange={handleReviewInputChange} rows={4} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-500" />
+                      </label>
+                      <div className="flex flex-wrap justify-end gap-3">
+                        <button type="button" onClick={cancelReviewEditing} className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 px-4 text-sm font-semibold text-slate-700">
+                          <X className="size-4" aria-hidden="true" /> Cancel
+                        </button>
+                        <button type="submit" disabled={reviewSaving} className="inline-flex h-10 items-center gap-2 rounded-full bg-slate-950 px-4 text-sm font-semibold text-white disabled:opacity-60">
+                          <Save className="size-4" aria-hidden="true" /> {reviewSaving ? "Saving..." : "Save review"}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <p className="font-semibold text-slate-950">{review.comment || "No comment"}</p>
+                          <p className="mt-2 text-sm text-slate-500">
+                            Rating {review.rating ?? "-"}/5 · Difficulty {review.difficultyRating ?? "-"}/5 · {review.semester || "Semester unavailable"}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 gap-2">
+                          <button type="button" onClick={() => startReviewEditing(review)} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-slate-200 px-3 text-sm font-semibold text-slate-700">
+                            <Pencil className="size-3.5" aria-hidden="true" /> Edit
+                          </button>
+                          <button type="button" onClick={() => handleReviewDelete(review._id)} disabled={reviewSaving} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-red-200 px-3 text-sm font-semibold text-red-700 disabled:opacity-60">
+                            <Trash2 className="size-3.5" aria-hidden="true" /> Delete
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </article>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -281,6 +477,15 @@ function StudentProfilePage() {
         </div>
       </section>
     </main>
+  );
+}
+
+function ReviewNumberInput({ label, name, value, onChange }) {
+  return (
+    <label className="block">
+      <span className="text-sm font-semibold text-slate-700">{label}</span>
+      <input type="number" min="0" max="5" step="0.5" name={name} value={value} onChange={onChange} required className="mt-2 h-11 w-full rounded-xl border border-slate-200 px-3 outline-none focus:border-emerald-500" />
+    </label>
   );
 }
 

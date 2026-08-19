@@ -1,5 +1,6 @@
 import { ArrowUp, BookOpen, Compass, Users } from "lucide-react";
 import logo from "@/assets/CourseCompass.png";
+import { Link } from "react-router";
 
 // Footer links point to sections that already exist on the homepage.
 // Full page routes can replace these links during the routing phase.
@@ -19,7 +20,7 @@ function Footer() {
         {/* Main footer area contains the project identity and navigation. */}
         <div className="grid gap-12 py-14 md:grid-cols-[1.2fr_0.8fr] md:items-start lg:py-16">
           <div className="max-w-xl">
-            <a href="#" className="inline-flex items-center gap-3" aria-label="Course Compass home">
+            <Link to="/" className="inline-flex items-center gap-3" aria-label="Course Compass home">
               {/* The source file is wide, so this small window crops it around only the compass symbol. */}
               {/* Transparent background lets the compass symbol sit directly on the footer. */}
               <span className="relative size-12 shrink-0 overflow-hidden rounded-2xl">
@@ -33,7 +34,7 @@ function Footer() {
               <span className="text-lg font-semibold tracking-tight">
                 Course <span className="text-emerald-400">Compass</span>
               </span>
-            </a>
+            </Link>
 
             <p className="mt-6 max-w-lg text-sm leading-6 text-slate-400 sm:text-base">
               A student-focused platform for exploring course information,
@@ -66,7 +67,7 @@ function Footer() {
         {/* Bottom bar holds legal text and a quick return-to-top control. */}
         <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© {currentYear} CourseCompass. Academic project.</p>
-          <a href="#" className="inline-flex w-fit items-center gap-2 font-medium text-slate-400 transition-colors hover:text-emerald-400">
+          <a href="#top" className="inline-flex w-fit items-center gap-2 font-medium text-slate-400 transition-colors hover:text-emerald-400">
             Back to top
             <ArrowUp className="size-3.5" aria-hidden="true" />
           </a>

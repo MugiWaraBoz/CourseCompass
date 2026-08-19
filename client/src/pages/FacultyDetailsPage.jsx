@@ -7,11 +7,15 @@ import {
   ChevronDown,
   Quote,
   Star,
+  ThumbsDown,
   ThumbsUp,
   UserRound,
 } from "lucide-react";
 import { Link, useParams } from "react-router";
+import { voteReview } from "@/api/authApi";
+import { getCourseById } from "@/api/courseApi";
 import { getFacultyById, getFacultyReviews } from "@/api/facultyApi";
+import { useAuth } from "@/hooks/useAuth";
 
 // Produce a dependable avatar when the backend does not provide profile photos.
 function getInitials(name = "") {
@@ -38,6 +42,7 @@ function formatReviewDate(dateValue) {
 function FacultyDetailsPage() {
   // Read the selected MongoDB faculty ID from /faculty/:facultyId.
   const { facultyId } = useParams();
+  const { token } = useAuth();
   const [facultyMember, setFacultyMember] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -47,13 +52,16 @@ function FacultyDetailsPage() {
   const [reviewSort, setReviewSort] = useState("recent");
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reviewsError, setReviewsError] = useState("");
+  const [votingReviewId, setVotingReviewId] = useState(null);
+  const [voteError, setVoteError] = useState("");
+  const [reviewCourseById, setReviewCourseById] = useState({});
 
   useEffect(() => {
     let active = true;
 
     // Request the complete public profile and ignore late responses after unmounting.
     getFacultyById(facultyId)
-      .then((response) => {
+      .then(async (response) => {
         if (active) setFacultyMember(response?.data ?? null);
       })
       .catch(() => {
@@ -72,10 +80,24 @@ function FacultyDetailsPage() {
     let active = true;
 
     getFacultyReviews(facultyId, { sortBy: reviewSort })
-      .then((response) => {
+      .then(async (response) => {
         if (!active) return;
 
-        setReviews(response?.data?.reviews ?? []);
+        const loadedReviews = response?.data?.reviews ?? [];
+        setReviews(loadedReviews);
+        const courseIds = [...new Set(loadedReviews.map((review) => review.courseId).filter(Boolean))];
+        const relatedCourses = await Promise.allSettled(
+          courseIds.map(async (courseId) => [courseId, (await getCourseById(courseId))?.data?.course]),
+        );
+        if (active) {
+          setReviewCourseById(
+            Object.fromEntries(
+              relatedCourses
+                .filter((result) => result.status === "fulfilled" && result.value[1])
+                .map((result) => result.value),
+            ),
+          );
+        }
         setReviewsError("");
       })
       .catch(() => {
@@ -96,6 +118,41 @@ function FacultyDetailsPage() {
   function handleReviewSortChange(event) {
     setReviewsLoading(true);
     setReviewSort(event.target.value);
+  }
+
+  async function handleVote(reviewId, voteType) {
+    if (!token) {
+      setVoteError("Please log in to vote on reviews.");
+      return;
+    }
+
+    setVoteError("");
+    setVotingReviewId(reviewId);
+    try {
+      await voteReview(token, reviewId, voteType);
+      const response = await getFacultyReviews(facultyId, { sortBy: reviewSort });
+      const loadedReviews = response?.data?.reviews ?? [];
+      setReviews(loadedReviews);
+      const relatedCourses = await Promise.allSettled(
+        [...new Set(loadedReviews.map((review) => review.courseId).filter(Boolean))].map(
+          async (courseId) => [courseId, (await getCourseById(courseId))?.data?.course],
+        ),
+      );
+      setReviewCourseById(
+        Object.fromEntries(
+          relatedCourses
+            .filter((result) => result.status === "fulfilled" && result.value[1])
+            .map((result) => result.value),
+        ),
+      );
+    } catch (requestError) {
+      setVoteError(
+        requestError.response?.data?.error?.message ||
+          "Your vote could not be recorded. Please try again.",
+      );
+    } finally {
+      setVotingReviewId(null);
+    }
   }
 
   if (loading) {
@@ -202,6 +259,11 @@ function FacultyDetailsPage() {
 
       {/* Long biographies remain readable inside a constrained content column. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+        {voteError && (
+          <p role="alert" className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {voteError}
+          </p>
+        )}
         <article className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-9">
           <span className="grid size-11 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
             <UserRound className="size-5" aria-hidden="true" />
@@ -241,6 +303,13 @@ function FacultyDetailsPage() {
               Faculty reviews
             </h2>
           </div>
+
+          <Link
+            to={`/profile/write-review?facultyId=${facultyMember._id}`}
+            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-emerald-700"
+          >
+            Write a review
+          </Link>
 
           <label className="relative">
             <span className="sr-only">Sort faculty reviews</span>
@@ -332,11 +401,22 @@ function FacultyDetailsPage() {
                   {review.comment || "No written comment was provided."}
                 </p>
 
+                {reviewCourseById[review.courseId] && (
+                  <p className="mt-3 text-sm font-semibold text-emerald-700">
+                    Course: {reviewCourseById[review.courseId].code} — {reviewCourseById[review.courseId].name}
+                  </p>
+                )}
+
                 <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-slate-100 pt-4 text-sm text-slate-500">
                   <span>Difficulty: {review.difficultyRating ?? "Not rated"}/5</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <ThumbsUp className="size-4" aria-hidden="true" />
-                    {review.votescore ?? 0} helpful
+                  <span className="inline-flex items-center gap-2">
+                    <button type="button" onClick={() => handleVote(review._id, "upvote")} disabled={votingReviewId === review._id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-emerald-300 hover:text-emerald-700 disabled:opacity-60" aria-label="Upvote review">
+                      <ThumbsUp className="size-3.5" aria-hidden="true" /> {review.upvotes ?? 0}
+                    </button>
+                    <button type="button" onClick={() => handleVote(review._id, "downvote")} disabled={votingReviewId === review._id} className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:border-red-300 hover:text-red-700 disabled:opacity-60" aria-label="Downvote review">
+                      <ThumbsDown className="size-3.5" aria-hidden="true" /> {review.downvotes ?? 0}
+                    </button>
+                    <span>{review.votescore ?? 0} helpful</span>
                   </span>
                 </div>
               </article>
