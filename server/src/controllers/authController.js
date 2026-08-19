@@ -3,10 +3,6 @@ const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
 const { sendEmail } = require('../services/emailServics')
 const database = require('../config/connect');
-require('dotenv').config({
-  path: '../../.env',
-  quiet: true, // Suppress warnings if the .env file is missing
-});
 
 const sanitizeStudent = (student) => {
   const safeStudent = { ...student };
@@ -150,7 +146,7 @@ const postRegister = async (req, res) => {
       { expiresIn: '15m' },
     );
 
-    let link = `process.env.FRONTEND_URL}/auth/verify-email/${token}`;
+    let link = `${process.env.FRONTEND_URL}/auth/verify-email/${token}`;
 
     // console.log(student.email);
 
@@ -203,7 +199,7 @@ const postLogin = async (req, res) => {
       student = sanitizeStudent(student);
 
       let isVerified = student.verified;
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         data: {
           student: student,
@@ -215,7 +211,7 @@ const postLogin = async (req, res) => {
         token: token,
       });
     } else {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         error: {
           code: 'INVALID_PASSWORD',
@@ -224,7 +220,7 @@ const postLogin = async (req, res) => {
       });
     }
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       error: {
         code: 'EMAIL_NOT_FOUND',
@@ -241,14 +237,13 @@ const forgotPassword = async (req, res) => {
   const student = await db.collection('Student').findOne({ email: email });
 
   if (!student) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       error: {
         code: 'EMAIL_NOT_FOUND',
         message: 'Email not found, please register first!',
       },
     });
-    return;
   }
 
   /*
@@ -257,6 +252,7 @@ const forgotPassword = async (req, res) => {
   const token = jwt.sign(
     {
       _id: student._id.toString(),
+      purpose: "password-reset",
     },
     process.env.JWT_SECRET,
     { expiresIn: '5m' },
@@ -321,7 +317,7 @@ const showResetPassword = async (req, res) => {
     });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Token is valid',
   });
@@ -377,8 +373,8 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const email = decoded.email;
-  student = await db.collection('Student').findOne({ email: email });
+  const id = decoded._id;
+  student = await db.collection('Student').findOne({ _id: id });
   if (!student) {
     return res.status(404).json({
       success: false,
@@ -422,7 +418,7 @@ const resetPassword = async (req, res) => {
       },
     },
   );
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Password reset successfully',
   });
@@ -486,7 +482,7 @@ const changePassword = async (req, res) => {
     .collection('Student')
     .updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Password changed successfully',
   });
