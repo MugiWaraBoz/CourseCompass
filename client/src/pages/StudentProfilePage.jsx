@@ -18,8 +18,11 @@ import { Link } from "react-router";
 import {
   deleteReview,
   getCurrentStudentReviews,
+  removeGeminiApiKey,
+  setGeminiApiKey,
   updateReview,
 } from "@/api/authApi";
+import { testGeminiApiKey } from "@/api/aiApi";
 import { useAuth } from "@/hooks/useAuth";
 
 // Format registration dates without exposing raw database timestamps.
@@ -38,6 +41,7 @@ function StudentProfilePage() {
   const [formData, setFormData] = useState({
     name: student.name || "",
     cgpa: student.cgpa ?? "",
+    photoUrl: student.photoUrl || "",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -54,6 +58,13 @@ function StudentProfilePage() {
   });
   const [reviewSaving, setReviewSaving] = useState(false);
   const [reviewActionError, setReviewActionError] = useState("");
+  const [geminiKey, setGeminiKey] = useState("");
+  const [geminiConfigured, setGeminiConfigured] = useState(false);
+  const [geminiSaving, setGeminiSaving] = useState(false);
+  const [geminiTesting, setGeminiTesting] = useState(false);
+  const [geminiRemoving, setGeminiRemoving] = useState(false);
+  const [geminiMessage, setGeminiMessage] = useState("");
+  const [geminiError, setGeminiError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -87,7 +98,11 @@ function StudentProfilePage() {
   }
 
   function cancelEditing() {
-    setFormData({ name: student.name || "", cgpa: student.cgpa ?? "" });
+    setFormData({
+      name: student.name || "",
+      cgpa: student.cgpa ?? "",
+      photoUrl: student.photoUrl || "",
+    });
     setError("");
     setIsEditing(false);
   }
@@ -186,12 +201,24 @@ function StudentProfilePage() {
       }
     }
 
+    const trimmedPhotoUrl = formData.photoUrl.trim();
+    if (trimmedPhotoUrl) {
+      try {
+        const parsedUrl = new URL(trimmedPhotoUrl);
+        if (!/^https?:$/.test(parsedUrl.protocol)) throw new Error("Invalid URL");
+      } catch {
+        setError("Student ID picture link must be a valid URL.");
+        return;
+      }
+    }
+
     setSaving(true);
 
     try {
       const response = await updateProfile({
         name: formData.name.trim(),
         cgpa: formData.cgpa === "" ? null : Number(formData.cgpa),
+        photoUrl: trimmedPhotoUrl || null,
       });
 
       setSuccessMessage(response?.data?.message || "Profile updated successfully.");
@@ -201,6 +228,68 @@ function StudentProfilePage() {
       setError(backendMessage || requestError.message || "Profile update failed.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  function getGeminiError(requestError, fallback) {
+    const code = requestError.response?.data?.error?.code;
+    if (code === "API_KEY_NOT_FOUND") return "Please configure your Gemini API key first.";
+    if (requestError.response?.status === 401) return "Please log in again.";
+    if (requestError.response?.status === 429) return "Gemini request limit reached. Please try again later.";
+    return fallback;
+  }
+
+  async function handleSaveGeminiKey(event) {
+    event.preventDefault();
+    const trimmedKey = geminiKey.trim();
+    setGeminiError("");
+    setGeminiMessage("");
+
+    if (!trimmedKey) {
+      setGeminiError("Enter a Gemini API key before saving.");
+      return;
+    }
+
+    setGeminiSaving(true);
+    try {
+      await setGeminiApiKey(token, trimmedKey);
+      setGeminiKey("");
+      setGeminiConfigured(true);
+      setGeminiMessage("Gemini API key saved securely.");
+    } catch (requestError) {
+      setGeminiError(getGeminiError(requestError, "Gemini API key could not be saved."));
+    } finally {
+      setGeminiSaving(false);
+    }
+  }
+
+  async function handleTestGeminiKey() {
+    setGeminiError("");
+    setGeminiMessage("");
+    setGeminiTesting(true);
+    try {
+      await testGeminiApiKey(token);
+      setGeminiMessage("Gemini API key is working.");
+      setGeminiConfigured(true);
+    } catch (requestError) {
+      setGeminiError(getGeminiError(requestError, "Gemini API key test failed."));
+    } finally {
+      setGeminiTesting(false);
+    }
+  }
+
+  async function handleRemoveGeminiKey() {
+    setGeminiError("");
+    setGeminiMessage("");
+    setGeminiRemoving(true);
+    try {
+      await removeGeminiApiKey(token);
+      setGeminiConfigured(false);
+      setGeminiMessage("Gemini API key removed.");
+    } catch (requestError) {
+      setGeminiError(getGeminiError(requestError, "Gemini API key could not be removed."));
+    } finally {
+      setGeminiRemoving(false);
     }
   }
 
@@ -405,6 +494,18 @@ function StudentProfilePage() {
                 />
               </label>
 
+              <label className="block sm:col-span-2">
+                <span className="text-sm font-semibold text-slate-700">Student ID Picture Link</span>
+                <input
+                  type="url"
+                  name="photoUrl"
+                  value={formData.photoUrl}
+                  onChange={handleInputChange}
+                  placeholder="https://example.com/my-id-picture.jpg"
+                  className="mt-2 h-12 w-full rounded-2xl border border-slate-200 px-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                />
+              </label>
+
               {error && (
                 <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2">
                   {error}
@@ -431,6 +532,50 @@ function StudentProfilePage() {
               </div>
             </form>
           )}
+        </div>
+
+        <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
+            AI settings
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-slate-950">Google Gemini</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            Your key is encrypted and used by the backend for Gemini-powered summaries. It is never shown here.
+          </p>
+
+          <form className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto]" onSubmit={handleSaveGeminiKey}>
+            <label className="block">
+              <span className="text-sm font-semibold text-slate-700">Gemini API Key</span>
+              <input
+                type="password"
+                value={geminiKey}
+                onChange={(event) => setGeminiKey(event.target.value)}
+                autoComplete="off"
+                placeholder={geminiConfigured ? "Enter a new key to update" : "Enter your Gemini API key"}
+                className="mt-2 h-12 w-full rounded-2xl border border-slate-200 px-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+              />
+            </label>
+            <button type="submit" disabled={geminiSaving || !geminiKey.trim()} className="mt-7 inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
+              {geminiSaving ? "Saving..." : geminiConfigured ? "Update key" : "Save key"}
+            </button>
+          </form>
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button type="button" onClick={handleTestGeminiKey} disabled={geminiTesting || geminiSaving} className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-200 px-4 text-sm font-semibold text-emerald-700 disabled:opacity-60">
+              {geminiTesting ? "Testing..." : "Test API Key"}
+            </button>
+            {geminiConfigured && (
+              <button type="button" onClick={handleRemoveGeminiKey} disabled={geminiRemoving || geminiTesting} className="inline-flex h-10 items-center justify-center rounded-full border border-red-200 px-4 text-sm font-semibold text-red-700 disabled:opacity-60">
+                {geminiRemoving ? "Removing..." : "Remove key"}
+              </button>
+            )}
+            <span className="text-sm text-slate-500">
+              {geminiConfigured ? "API key configured" : "No API key configured"}
+            </span>
+          </div>
+
+          {geminiMessage && <p role="status" className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{geminiMessage}</p>}
+          {geminiError && <p role="alert" className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{geminiError}</p>}
         </div>
 
         {/* Password management lives on a focused protected page. */}

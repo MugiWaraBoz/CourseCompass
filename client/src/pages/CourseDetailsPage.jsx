@@ -6,12 +6,14 @@ import {
   ChevronDown,
   Clock3,
   Star,
+  Sparkles,
   ThumbsDown,
   ThumbsUp,
   UserRound,
 } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { voteReview } from "@/api/authApi";
+import { getCourseAiSummary } from "@/api/aiApi";
 import { getFacultyById } from "@/api/facultyApi";
 import {
   getCourseById,
@@ -50,6 +52,9 @@ function CourseDetailsPage() {
   const [votingReviewId, setVotingReviewId] = useState(null);
   const [voteError, setVoteError] = useState("");
   const [reviewFacultyById, setReviewFacultyById] = useState({});
+  const [aiSummary, setAiSummary] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -158,6 +163,28 @@ function CourseDetailsPage() {
       );
     } finally {
       setVotingReviewId(null);
+    }
+  }
+
+  async function handleAiSummary() {
+    if (!token) {
+      setAiError("Please log in to use the Gemini review summary.");
+      return;
+    }
+
+    setAiError("");
+    setAiLoading(true);
+    try {
+      const response = await getCourseAiSummary(token, courseId);
+      setAiSummary(response?.data?.summary || "No summary was returned.");
+    } catch (requestError) {
+      const code = requestError.response?.data?.error?.code;
+      if (code === "API_KEY_NOT_FOUND") setAiError("Configure your Gemini API key in your profile first.");
+      else if (code === "NOT_ENOUGH_REVIEWS") setAiError("At least five reviews are needed to generate a summary.");
+      else if (requestError.response?.status === 429) setAiError("Gemini request limit reached. Please try again later.");
+      else setAiError("The course summary could not be generated right now.");
+    } finally {
+      setAiLoading(false);
     }
   }
 
@@ -274,6 +301,25 @@ function CourseDetailsPage() {
             </p>
           )}
         </article>
+      </section>
+
+      <section className="mx-auto max-w-5xl px-4 pb-14 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                <Sparkles className="size-4" aria-hidden="true" /> Gemini insight
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold text-slate-950">Course review summary</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Generate a neutral summary from the available student reviews.</p>
+            </div>
+            <button type="button" onClick={handleAiSummary} disabled={aiLoading} className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-semibold text-white disabled:opacity-60">
+              <Sparkles className="size-4" aria-hidden="true" /> {aiLoading ? "Generating..." : "Generate summary"}
+            </button>
+          </div>
+          {aiSummary && <p className="mt-5 rounded-2xl border border-white/70 bg-white/70 p-4 text-sm leading-7 text-slate-700">{aiSummary}</p>}
+          {aiError && <p role="alert" className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{aiError}</p>}
+        </div>
       </section>
 
       {/* Resolved prerequisites link to their own detail pages. */}

@@ -122,3 +122,23 @@ export async function updateCurrentStudent(token, profileData) {
 
   return response.data;
 }
+
+// Store the authenticated student's encrypted Gemini key through the backend.
+export async function setGeminiApiKey(token, apiKey) {
+  const response = await api.patch(
+    "/students/me/apikey",
+    { apiKey },
+    { headers: { Authorization: `Bearer ${token}` } },
+  );
+
+  return response.data;
+}
+
+// Remove the authenticated student's stored Gemini key.
+export async function removeGeminiApiKey(token) {
+  const response = await api.delete("/students/me/apikey", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data;
+}

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { CheckCircle2, MailCheck, XCircle } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { verifyEmail } from "@/api/authApi";
 
 function VerifyEmailPage() {
   const { token } = useParams();
+  const navigate = useNavigate();
   const [state, setState] = useState(() =>
     token
       ? { status: "loading", message: "" }
@@ -26,6 +27,10 @@ function VerifyEmailPage() {
             status: "success",
             message: response?.data?.message || "Your email has been verified.",
           });
+          navigate("/login", {
+            replace: true,
+            state: { verificationMessage: "Email verified successfully. You can now log in." },
+          });
         }
       })
       .catch((requestError) => {
@@ -41,7 +46,7 @@ function VerifyEmailPage() {
     return () => {
       active = false;
     };
-  }, [token]);
+  }, [navigate, token]);
 
   const isSuccess = state.status === "success";
   const isLoading = state.status === "loading";

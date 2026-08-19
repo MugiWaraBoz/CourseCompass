@@ -24,6 +24,7 @@ function sanitizeStudent(student) {
 
   const safeStudent = { ...student };
   delete safeStudent.password;
+  delete safeStudent.apiKey;
   return safeStudent;
 }
 
