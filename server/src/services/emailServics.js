@@ -1,11 +1,11 @@
-require('dotenv').config({ 
+require('dotenv').config({
   path: '../../.env',
-  quiet: true 
+  quiet: true,
 });
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: 'gmail',
   auth: {
     user: process.env.GMAIL_SMTP_USER,
     pass: process.env.GMAIL_SMTP_PASS,
@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
 // });
 
 async function sendEmail({ to, subject, link, actionText }) {
-let html = `
+  let html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -148,17 +148,17 @@ let html = `
     </html>
     `;
 
-    try{
-        // console.log(`Sending email to: ${to}, subject: ${subject}`);
-        return await transporter.sendMail({
-            from: `"CourseCompass" <${process.env.GMAIL_SMTP_USER}>`,
-            to,
-            subject,
-            html,
-        });
-    } catch (error) {
-        console.error("Error sending email:", error);
-    }
+  try {
+    // console.log(`Sending email to: ${to}, subject: ${subject}`);
+    return await transporter.sendMail({
+      from: `"CourseCompass" <${process.env.GMAIL_SMTP_USER}>`,
+      to,
+      subject,
+      html,
+    });
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 }
 
 module.exports = {

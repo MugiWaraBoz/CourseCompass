@@ -7,7 +7,6 @@ const sanitizeStudent = (student) => {
   return safeStudent;
 };
 
-
 const getStudent = async (req, res) => {
   // console.log("req.params.studentId: ", req.params.studentId);
   let db = database.getDb();

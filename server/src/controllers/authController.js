@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
-const { sendEmail } = require('../services/emailServics')
+const { sendEmail } = require('../services/emailServics');
 const database = require('../config/connect');
 
 const sanitizeStudent = (student) => {
@@ -11,18 +11,15 @@ const sanitizeStudent = (student) => {
 };
 
 // verify a user
-const verifyUser = async (req,res) => {
-  let decoded, student, std_id
+const verifyUser = async (req, res) => {
+  let decoded, student, std_id;
   let db = database.getDb();
   const { token } = req.params;
   try {
-
     decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded);
-
-  } catch { 
-    return res.status(400).json(
-      {
+  } catch {
+    return res.status(400).json({
       success: false,
       error: {
         code: 'TOKEN_EXPIRED',
@@ -31,7 +28,7 @@ const verifyUser = async (req,res) => {
     });
   }
 
-  if(decoded.purpose != "email-verification"){
+  if (decoded.purpose != 'email-verification') {
     return res.status(400).json({
       success: false,
       error: {
@@ -40,11 +37,11 @@ const verifyUser = async (req,res) => {
       },
     });
   }
-  
-  std_id = new ObjectId(decoded._id)
-  student = await db.collection('Student').findOne({_id: std_id});
 
-  if(student){
+  std_id = new ObjectId(decoded._id);
+  student = await db.collection('Student').findOne({ _id: std_id });
+
+  if (student) {
     await db.collection('Student').updateOne(
       { _id: std_id },
       {
@@ -52,15 +49,14 @@ const verifyUser = async (req,res) => {
           mailVerified: true,
         },
       },
-    )
+    );
 
-    return res.status(201).json(
-      {
+    return res.status(201).json({
       success: true,
       data: {
         message: 'Mail is verified',
         info: 'Add Student ID picture from dashboard to get a verified badge',
-      }
+      },
     });
   } else {
     return res.status(400).json({
@@ -71,7 +67,7 @@ const verifyUser = async (req,res) => {
       },
     });
   }
-}
+};
 
 // Register a new student
 const postRegister = async (req, res) => {
@@ -140,7 +136,7 @@ const postRegister = async (req, res) => {
     const token = jwt.sign(
       {
         _id: student._id.toString(),
-        purpose: "email-verification",
+        purpose: 'email-verification',
       },
       process.env.JWT_SECRET,
       { expiresIn: '15m' },
@@ -151,13 +147,18 @@ const postRegister = async (req, res) => {
     // console.log(student.email);
 
     try {
-      await sendEmail({to: student.email, subject: "Verify User Account", link: link, actionText: "Verify your Email"})
-      return res.status(201).json(
-        {
+      await sendEmail({
+        to: student.email,
+        subject: 'Verify User Account',
+        link: link,
+        actionText: 'Verify your Email',
+      });
+      return res.status(201).json({
         success: true,
         data: {
-          message: 'Registration successful. Please check your email to verify your account.',
-        }
+          message:
+            'Registration successful. Please check your email to verify your account.',
+        },
       });
     } catch (error) {
       console.error('Error sending response:', error);
@@ -172,8 +173,7 @@ const postLogin = async (req, res) => {
   let student = await db.collection('Student').findOne({ email: email });
 
   if (student) {
-
-    if(student.mailVerified === false){
+    if (student.mailVerified === false) {
       return res.status(401).json({
         success: false,
         error: {
@@ -191,7 +191,7 @@ const postLogin = async (req, res) => {
       const token = jwt.sign(
         {
           _id: student._id.toString(),
-          purpose: "login",
+          purpose: 'login',
         },
         process.env.JWT_SECRET,
         { expiresIn: '30d' },
@@ -252,7 +252,7 @@ const forgotPassword = async (req, res) => {
   const token = jwt.sign(
     {
       _id: student._id.toString(),
-      purpose: "password-reset",
+      purpose: 'password-reset',
     },
     process.env.JWT_SECRET,
     { expiresIn: '5m' },
@@ -260,16 +260,19 @@ const forgotPassword = async (req, res) => {
 
   let link = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
 
-  try{
+  try {
     // send email to student for password reset
-    await sendEmail({to: student.email, subject: "Reset Password", link: link, actionText: "Reset your Password"})
+    await sendEmail({
+      to: student.email,
+      subject: 'Reset Password',
+      link: link,
+      actionText: 'Reset your Password',
+    });
 
     return res.status(200).json({
       success: true,
-      message:
-        'Password reset link send to email. Expires in 5 minutes.',
+      message: 'Password reset link send to email. Expires in 5 minutes.',
     });
-
   } catch (error) {
     console.error('Error sending reset password email:', error);
     return res.status(500).json({
@@ -328,7 +331,6 @@ const resetPassword = async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   const token = req.params.token;
 
-
   if (!token) {
     return res.status(400).json({
       success: false,
@@ -353,7 +355,6 @@ const resetPassword = async (req, res) => {
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-
     return res.status(400).json({
       success: false,
       error: {
@@ -363,7 +364,7 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  if(decoded.purpose !== 'password-reset') {
+  if (decoded.purpose !== 'password-reset') {
     return res.status(400).json({
       success: false,
       error: {

@@ -32,5 +32,4 @@ authRouter.route('/change-password').patch(verifyToken, changePassword);
 // Verify email
 authRouter.route('/verify-email/:token').get(verifyUser);
 
-
 module.exports = authRouter;
