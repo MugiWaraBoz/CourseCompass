@@ -9,8 +9,9 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 })
 
-async function generateAIResponse(prompt) {
+async function generateAIResponse(prompt, key) {
     console.log("Generating AI response for prompt: ");
+    ai.apiKey = key;
     const interaction = await ai.interactions.create({
         model: "gemini-3.6-flash",
         input: prompt,
