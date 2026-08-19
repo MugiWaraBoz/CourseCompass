@@ -121,8 +121,16 @@ function LoginPage() {
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-slate-700">
-                Password
+              <span className="flex items-center justify-between gap-4">
+                <span className="text-sm font-semibold text-slate-700">
+                  Password
+                </span>
+                <Link
+                  to="/forgot-password"
+                  className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+                >
+                  Forgot password?
+                </Link>
               </span>
               <span className="relative mt-2 block">
                 <LockKeyhole

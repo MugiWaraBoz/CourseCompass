@@ -4,12 +4,14 @@ import {
   CalendarDays,
   GraduationCap,
   IdCard,
+  KeyRound,
   Mail,
   Pencil,
   Save,
   ShieldAlert,
   UserRound,
 } from "lucide-react";
+import { Link } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
 // Format registration dates without exposing raw database timestamps.
@@ -232,6 +234,28 @@ function StudentProfilePage() {
               </div>
             </form>
           )}
+        </div>
+
+        {/* Password management lives on a focused protected page. */}
+        <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
+              Security
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-slate-950">
+              Password
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Update your password using your current password.
+            </p>
+          </div>
+          <Link
+            to="/profile/change-password"
+            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full border border-slate-200 px-5 text-sm font-semibold text-slate-700 transition-colors hover:border-emerald-300 hover:text-emerald-700"
+          >
+            <KeyRound className="size-4" aria-hidden="true" />
+            Change password
+          </Link>
         </div>
       </section>
     </main>

@@ -18,6 +18,9 @@ import RegisterPage from "@/pages/RegisterPage";
 import GuestRoute from "@/components/auth/GuestRoute";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import StudentProfilePage from "@/pages/StudentProfilePage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import ChangePasswordPage from "@/pages/ChangePasswordPage";
 
 function HomePage() {
   return (
@@ -65,10 +68,34 @@ function App() {
           }
         />
         <Route
+          path="/forgot-password"
+          element={
+            <GuestRoute>
+              <ForgotPasswordPage />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/auth/reset-password/:token"
+          element={
+            <GuestRoute>
+              <ResetPasswordPage />
+            </GuestRoute>
+          }
+        />
+        <Route
           path="/profile"
           element={
             <ProtectedRoute>
               <StudentProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />
