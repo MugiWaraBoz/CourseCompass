@@ -89,8 +89,8 @@ server/
 
 # Test
 
-- [ ] Write tests for all endpoints - 5 test created
-- [ ] CI - continious integration, setup for backend
+- [ ] Write tests for all endpoints - 4 test created
+- [✅] CI - continious integration, setup for backend
 
 ---
 

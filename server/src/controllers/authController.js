@@ -1,13 +1,82 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
+const { sendEmail } = require('../services/emailServics')
 const database = require('../config/connect');
+require('dotenv').config({
+  path: '../../.env',
+  quiet: true, // Suppress warnings if the .env file is missing
+});
 
 const sanitizeStudent = (student) => {
   const safeStudent = { ...student };
   delete safeStudent.password;
   return safeStudent;
 };
+
+// verify a user
+const verifyUser = async (req,res) => {
+  let decoded, student, std_id
+  let db = database.getDb();
+  const { token } = req.params;
+  try {
+
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+
+  } catch { 
+    return res.status(400).json(
+      {
+      success: false,
+      error: {
+        code: 'TOKEN_EXPIRED',
+        message: 'Link is invalid or has expired',
+      },
+    });
+  }
+
+  if(decoded.purpose != "email-verification"){
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Purpose is invalid for this operation',
+      },
+    });
+  }
+  
+  std_id = new ObjectId(decoded._id)
+  student = await db.collection('Student').findOne({_id: std_id});
+
+  if(student){
+    await db.collection('Student').updateOne(
+      { _id: student._id },
+      {
+        $set: {
+          mailVerified: true,
+        },
+      },
+    )
+
+    return res.status(201).json(
+      {
+      success: true,
+      data: {
+        message: 'Mail is verified',
+        info: 'Add Student ID picture from dashboard to get a verified badge',
+      }
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: '404',
+        message: 'Unauthorize access',
+      },
+    });
+  }
+}
+
 // Register a new student
 const postRegister = async (req, res) => {
   let db = database.getDb();
@@ -25,8 +94,8 @@ const postRegister = async (req, res) => {
     });
   } else {
     /*
-            mail domain validation
-        */
+       mail domain validation
+    */
     let email_tag = email.split('@');
     if (email_tag[1] !== 'eastdelta.edu.bd') {
       res.status(400).json({
@@ -51,6 +120,7 @@ const postRegister = async (req, res) => {
       photoUrl: null,
       cgpa: cgpa,
       verified: false,
+      mailVerified: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       courses: [],
@@ -69,24 +139,29 @@ const postRegister = async (req, res) => {
     student = sanitizeStudent(student);
 
     /*
-            jwt token expiration time set to 30 days.
-        */
+      jwt token expiration time set to 15 days.
+    */
     const token = jwt.sign(
       {
         _id: student._id.toString(),
+        purpose: "email-verification",
       },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' },
+      { expiresIn: '15m' },
     );
+
+    let link = `process.env.FRONTEND_URL}/auth/verify-email/${token}`;
+
+    // console.log(student.email);
+
     try {
-      res.status(201).json({
+      await sendEmail({to: student.email, subject: "Verify User Account", link: link, actionText: "Verify your Email"})
+      return res.status(201).json(
+        {
         success: true,
         data: {
-          student: student,
-          message: 'Student registered successfully, please login to continue',
-          info: 'Add Student ID picture from dashboard to get a verified badge',
-        },
-        token: token,
+          message: 'Registration successful. Please check your email to verify your account.',
+        }
       });
     } catch (error) {
       console.error('Error sending response:', error);
@@ -101,6 +176,17 @@ const postLogin = async (req, res) => {
   let student = await db.collection('Student').findOne({ email: email });
 
   if (student) {
+
+    if(student.mailVerified === false){
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'EMAIL_NOT_VERIFIED',
+          message: 'Email is not verified. Please verify your email first!',
+        },
+      });
+    }
+
     let confirmation = await bcrypt.compare(password, student.password);
     if (confirmation) {
       /*
@@ -109,6 +195,7 @@ const postLogin = async (req, res) => {
       const token = jwt.sign(
         {
           _id: student._id.toString(),
+          purpose: "login",
         },
         process.env.JWT_SECRET,
         { expiresIn: '30d' },
@@ -164,6 +251,9 @@ const forgotPassword = async (req, res) => {
     return;
   }
 
+  /*
+    jwt token expiration time set to 5 minutes.
+  */
   const token = jwt.sign(
     {
       _id: student._id.toString(),
@@ -172,18 +262,32 @@ const forgotPassword = async (req, res) => {
     { expiresIn: '5m' },
   );
 
-  res.status(200).json({
-    success: true,
-    message:
-      'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/auth/reset-password/${token}`,
-  });
+  let link = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
+
+  try{
+    // send email to student for password reset
+    await sendEmail({to: student.email, subject: "Reset Password", link: link, actionText: "Reset your Password"})
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Password reset link send to email. Expires in 5 minutes.',
+    });
+
+  } catch (error) {
+    console.error('Error sending reset password email:', error);
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to send reset password email. Please try again later.',
+      },
+    });
+  }
 };
 
 // password reset
-const resetPassword = async (req, res) => {
-  let db = database.getDb();
-  const { newPassword, confirmPassword } = req.body;
+const showResetPassword = async (req, res) => {
   const token = req.params.token;
 
   if (!token) {
@@ -195,21 +299,65 @@ const resetPassword = async (req, res) => {
       },
     });
   }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.purpose !== 'password-reset') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_TOKEN_PURPOSE',
+          message: 'Token purpose is invalid for this operation',
+        },
+      });
+    }
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN',
+        message: 'Link is invalid or has expired',
+      },
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Token is valid',
+  });
+};
+
+const resetPassword = async (req, res) => {
+  let db = database.getDb();
+  const { newPassword, confirmPassword } = req.body;
+  const token = req.params.token;
+
+
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'TOKEN_MISSING',
+        message: 'Token is missing from the request',
+      },
+    });
+  }
+
   if (newPassword !== confirmPassword) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       error: {
         code: 'PASSWORD_MISMATCH',
         message: 'New password and confirm password do not match!',
       },
     });
-    return;
   }
 
-  let decoded;
+  let decoded, student;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
+
     return res.status(400).json({
       success: false,
       error: {
@@ -219,9 +367,18 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const id = new ObjectId(decoded._id);
-  const student = await db.collection('Student').findOne({ _id: id });
-  // console.error(student);
+  if(decoded.purpose !== 'password-reset') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Token purpose is invalid for this operation',
+      },
+    });
+  }
+
+  const email = decoded.email;
+  student = await db.collection('Student').findOne({ email: email });
   if (!student) {
     return res.status(404).json({
       success: false,
@@ -340,5 +497,7 @@ module.exports = {
   postLogin,
   forgotPassword,
   resetPassword,
+  showResetPassword,
   changePassword,
+  verifyUser,
 };
