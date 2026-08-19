@@ -2,14 +2,10 @@ require('dotenv').config({
   path: '../../.env',
   quiet: true,
 });
-const nodemailer = require('nodemailer');
+const { BrevoClient } = require('@getbrevo/brevo');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_SMTP_USER,
-    pass: process.env.GMAIL_SMTP_PASS,
-  },
+const brevo = new BrevoClient({
+  apiKey: process.env.BREVO_API_KEY,
 });
 
 // Verify the SMTP connection
@@ -150,12 +146,21 @@ async function sendEmail({ to, subject, link, actionText }) {
 
   try {
     // console.log(`Sending email to: ${to}, subject: ${subject}`);
-    return await transporter.sendMail({
-      from: `"CourseCompass" <${process.env.GMAIL_SMTP_USER}>`,
-      to,
+    const email = {
+      sender: {
+        name: 'CourseCompass',
+        email: process.env.BREVO_SENDER_EMAIL,
+      },
+      to: [
+        {
+          email: to,
+        },
+      ],
       subject,
-      html,
-    });
+      htmlContent: html,
+    };
+
+    return await brevo.transactionalEmails.sendTransacEmail(email);
   } catch (error) {
     console.error('Error sending email:', error);
   }
