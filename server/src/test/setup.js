@@ -1,5 +1,6 @@
 require('dotenv').config({
   path: __dirname + '/.env.test',
+  quiet: true, // Suppress warnings if the .env.test file is missing
 });
 
 const database = require('../config/connect');
@@ -11,7 +12,7 @@ const { seedDB, clearDB } = require('./seed.js');
 */
 beforeAll(async () => {
   process.env.NODE_ENV = 'test';
-  await database.connectToServer();
+  await database.connectToServer(process.env.MONGO_URL, process.env.DB_NAME);
 });
 
 beforeEach(async () => {

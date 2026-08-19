@@ -18,7 +18,7 @@ describe('GET /courses', () => {
         name: expect.any(String),
         department: expect.any(String),
         credit: expect.any(Number),
-      })
+      }),
     );
   });
 
@@ -88,7 +88,7 @@ describe('GET /courses', () => {
     expect(res.body.data.courses[0].name).toBe('Basic Electrical Engineering');
     expect(res.body.data.courses[1].name).toBe('Data Structures');
     expect(res.body.data.courses[2].name).toBe(
-      'Structured Programming Language'
+      'Structured Programming Language',
     );
   });
 
@@ -105,7 +105,7 @@ describe('GET /courses', () => {
     expect(res.body.data.courses).toHaveLength(3);
     expect(res.body.data.courses[0].name).toBe('Data Structures');
     expect(res.body.data.courses[1].name).toBe(
-      'Structured Programming Language'
+      'Structured Programming Language',
     );
   });
 
@@ -123,7 +123,7 @@ describe('GET /courses', () => {
     expect(res.body.data.courses[0].name).toBe('Data Structures');
     expect(res.body.data.courses[1].name).toBe('Basic Electrical Engineering');
     expect(res.body.data.courses[2].name).toBe(
-      'Structured Programming Language'
+      'Structured Programming Language',
     );
   });
 });
@@ -233,7 +233,7 @@ describe('GET /courses/:id/reviews', () => {
 
     if (!token) {
       throw new Error(
-        `Login succeeded but token was missing: ${JSON.stringify(res.body)}`
+        `Login succeeded but token was missing: ${JSON.stringify(res.body)}`,
       );
     }
 

@@ -9,7 +9,7 @@ async function loginTestStudent() {
 
   if (res.statusCode !== 200) {
     throw new Error(
-      `Test login failed: ${res.statusCode} ${JSON.stringify(res.body)}`
+      `Test login failed: ${res.statusCode} ${JSON.stringify(res.body)}`,
     );
   }
   return res.body.token;

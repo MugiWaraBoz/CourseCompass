@@ -1,8 +1,73 @@
-const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config({ path: '../../.env' });
+const ObjectId = require('mongodb').ObjectId;
+const { sendEmail } = require('../services/emailServics');
 const database = require('../config/connect');
+
+const sanitizeStudent = (student) => {
+  const safeStudent = { ...student };
+  delete safeStudent.password;
+  return safeStudent;
+};
+
+// verify a user
+const verifyUser = async (req, res) => {
+  let decoded, student, std_id;
+  let db = database.getDb();
+  const { token } = req.params;
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // console.log(decoded);
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'TOKEN_EXPIRED',
+        message: 'Link is invalid or has expired',
+      },
+    });
+  }
+
+  if (decoded.purpose != 'email-verification') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Purpose is invalid for this operation',
+      },
+    });
+  }
+
+  std_id = new ObjectId(decoded._id);
+  student = await db.collection('Student').findOne({ _id: std_id });
+
+  if (student) {
+    await db.collection('Student').updateOne(
+      { _id: std_id },
+      {
+        $set: {
+          mailVerified: true,
+        },
+      },
+    );
+
+    return res.status(201).json({
+      success: true,
+      data: {
+        message: 'Mail is verified',
+        info: 'Add Student ID picture from dashboard to get a verified badge',
+      },
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: '404',
+        message: 'Unauthorize access',
+      },
+    });
+  }
+};
 
 // Register a new student
 const postRegister = async (req, res) => {
@@ -21,8 +86,8 @@ const postRegister = async (req, res) => {
     });
   } else {
     /*
-            mail domain validation
-        */
+       mail domain validation
+    */
     let email_tag = email.split('@');
     if (email_tag[1] !== 'eastdelta.edu.bd') {
       res.status(400).json({
@@ -47,9 +112,11 @@ const postRegister = async (req, res) => {
       photoUrl: null,
       cgpa: cgpa,
       verified: false,
+      mailVerified: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       courses: [],
+      apiKey: null,
     };
 
     let data = await db.collection('Student').insertOne(stdObj);
@@ -61,30 +128,37 @@ const postRegister = async (req, res) => {
       ...stdObj,
     };
 
-    const sanitizeStudent = (student) => {
-      const { password, ...safeStudent } = student;
-      return safeStudent;
-    };
+    student = sanitizeStudent(student);
 
     /*
-            jwt token expiration time set to 30 days.
-        */
+      jwt token expiration time set to 15 days.
+    */
     const token = jwt.sign(
       {
         _id: student._id.toString(),
+        purpose: 'email-verification',
       },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: '15m' },
     );
+
+    let link = `${process.env.FRONTEND_URL}/auth/verify-email/${token}`;
+
+    // console.log(student.email);
+
     try {
-      res.status(201).json({
+      await sendEmail({
+        to: student.email,
+        subject: 'Verify User Account',
+        link: link,
+        actionText: 'Verify your Email',
+      });
+      return res.status(201).json({
         success: true,
         data: {
-          student: sanitizeStudent(student),
-          message: 'Student registered successfully, please login to continue',
-          info: 'Add Student ID picture from dashboard to get a verified badge',
+          message:
+            'Registration successful. Please check your email to verify your account.',
         },
-        token: token,
       });
     } catch (error) {
       console.error('Error sending response:', error);
@@ -96,9 +170,19 @@ const postRegister = async (req, res) => {
 const postLogin = async (req, res) => {
   let db = database.getDb();
   const { email, password } = req.body;
-  const student = await db.collection('Student').findOne({ email: email });
+  let student = await db.collection('Student').findOne({ email: email });
 
   if (student) {
+    if (student.mailVerified === false) {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'EMAIL_NOT_VERIFIED',
+          message: 'Email is not verified. Please verify your email first!',
+        },
+      });
+    }
+
     let confirmation = await bcrypt.compare(password, student.password);
     if (confirmation) {
       /*
@@ -107,21 +191,18 @@ const postLogin = async (req, res) => {
       const token = jwt.sign(
         {
           _id: student._id.toString(),
+          purpose: 'login',
         },
         process.env.JWT_SECRET,
-        { expiresIn: '30d' }
+        { expiresIn: '30d' },
       );
-
-      const sanitizeStudent = (student) => {
-        const { password, ...safeStudent } = student;
-        return safeStudent;
-      };
+      student = sanitizeStudent(student);
 
       let isVerified = student.verified;
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         data: {
-          student: sanitizeStudent(student),
+          student: student,
           message: 'Student logged in successfully',
           info: !isVerified
             ? 'You are not verified. Please upload your student ID from the dashboard to receive a verified badge.'
@@ -130,7 +211,7 @@ const postLogin = async (req, res) => {
         token: token,
       });
     } else {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         error: {
           code: 'INVALID_PASSWORD',
@@ -139,7 +220,7 @@ const postLogin = async (req, res) => {
       });
     }
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       error: {
         code: 'EMAIL_NOT_FOUND',
@@ -156,34 +237,95 @@ const forgotPassword = async (req, res) => {
   const student = await db.collection('Student').findOne({ email: email });
 
   if (!student) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       error: {
         code: 'EMAIL_NOT_FOUND',
         message: 'Email not found, please register first!',
       },
     });
-    return;
   }
 
+  /*
+    jwt token expiration time set to 5 minutes.
+  */
   const token = jwt.sign(
     {
-      id: student._id.toString(),
-      email,
+      _id: student._id.toString(),
+      purpose: 'password-reset',
     },
     process.env.JWT_SECRET,
-    { expiresIn: '5m' }
+    { expiresIn: '5m' },
   );
 
-  res.status(200).json({
-    success: true,
-    message:
-      'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}}`,
-  });
+  let link = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
+
+  try {
+    // send email to student for password reset
+    await sendEmail({
+      to: student.email,
+      subject: 'Reset Password',
+      link: link,
+      actionText: 'Reset your Password',
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password reset link send to email. Expires in 5 minutes.',
+    });
+  } catch (error) {
+    console.error('Error sending reset password email:', error);
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to send reset password email. Please try again later.',
+      },
+    });
+  }
 };
 
 // password reset
+const showResetPassword = async (req, res) => {
+  const token = req.params.token;
+
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'TOKEN_MISSING',
+        message: 'Token is missing from the request',
+      },
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.purpose !== 'password-reset') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_TOKEN_PURPOSE',
+          message: 'Token purpose is invalid for this operation',
+        },
+      });
+    }
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN',
+        message: 'Link is invalid or has expired',
+      },
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'Token is valid',
+  });
+};
+
 const resetPassword = async (req, res) => {
   let db = database.getDb();
   const { newPassword, confirmPassword } = req.body;
@@ -198,21 +340,21 @@ const resetPassword = async (req, res) => {
       },
     });
   }
+
   if (newPassword !== confirmPassword) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       error: {
         code: 'PASSWORD_MISMATCH',
         message: 'New password and confirm password do not match!',
       },
     });
-    return;
   }
 
-  let decoded;
+  let decoded, student;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
+  } catch {
     return res.status(400).json({
       success: false,
       error: {
@@ -222,14 +364,24 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const email = jwt.verify(token, process.env.JWT_SECRET).email;
-  const student = await db.collection('Student').findOne({ email: email });
+  if (decoded.purpose !== 'password-reset') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Token purpose is invalid for this operation',
+      },
+    });
+  }
+
+  const id = new ObjectId(decoded._id);
+  student = await db.collection('Student').findOne({ _id: id });
   if (!student) {
     return res.status(404).json({
       success: false,
       error: {
-        code: 'EMAIL_NOT_FOUND',
-        message: 'Email not found, please register first!',
+        code: 'STUDENT_NOT_FOUND',
+        message: 'Student not found',
       },
     });
   }
@@ -245,7 +397,7 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  if (decoded.id !== student._id.toString()) {
+  if (decoded._id.toString() !== student._id.toString()) {
     return res.status(403).json({
       success: false,
       error: {
@@ -259,15 +411,15 @@ const resetPassword = async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
   await db.collection('Student').updateOne(
-    { _id: student._id },
+    { _id: new ObjectId(decoded._id) },
     {
       $set: {
         password: hashedPassword,
         updatedAt: new Date(),
       },
-    }
+    },
   );
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Password reset successfully',
   });
@@ -277,8 +429,8 @@ const resetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
   let db = database.getDb();
   const { oldPassword, newPassword, confirmPassword } = req.body;
-  const email = req.student.email;
-  const student = await db.collection('Student').findOne({ email: email });
+  const id = new ObjectId(req.student._id);
+  const student = await db.collection('Student').findOne({ _id: id });
 
   if (req.student._id.toString() !== student._id.toString()) {
     return res.status(403).json({
@@ -298,7 +450,6 @@ const changePassword = async (req, res) => {
         message: 'New password and confirm password do not match!',
       },
     });
-    return;
   }
 
   let isMatch = await bcrypt.compare(oldPassword, student.password);
@@ -311,7 +462,6 @@ const changePassword = async (req, res) => {
         message: 'Invalid old password, please try again!',
       },
     });
-    return;
   }
 
   isMatch = await bcrypt.compare(newPassword, student.password);
@@ -324,7 +474,6 @@ const changePassword = async (req, res) => {
         message: 'New password cannot be the same as the old password!',
       },
     });
-    return;
   }
 
   const saltRounds = 12;
@@ -332,8 +481,9 @@ const changePassword = async (req, res) => {
 
   await db
     .collection('Student')
-    .updateOne({ email: email }, { $set: { password: hashedPassword } });
-  res.status(200).json({
+    .updateOne({ _id: id }, { $set: { password: hashedPassword } });
+
+  return res.status(200).json({
     success: true,
     message: 'Password changed successfully',
   });
@@ -344,5 +494,7 @@ module.exports = {
   postLogin,
   forgotPassword,
   resetPassword,
+  showResetPassword,
   changePassword,
+  verifyUser,
 };

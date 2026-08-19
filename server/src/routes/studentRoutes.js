@@ -1,12 +1,11 @@
 const express = require('express');
 
-const ObjectId = require('mongodb').ObjectId;
 const verifyToken = require('../middleware/authMiddleware');
 const {
   getStudent,
   getStudentReviews,
   patchStudent,
-} = require('../controllers/studentCotnroller');
+} = require('../controllers/studentController');
 
 let studentRouter = express.Router();
 

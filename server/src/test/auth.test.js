@@ -1,6 +1,15 @@
 const req = require('supertest');
 const app = require('../app');
-const bcrypt = require('bcrypt');
+
+jest.mock('../services/emailServics', () => ({
+  sendEmail: jest.fn().mockResolvedValue({ accepted: ['test@example.com'] }),
+}));
+
+const { sendEmail } = require('../services/emailServics');
+
+beforeEach(() => {
+  sendEmail.mockClear();
+});
 
 describe('POST /auth/register', () => {
   test('Register a new student', async () => {
@@ -15,6 +24,7 @@ describe('POST /auth/register', () => {
       .expect(201);
 
     expect(res.body.success).toBe(true);
+    expect(sendEmail).toHaveBeenCalledTimes(1);
   });
 
   test('Register with an already taken email', async () => {

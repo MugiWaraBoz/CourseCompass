@@ -84,10 +84,6 @@ const getCourse = async (req, res) => {
   let data = await db
     .collection('Course')
     .findOne({ _id: new ObjectId(req.params.id) });
-  let reviews = await db
-    .collection('Review')
-    .find({ courseId: new ObjectId(req.params.id) })
-    .toArray();
 
   if (data) {
     res.status(200).json({

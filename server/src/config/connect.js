@@ -1,26 +1,21 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-require('dotenv').config({ path: '../.env' }); // loads .env file
-
-if (!process.env.MONGO_URL) {
-  throw new Error(
-    'MONGO_URL is missing. Add it to server/.env before starting the server.'
-  );
-}
 
 let client;
 let database;
 
 module.exports = {
-  connectToServer: () => {
+  connectToServer: async (mongoUrl, dbName) => {
     // database = client.db("CourseCompass")
-    client = new MongoClient(process.env.MONGO_URL, {
+    client = new MongoClient(mongoUrl, {
       serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
       },
     });
-    database = client.db(process.env.DB_NAME);
+
+    await client.connect();
+    database = client.db(dbName);
   },
   getDb: () => {
     return database;
@@ -42,7 +37,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Review').createIndex(
@@ -53,7 +48,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Student').createIndex(
@@ -62,7 +57,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Student').createIndex(
@@ -71,7 +66,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('Course').createIndex(
@@ -80,7 +75,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
 
     await db.collection('CourseTake').createIndex(
@@ -90,7 +85,7 @@ module.exports = {
       },
       {
         unique: true,
-      }
+      },
     );
   },
 };
