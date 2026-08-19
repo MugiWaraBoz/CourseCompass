@@ -1,0 +1,192 @@
+[
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000001"
+    },
+    "name": "Arafat Hossain",
+    "studentIdNumber": "242001001",
+    "email": "arafat.hossain@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.42,
+    "verified": false,
+    "createdAt": {
+      "$date": "2026-01-10T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-10T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000002"
+    },
+    "name": "Nusrat Jahan",
+    "studentIdNumber": "242001002",
+    "email": "nusrat.jahan@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.78,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-11T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-11T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000003"
+    },
+    "name": "Rafi Ahmed",
+    "studentIdNumber": "242001003",
+    "email": "rafi.ahmed@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.21,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-12T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-12T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000004"
+    },
+    "name": "Mehedi Hasan",
+    "studentIdNumber": "242001004",
+    "email": "mehedi.hasan@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.56,
+    "verified": false,
+    "createdAt": {
+      "$date": "2026-01-13T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-13T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000005"
+    },
+    "name": "Tasnim Akter",
+    "studentIdNumber": "242001005",
+    "email": "tasnim.akter@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.91,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-14T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-14T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000006"
+    },
+    "name": "Sakib Khan",
+    "studentIdNumber": "242001006",
+    "email": "sakib.khan@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 2.98,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-15T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-15T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000007"
+    },
+    "name": "Maliha Rahman",
+    "studentIdNumber": "242001007",
+    "email": "maliha.rahman@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.67,
+    "verified": false,
+    "createdAt": {
+      "$date": "2026-01-16T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-16T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000008"
+    },
+    "name": "Fahim Chowdhury",
+    "studentIdNumber": "242001008",
+    "email": "fahim.chowdhury@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.14,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-17T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-17T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc00000000000000000009"
+    },
+    "name": "Anika Sultana",
+    "studentIdNumber": "242001009",
+    "email": "anika.sultana@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.84,
+    "verified": true,
+    "createdAt": {
+      "$date": "2026-01-18T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-18T00:00:00Z"
+    },
+    "courses": []
+  },
+  {
+    "_id": {
+      "$oid": "66cc0000000000000000000a"
+    },
+    "name": "Tahmid Islam",
+    "studentIdNumber": "242001010",
+    "email": "tahmid.islam@eastdelta.edu.bd",
+    "password": "$2b$10$FkY2C9hX2rHUpsGByZozROF8cFWAgJwJWHRRnoPq.8RYSmU/weEfy",
+    "photoUrl": null,
+    "cgpa": 3.35,
+    "verified": false,
+    "createdAt": {
+      "$date": "2026-01-19T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-01-19T00:00:00Z"
+    },
+    "courses": []
+  }
+]

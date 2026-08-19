@@ -1,6 +1,9 @@
 # Instructions
+
 ## Env Setup
+
 create a copy of `.env_example` and name it `.env`
+
 ```
 # Database connection string
 MONGO_URL= --your mongodb url--
@@ -12,16 +15,18 @@ API_PORT=3000 -- dont change this!!
 # JWT secret key
 JWT_SECRET= --any-text-- -/or/- --generate-a-secreat-key--
 ```
-**important: dont use space after equal(=) in env files** 
+
+**important: dont use space after equal(=) in env files**
 
 ## Server setup
+
 Run `npm install` first then,
 
-Run the server using `npm run server` 
+Run the server using `npm run server`
 
 make sure to run the command inside the `server` folder
 
-Successfull connection example 
+Successfull connection example
 
 ```
 ◇ injected env (4) from .env // tip: ⌘ suppress logs { quiet: true }
@@ -36,6 +41,7 @@ Successfull connection example
 ```
 
 ## Mock Database Setup
+
 Upload the json files accordingly inside mongoDB
 
 **Courses** - courses_seed_with_prereq_ids.json
