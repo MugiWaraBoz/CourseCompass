@@ -35,6 +35,17 @@ export async function changePassword(token, passwordData) {
   return response.data;
 }
 
+// Submit one authenticated review for a selected course and faculty member.
+export async function createReview(token, reviewData) {
+  const response = await api.post("/reviews", reviewData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
 // Verify a JWT and load the currently authenticated student profile.
 export async function getCurrentStudent(token) {
   const response = await api.get("/students/me", {

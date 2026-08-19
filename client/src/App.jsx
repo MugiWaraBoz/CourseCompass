@@ -21,6 +21,7 @@ import StudentProfilePage from "@/pages/StudentProfilePage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ChangePasswordPage from "@/pages/ChangePasswordPage";
+import WriteReviewPage from "@/pages/WriteReviewPage";
 
 function HomePage() {
   return (
@@ -96,6 +97,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ChangePasswordPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/write-review"
+          element={
+            <ProtectedRoute>
+              <WriteReviewPage />
             </ProtectedRoute>
           }
         />

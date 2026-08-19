@@ -7,6 +7,7 @@ import {
   KeyRound,
   Mail,
   Pencil,
+  PenLine,
   Save,
   ShieldAlert,
   UserRound,
@@ -255,6 +256,27 @@ function StudentProfilePage() {
           >
             <KeyRound className="size-4" aria-hidden="true" />
             Change password
+          </Link>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
+              Student feedback
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-slate-950">
+              Share your experience
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Help other students by reviewing a course and its faculty member.
+            </p>
+          </div>
+          <Link
+            to="/profile/write-review"
+            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700"
+          >
+            <PenLine className="size-4" aria-hidden="true" />
+            Write a review
           </Link>
         </div>
       </section>

@@ -8,3 +8,15 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Attach the saved student session to requests that require authentication.
+// Public endpoints continue to work because the backend can ignore this header.
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("courseCompassToken");
+
+  if (token && !config.headers.Authorization) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
