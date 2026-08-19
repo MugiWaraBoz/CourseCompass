@@ -21,6 +21,7 @@ import {
   getCoursesByIds,
 } from "@/api/courseApi";
 import { useAuth } from "@/hooks/useAuth";
+import AiCookingState from "@/components/ui/AiCookingState";
 
 // Convert an API timestamp into a readable date for review cards.
 function formatReviewDate(dateValue) {
@@ -317,6 +318,7 @@ function CourseDetailsPage() {
               <Sparkles className="size-4" aria-hidden="true" /> {aiLoading ? "Generating..." : "Generate summary"}
             </button>
           </div>
+          {aiLoading && <AiCookingState label="Gemini is preparing your course insight" />}
           {aiSummary && <p className="mt-5 rounded-2xl border border-white/70 bg-white/70 p-4 text-sm leading-7 text-slate-700">{aiSummary}</p>}
           {aiError && <p role="alert" className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{aiError}</p>}
         </div>

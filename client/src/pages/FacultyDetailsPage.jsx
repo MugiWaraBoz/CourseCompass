@@ -18,6 +18,7 @@ import { getFacultyAiSummary } from "@/api/aiApi";
 import { getCourseById } from "@/api/courseApi";
 import { getFacultyById, getFacultyReviews } from "@/api/facultyApi";
 import { useAuth } from "@/hooks/useAuth";
+import AiCookingState from "@/components/ui/AiCookingState";
 
 // Produce a dependable avatar when the backend does not provide profile photos.
 function getInitials(name = "") {
@@ -333,6 +334,7 @@ function FacultyDetailsPage() {
               <Sparkles className="size-4" aria-hidden="true" /> {aiLoading ? "Generating..." : "Generate summary"}
             </button>
           </div>
+          {aiLoading && <AiCookingState label="Gemini is preparing your faculty insight" />}
           {aiSummary && <p className="mt-5 rounded-2xl border border-white/70 bg-white/70 p-4 text-sm leading-7 text-slate-700">{aiSummary}</p>}
           {aiError && <p role="alert" className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{aiError}</p>}
         </div>

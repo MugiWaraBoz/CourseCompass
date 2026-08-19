@@ -24,6 +24,7 @@ import {
 } from "@/api/authApi";
 import { testGeminiApiKey } from "@/api/aiApi";
 import { useAuth } from "@/hooks/useAuth";
+import AiCookingState from "@/components/ui/AiCookingState";
 
 // Format registration dates without exposing raw database timestamps.
 function formatJoinDate(dateValue) {
@@ -63,8 +64,33 @@ function StudentProfilePage() {
   const [geminiSaving, setGeminiSaving] = useState(false);
   const [geminiTesting, setGeminiTesting] = useState(false);
   const [geminiRemoving, setGeminiRemoving] = useState(false);
+  const [geminiStatusLoading, setGeminiStatusLoading] = useState(true);
   const [geminiMessage, setGeminiMessage] = useState("");
   const [geminiError, setGeminiError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    testGeminiApiKey(token)
+      .then(() => {
+        if (active) setGeminiConfigured(true);
+      })
+      .catch((requestError) => {
+        if (!active) return;
+        if (requestError.response?.data?.error?.code === "API_KEY_NOT_FOUND") {
+          setGeminiConfigured(false);
+        } else {
+          setGeminiError("Gemini status could not be checked. Try the Test API Key button.");
+        }
+      })
+      .finally(() => {
+        if (active) setGeminiStatusLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [token]);
 
   useEffect(() => {
     let active = true;
@@ -244,6 +270,7 @@ function StudentProfilePage() {
     const trimmedKey = geminiKey.trim();
     setGeminiError("");
     setGeminiMessage("");
+    setGeminiStatusLoading(false);
 
     if (!trimmedKey) {
       setGeminiError("Enter a Gemini API key before saving.");
@@ -272,6 +299,9 @@ function StudentProfilePage() {
       setGeminiMessage("Gemini API key is working.");
       setGeminiConfigured(true);
     } catch (requestError) {
+      if (requestError.response?.data?.error?.code === "API_KEY_NOT_FOUND") {
+        setGeminiConfigured(false);
+      }
       setGeminiError(getGeminiError(requestError, "Gemini API key test failed."));
     } finally {
       setGeminiTesting(false);
@@ -561,7 +591,7 @@ function StudentProfilePage() {
           </form>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button type="button" onClick={handleTestGeminiKey} disabled={geminiTesting || geminiSaving} className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-200 px-4 text-sm font-semibold text-emerald-700 disabled:opacity-60">
+            <button type="button" onClick={handleTestGeminiKey} disabled={geminiTesting || geminiSaving || geminiStatusLoading} className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-200 px-4 text-sm font-semibold text-emerald-700 disabled:opacity-60">
               {geminiTesting ? "Testing..." : "Test API Key"}
             </button>
             {geminiConfigured && (
@@ -569,10 +599,18 @@ function StudentProfilePage() {
                 {geminiRemoving ? "Removing..." : "Remove key"}
               </button>
             )}
-            <span className="text-sm text-slate-500">
-              {geminiConfigured ? "API key configured" : "No API key configured"}
-            </span>
+            {geminiStatusLoading ? (
+              <span className="text-sm text-slate-500">Checking Gemini configuration...</span>
+            ) : (
+              <span className="text-sm text-slate-500">
+                {geminiConfigured ? "API key configured and ready" : "No API key configured"}
+              </span>
+            )}
           </div>
+
+          {(geminiStatusLoading || geminiTesting) && (
+            <AiCookingState label={geminiStatusLoading ? "Checking your Gemini connection" : "Testing your Gemini API key"} />
+          )}
 
           {geminiMessage && <p role="status" className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{geminiMessage}</p>}
           {geminiError && <p role="alert" className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{geminiError}</p>}
