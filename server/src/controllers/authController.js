@@ -1,16 +1,103 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const ObjectId = require('mongodb').ObjectId;
+const { sendEmail } = require('../services/emailServics')
+const database = require('../config/connect');
 require('dotenv').config({
   path: '../../.env',
   quiet: true, // Suppress warnings if the .env file is missing
 });
-const database = require('../config/connect');
 
 const sanitizeStudent = (student) => {
   const safeStudent = { ...student };
   delete safeStudent.password;
   return safeStudent;
 };
+
+// verify a user
+const verifyUser = async (req,res) => {
+  let decoded, student, std_id
+  let db = database.getDb();
+  const { token } = req.params;
+  try {
+
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+
+  } catch {
+    decoded = jwt.decode(token, process.env.JWT_SECRET)
+    // console.error(decoded);
+    std_id = new ObjectId(decoded._id)
+    student = await db.collection('Student').findOne({_id: std_id});
+    
+    const newtoken = jwt.sign(
+      {
+        _id: student._id.toString(),
+        purpose: "email-verification",
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' },
+    );
+
+    let html = `Click this link to verify your email: 
+      <a href="${process.env.FRONTEND_URL}/auth/verify-email/${newtoken}">Verify Email</a>
+      <br> link expires in 15 minutes`;
+    
+    await sendEmail({to: student.email, subject: "Verify User Account", html})
+      
+    return res.status(400).json(
+      {
+      success: false,
+      error: {
+        code: 'TOKEN_EXPIRED',
+        message: 'Link is expired sending new verification link',
+      },
+    });
+  }
+
+
+  if(decoded.purpose != "email-verification"){
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Purpose is invalid for this operation',
+      },
+    });
+  }
+  
+  std_id = new ObjectId(decoded._id)
+  student = await db.collection('Student').findOne({_id: std_id});
+
+  if(student){
+    await db.collection('Student').updateOne(
+      { _id: student._id },
+      {
+        $set: {
+          mailVerified: true,
+        },
+      },
+    )
+
+    return res.status(201).json(
+      {
+      success: true,
+      data: {
+        message: 'Mail is verified',
+        info: 'Add Student ID picture from dashboard to get a verified badge',
+      }
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: '404',
+        message: 'Unauthorize access',
+      },
+    });
+  }
+}
+
 // Register a new student
 const postRegister = async (req, res) => {
   let db = database.getDb();
@@ -28,8 +115,8 @@ const postRegister = async (req, res) => {
     });
   } else {
     /*
-            mail domain validation
-        */
+       mail domain validation
+    */
     let email_tag = email.split('@');
     if (email_tag[1] !== 'eastdelta.edu.bd') {
       res.status(400).json({
@@ -54,6 +141,7 @@ const postRegister = async (req, res) => {
       photoUrl: null,
       cgpa: cgpa,
       verified: false,
+      mailVerified: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       courses: [],
@@ -71,24 +159,31 @@ const postRegister = async (req, res) => {
     student = sanitizeStudent(student);
 
     /*
-            jwt token expiration time set to 30 days.
-        */
+      jwt token expiration time set to 15 days.
+    */
     const token = jwt.sign(
       {
         _id: student._id.toString(),
+        purpose: "email-verification",
       },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' },
+      { expiresIn: '15m' },
     );
+
+    let html = `Click this link to verify your email: 
+      <a href="${process.env.FRONTEND_URL}/auth/verify-email/${token}">Verify Email</a>
+      <br> link expires in 15 minutes`;
+
+    // console.log(student.email);
+
     try {
-      res.status(201).json({
+      await sendEmail({to: student.email, subject: "Verify User Account", html})
+      return res.status(201).json(
+        {
         success: true,
         data: {
-          student: student,
-          message: 'Student registered successfully, please login to continue',
-          info: 'Add Student ID picture from dashboard to get a verified badge',
-        },
-        token: token,
+          message: 'Registration successful. Please check your email to verify your account.',
+        }
       });
     } catch (error) {
       console.error('Error sending response:', error);
@@ -103,6 +198,17 @@ const postLogin = async (req, res) => {
   let student = await db.collection('Student').findOne({ email: email });
 
   if (student) {
+
+    if(student.mailVerified === false){
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'EMAIL_NOT_VERIFIED',
+          message: 'Email is not verified. Please verify your email first!',
+        },
+      });
+    }
+
     let confirmation = await bcrypt.compare(password, student.password);
     if (confirmation) {
       /*
@@ -111,6 +217,7 @@ const postLogin = async (req, res) => {
       const token = jwt.sign(
         {
           _id: student._id.toString(),
+          purpose: "login",
         },
         process.env.JWT_SECRET,
         { expiresIn: '30d' },
@@ -171,6 +278,7 @@ const forgotPassword = async (req, res) => {
     {
       id: student._id.toString(),
       email,
+      purpose: 'password-reset'
     },
     process.env.JWT_SECRET,
     { expiresIn: '5m' },
@@ -344,4 +452,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   changePassword,
+  verifyUser,
 };

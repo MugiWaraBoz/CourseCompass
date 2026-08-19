@@ -7,6 +7,7 @@ const {
   resetPassword,
   changePassword,
   forgotPassword,
+  verifyUser,
 } = require('../controllers/authController');
 
 let authRouter = express.Router();
@@ -25,5 +26,9 @@ authRouter.route('/reset-password/:token').post(resetPassword);
 
 // Change password
 authRouter.route('/change-password').post(verifyToken, changePassword);
+
+// Verify email
+authRouter.route('/verify-email/:token').get(verifyUser);
+
 
 module.exports = authRouter;
