@@ -1,20 +1,19 @@
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenAI } = require('@google/genai');
 // require("dotenv").config({ path: "../../.env" });
 
 // if(!process.env.GEMINI_API_KEY) {
 //     throw new Error("GEMINI_API_KEY is missing. Add it to server/.env before starting the server.");
 // }
 
-
 async function generateAIResponse(prompt, key) {
-    console.log("Generating AI response for prompt: ");
-    const ai = new GoogleGenAI({
-        apiKey: key,
-    })
-    const interaction = await ai.interactions.create({
-        model: "gemini-3.6-flash",
-        input: prompt,
-        system_instruction: `
+  console.log('Generating AI response for prompt: ');
+  const ai = new GoogleGenAI({
+    apiKey: key,
+  });
+  const interaction = await ai.interactions.create({
+    model: 'gemini-3.6-flash',
+    input: prompt,
+    system_instruction: `
             You are CourseCompass AI, a review-summarization assistant.
 
             Rules:
@@ -34,12 +33,12 @@ async function generateAIResponse(prompt, key) {
             clear common complaint), state that explicitly rather than
             guessing.
         `,
-        generation_config: {
-            temperature: 0.3,
-        }
-    });
-    console.log("AI response generated");
-    return interaction.output_text;
+    generation_config: {
+      temperature: 0.3,
+    },
+  });
+  console.log('AI response generated');
+  return interaction.output_text;
 }
 
 module.exports = generateAIResponse;

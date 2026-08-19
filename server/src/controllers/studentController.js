@@ -2,7 +2,6 @@ const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
 const { encryptApiKey } = require('../utils/encryptionUtils');
 
-
 // getStudent function to handle getting a student by studentId
 const sanitizeStudent = (student) => {
   const safeStudent = { ...student };
@@ -47,7 +46,7 @@ const patchStudent = async (req, res) => {
     $set: {
       name: name,
       cgpa: cgpa,
-      photoUrl: photoUrl
+      photoUrl: photoUrl,
     },
   };
   let data = await db
@@ -133,11 +132,13 @@ const setApiKey = async (req, res) => {
 
   let data = await db.collection('Student').findOneAndUpdate(
     { _id: new ObjectId(req.student._id) },
-    { $set: { 
-      apiKey: hashedKey,
-      updatedAt: new Date() 
-    } },
-    { returnDocument: 'after' }
+    {
+      $set: {
+        apiKey: hashedKey,
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' },
   );
 
   if (data) {
@@ -156,16 +157,17 @@ const setApiKey = async (req, res) => {
       },
     });
   }
-
-}
+};
 
 const removeApiKey = async (req, res) => {
   let db = database.getDb();
-  await db.collection('Student').findOneAndUpdate(
-    { _id: new ObjectId(req.student._id) },
-    { $unset: { apiKey: "" }, $set: { updatedAt: new Date() } },
-    { returnDocument: 'after' }
-  );
+  await db
+    .collection('Student')
+    .findOneAndUpdate(
+      { _id: new ObjectId(req.student._id) },
+      { $unset: { apiKey: '' }, $set: { updatedAt: new Date() } },
+      { returnDocument: 'after' },
+    );
 
   return res.status(200).json({
     success: true,
@@ -173,12 +175,12 @@ const removeApiKey = async (req, res) => {
       message: 'API key removed successfully',
     },
   });
-}
+};
 
 module.exports = {
   getStudent,
   patchStudent,
   getStudentReviews,
   setApiKey,
-  removeApiKey
+  removeApiKey,
 };

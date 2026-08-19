@@ -6,7 +6,7 @@ const {
   getStudentReviews,
   patchStudent,
   setApiKey,
-  removeApiKey
+  removeApiKey,
 } = require('../controllers/studentController');
 
 let studentRouter = express.Router();
