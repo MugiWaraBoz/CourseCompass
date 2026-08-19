@@ -1,6 +1,13 @@
 const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
 // getStudent function to handle getting a student by studentId
+const sanitizeStudent = (student) => {
+  const safeStudent = { ...student };
+  delete safeStudent.password;
+  return safeStudent;
+};
+
+
 const getStudent = async (req, res) => {
   // console.log("req.params.studentId: ", req.params.studentId);
   let db = database.getDb();
@@ -48,16 +55,7 @@ const patchStudent = async (req, res) => {
     });
   //   console.log(data);
 
-  let sanitizedData = {
-    _id: data._id,
-    name: data.name,
-    email: data.email,
-    cgpa: data.cgpa,
-    photoUrl: data.photoUrl,
-    verified: data.verified,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  let sanitizedData = sanitizeStudent(data);
 
   if (data) {
     res.status(200).json({
