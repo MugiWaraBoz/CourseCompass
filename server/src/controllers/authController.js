@@ -24,37 +24,16 @@ const verifyUser = async (req,res) => {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decoded);
 
-  } catch {
-    decoded = jwt.decode(token, process.env.JWT_SECRET)
-    // console.error(decoded);
-    std_id = new ObjectId(decoded._id)
-    student = await db.collection('Student').findOne({_id: std_id});
-    
-    const newtoken = jwt.sign(
-      {
-        _id: student._id.toString(),
-        purpose: "email-verification",
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '15m' },
-    );
-
-    let html = `Click this link to verify your email: 
-      <a href="${process.env.FRONTEND_URL}/auth/verify-email/${newtoken}">Verify Email</a>
-      <br> link expires in 15 minutes`;
-    
-    await sendEmail({to: student.email, subject: "Verify User Account", html})
-      
+  } catch { 
     return res.status(400).json(
       {
       success: false,
       error: {
         code: 'TOKEN_EXPIRED',
-        message: 'Link is expired sending new verification link',
+        message: 'Link is invalid or has expired',
       },
     });
   }
-
 
   if(decoded.purpose != "email-verification"){
     return res.status(400).json({
@@ -170,14 +149,12 @@ const postRegister = async (req, res) => {
       { expiresIn: '15m' },
     );
 
-    let html = `Click this link to verify your email: 
-      <a href="${process.env.FRONTEND_URL}/auth/verify-email/${token}">Verify Email</a>
-      <br> link expires in 15 minutes`;
+    let link = `process.env.FRONTEND_URL}/auth/verify-email/${token}`;
 
     // console.log(student.email);
 
     try {
-      await sendEmail({to: student.email, subject: "Verify User Account", html})
+      await sendEmail({to: student.email, subject: "Verify User Account", link: link, actionText: "Verify your Email"})
       return res.status(201).json(
         {
         success: true,
@@ -274,6 +251,9 @@ const forgotPassword = async (req, res) => {
     return;
   }
 
+  /*
+    jwt token expiration time set to 5 minutes.
+  */
   const token = jwt.sign(
     {
       id: student._id.toString(),
@@ -284,18 +264,32 @@ const forgotPassword = async (req, res) => {
     { expiresIn: '5m' },
   );
 
-  res.status(200).json({
-    success: true,
-    message:
-      'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}`,
-  });
+  let link = `${process.env.FRONTEND_URL}/auth/reset-password/${token}`;
+
+  try{
+    // send email to student for password reset
+    await sendEmail({to: student.email, subject: "Reset Password", link: link, actionText: "Reset your Password"})
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Password reset link send to email. Expires in 5 minutes.',
+    });
+
+  } catch (error) {
+    console.error('Error sending reset password email:', error);
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'EMAIL_SEND_FAILED',
+        message: 'Failed to send reset password email. Please try again later.',
+      },
+    });
+  }
 };
 
 // password reset
-const resetPassword = async (req, res) => {
-  let db = database.getDb();
-  const { newPassword, confirmPassword } = req.body;
+const showResetPassword = async (req, res) => {
   const token = req.params.token;
 
   if (!token) {
@@ -307,21 +301,65 @@ const resetPassword = async (req, res) => {
       },
     });
   }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.purpose !== 'password-reset') {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_TOKEN_PURPOSE',
+          message: 'Token purpose is invalid for this operation',
+        },
+      });
+    }
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN',
+        message: 'Link is invalid or has expired',
+      },
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Token is valid',
+  });
+};
+
+const resetPassword = async (req, res) => {
+  let db = database.getDb();
+  const { newPassword, confirmPassword } = req.body;
+  const token = req.params.token;
+
+
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'TOKEN_MISSING',
+        message: 'Token is missing from the request',
+      },
+    });
+  }
+
   if (newPassword !== confirmPassword) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       error: {
         code: 'PASSWORD_MISMATCH',
         message: 'New password and confirm password do not match!',
       },
     });
-    return;
   }
 
-  let decoded;
+  let decoded, student;
   try {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch {
+
     return res.status(400).json({
       success: false,
       error: {
@@ -331,8 +369,18 @@ const resetPassword = async (req, res) => {
     });
   }
 
+  if(decoded.purpose !== 'password-reset') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'INVALID_TOKEN_PURPOSE',
+        message: 'Token purpose is invalid for this operation',
+      },
+    });
+  }
+
   const email = decoded.email;
-  const student = await db.collection('Student').findOne({ email: email });
+  student = await db.collection('Student').findOne({ email: email });
   if (!student) {
     return res.status(404).json({
       success: false,
@@ -451,6 +499,7 @@ module.exports = {
   postLogin,
   forgotPassword,
   resetPassword,
+  showResetPassword,
   changePassword,
   verifyUser,
 };

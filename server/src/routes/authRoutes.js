@@ -5,6 +5,7 @@ const {
   postRegister,
   postLogin,
   resetPassword,
+  showResetPassword,
   changePassword,
   forgotPassword,
   verifyUser,
@@ -23,6 +24,7 @@ authRouter.route('/forgot-password').post(forgotPassword);
 
 // Reset password
 authRouter.route('/reset-password/:token').post(resetPassword);
+authRouter.route('/reset-password/:token').get(showResetPassword);
 
 // Change password
 authRouter.route('/change-password').post(verifyToken, changePassword);
