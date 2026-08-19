@@ -1,8 +1,45 @@
 const ObjectId = require("mongodb").ObjectId
-require("dotenv").config({ path: "../../.env" })
+// require("dotenv").config({ path: "../../.env" })
 const database = require("../config/connect")
 const generateAIResponse  = require("../services/aiServices")
 const  { buildReviewSummaryInput, generatePrompt }  = require("../utils/aiUtils")
+
+const testAIResponse = async (req, res) => {
+    let db = database.getDb();
+    let key = req.student.apiKey
+
+    if(!key) {
+        return res.status(403).json({
+            success: false,
+            error: {
+                code: "API_KEY_NOT_FOUND",
+                message: "API key not found. Please set your API key in your profile settings."
+            }
+        });
+    }
+
+    try {
+        const prompt = "Hello, this is a test prompt for AI response.";
+        const aiResponse = await generateAIResponse(prompt, key);
+        console.log(aiResponse);
+        res.status(200).json({
+            success: true,
+            data: {
+                response: aiResponse
+            },
+            message: "AI response generated successfully"
+        });
+    } catch (error) {
+        console.error("Error generating AI response:", error);
+        res.status(500).json({
+            success: false,
+            error: {
+                code: "AI_RESPONSE_ERROR",
+                message: "Failed to generate AI response"
+            }
+        })
+    }
+}
 
 const courseReviewAiResponse = async (req, res) => {
     let db = database.getDb();

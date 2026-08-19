@@ -1,12 +1,12 @@
 const { GoogleGenAI } = require("@google/genai");
-require("dotenv").config({ path: "../../.env" });
+// require("dotenv").config({ path: "../../.env" });
 
-if(!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is missing. Add it to server/.env before starting the server.");
-}
+// if(!process.env.GEMINI_API_KEY) {
+//     throw new Error("GEMINI_API_KEY is missing. Add it to server/.env before starting the server.");
+// }
 
 const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY
+    apiKey: "demo",
 })
 
 async function generateAIResponse(prompt, key) {

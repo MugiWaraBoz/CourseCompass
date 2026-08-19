@@ -5,6 +5,7 @@ const {
   getStudent,
   getStudentReviews,
   patchStudent,
+  setApiKey,
 } = require('../controllers/studentCotnroller');
 
 let studentRouter = express.Router();
@@ -21,5 +22,8 @@ studentRouter.route('/me').patch(verifyToken, patchStudent);
 
 // Get reviews for a specific student
 studentRouter.route('/me/reviews').get(verifyToken, getStudentReviews);
+
+// set api key for a student
+studentRouter.route('/me/apikey').post(verifyToken, setApiKey);
 
 module.exports = studentRouter;

@@ -125,8 +125,50 @@ const getStudentReviews = async (req, res) => {
   }
 };
 
+// Set API key for a student
+const setApiKey = async (req, res) => {
+  let db = database.getDb();
+  const { apiKey } = req.body;
+
+  if (!apiKey) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'API_KEY_REQUIRED',
+        message: 'API key is required',
+      },
+    });
+  }
+
+  const result = await db.collection('Student').updateOne(
+    { _id: new ObjectId(req.student._id) },
+    {
+      $set: {
+        apiKey: apiKey,
+        updatedAt: new Date(),
+      },
+    }
+  );
+
+  if (result.modifiedCount === 1) {
+    res.status(200).json({
+      success: true,
+      message: 'API key set successfully',
+    });
+  } else {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'API_KEY_SET_FAILED',
+        message: 'Failed to set API key',
+      },
+    });
+  }
+}
+
 module.exports = {
   getStudent,
   patchStudent,
   getStudentReviews,
+  setApiKey,
 };

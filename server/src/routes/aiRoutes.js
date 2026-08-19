@@ -6,10 +6,10 @@ const { testAIResponse,courseReviewAiResponse,facultyReviewAiResponse } = requir
 
 let aiRouter = express.Router();
 
-// test
-aiRouter.route("/test").get(testAIResponse);
-
 module.exports = aiRouter;
+
+// test key for verifying the AI response
+aiRouter.route("/test").get(verifyToken, testAIResponse);
 
 // for courses
 // GET /:id/reviews/ai
