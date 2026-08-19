@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config({
   path: '../../.env',
   quiet: true, // Suppress warnings if the .env file is missing
@@ -169,8 +170,7 @@ const forgotPassword = async (req, res) => {
 
   const token = jwt.sign(
     {
-      id: student._id.toString(),
-      email,
+      _id: student._id.toString(),
     },
     process.env.JWT_SECRET,
     { expiresIn: '5m' },
@@ -180,7 +180,7 @@ const forgotPassword = async (req, res) => {
     success: true,
     message:
       'Password reset request received. Please click the link below to reset your password. Expires in 5 minutes.',
-    resetLink: `${process.env.FRONTEND_URL}/reset-password/${token}`,
+    resetLink: `${process.env.FRONTEND_URL}/auth/reset-password/${token}`,
   });
 };
 
@@ -223,14 +223,15 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  const email = decoded.email;
-  const student = await db.collection('Student').findOne({ email: email });
+  const id = new ObjectId(decoded._id);
+  const student = await db.collection('Student').findOne({ _id: id });
+  // console.error(student);
   if (!student) {
     return res.status(404).json({
       success: false,
       error: {
-        code: 'EMAIL_NOT_FOUND',
-        message: 'Email not found, please register first!',
+        code: 'STUDENT_NOT_FOUND',
+        message: 'Student not found',
       },
     });
   }
@@ -246,7 +247,7 @@ const resetPassword = async (req, res) => {
     });
   }
 
-  if (decoded.id !== student._id.toString()) {
+  if (decoded._id.toString() !== student._id.toString()) {
     return res.status(403).json({
       success: false,
       error: {
@@ -260,7 +261,7 @@ const resetPassword = async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
   await db.collection('Student').updateOne(
-    { _id: student._id },
+    { _id: id },
     {
       $set: {
         password: hashedPassword,
@@ -278,8 +279,8 @@ const resetPassword = async (req, res) => {
 const changePassword = async (req, res) => {
   let db = database.getDb();
   const { oldPassword, newPassword, confirmPassword } = req.body;
-  const email = req.student.email;
-  const student = await db.collection('Student').findOne({ email: email });
+  const id = new ObjectId(req.student._id);
+  const student = await db.collection('Student').findOne({ _id: id });
 
   if (req.student._id.toString() !== student._id.toString()) {
     return res.status(403).json({
@@ -330,7 +331,7 @@ const changePassword = async (req, res) => {
 
   await db
     .collection('Student')
-    .updateOne({ email: email }, { $set: { password: hashedPassword } });
+    .updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
   res.status(200).json({
     success: true,
