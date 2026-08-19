@@ -1,10 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const ObjectId = require('mongodb').ObjectId;
-require('dotenv').config({
-  path: '../../.env',
-  quiet: true, // Suppress warnings if the .env file is missing
-});
 const database = require('../config/connect');
 
 const sanitizeStudent = (student) => {
@@ -58,6 +54,7 @@ const postRegister = async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
       courses: [],
+      apiKey: null,
     };
 
     let data = await db.collection('Student').insertOne(stdObj);
@@ -116,7 +113,6 @@ const postLogin = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: '30d' },
       );
-
       student = sanitizeStudent(student);
 
       let isVerified = student.verified;
