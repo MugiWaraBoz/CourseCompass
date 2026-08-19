@@ -1,5 +1,8 @@
 const ObjectId = require('mongodb').ObjectId;
 const database = require('../config/connect');
+const { encryptApiKey } = require('../utils/encryptionUtils');
+
+
 // getStudent function to handle getting a student by studentId
 const sanitizeStudent = (student) => {
   const safeStudent = { ...student };
@@ -17,14 +20,14 @@ const getStudent = async (req, res) => {
   let student = data;
 
   if (data) {
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: {
         student: student,
       },
     });
   } else {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       error: {
         code: 'NOT_FOUND',
@@ -44,7 +47,7 @@ const patchStudent = async (req, res) => {
     $set: {
       name: name,
       cgpa: cgpa,
-      photoUrl: photoUrl,
+      photoUrl: photoUrl
     },
   };
   let data = await db
@@ -122,8 +125,60 @@ const getStudentReviews = async (req, res) => {
   }
 };
 
+const setApiKey = async (req, res) => {
+  let db = database.getDb();
+  const { apiKey } = req.body;
+
+  let hashedKey = encryptApiKey(apiKey);
+
+  let data = await db.collection('Student').findOneAndUpdate(
+    { _id: new ObjectId(req.student._id) },
+    { $set: { 
+      apiKey: hashedKey,
+      updatedAt: new Date() 
+    } },
+    { returnDocument: 'after' }
+  );
+
+  if (data) {
+    res.status(200).json({
+      success: true,
+      data: {
+        message: 'API key set successfully',
+      },
+    });
+  } else {
+    res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Student not found',
+      },
+    });
+  }
+
+}
+
+const removeApiKey = async (req, res) => {
+  let db = database.getDb();
+  await db.collection('Student').findOneAndUpdate(
+    { _id: new ObjectId(req.student._id) },
+    { $unset: { apiKey: "" }, $set: { updatedAt: new Date() } },
+    { returnDocument: 'after' }
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      message: 'API key removed successfully',
+    },
+  });
+}
+
 module.exports = {
   getStudent,
   patchStudent,
   getStudentReviews,
+  setApiKey,
+  removeApiKey
 };
