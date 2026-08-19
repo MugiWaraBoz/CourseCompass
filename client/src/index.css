@@ -1,3 +1,4 @@
+/* This file loads Tailwind, the site font, and the shared color/style settings. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -118,6 +119,7 @@
 }
 
 @layer base {
+  /* These base rules apply the shared border, background, text, and font styles. */
   * {
     @apply border-border outline-ring/50;
     }

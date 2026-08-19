@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@google/genai": "^2.15.0",
+    "@getbrevo/brevo": "^6.0.3",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",

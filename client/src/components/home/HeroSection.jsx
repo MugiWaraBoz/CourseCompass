@@ -1,3 +1,4 @@
+// This component creates the large introduction area at the top of the homepage.
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -7,11 +8,13 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import { getCourses } from "@/api/courseApi";
+import { getFaculty } from "@/api/facultyApi";
 
 const highlights = [
-  { icon: BookOpen, value: "120+", label: "Courses" },
-  { icon: Users, value: "45+", label: "Faculty" },
+  { icon: BookOpen, key: "courses", label: "Courses" },
+  { icon: Users, key: "faculty", label: "Faculty" },
 ];
 
 const featureSlides = [
@@ -22,7 +25,7 @@ const featureSlides = [
     description: "Browse the course directory and quickly understand what each course offers.",
     details: ["Course codes", "Credit hours", "Key topics", "Prerequisites"],
     statLabel: "Courses to explore",
-    statValue: "120+",
+    statKey: "courses",
   },
   {
     icon: GraduationCap,
@@ -31,7 +34,7 @@ const featureSlides = [
     description: "Explore faculty profiles, teaching areas, and the courses connected to them.",
     details: ["Faculty profiles", "Teaching areas", "Courses taught", "Department info"],
     statLabel: "Faculty profiles",
-    statValue: "45+",
+    statKey: "faculty",
   },
   {
     icon: Sparkles,
@@ -40,14 +43,40 @@ const featureSlides = [
     description: "Bring course and faculty information together before planning your semester.",
     details: ["Simple search", "Useful filters", "Clear details", "Easy comparison"],
     statLabel: "Built for students",
-    statValue: "100%",
+    statKey: null,
   },
 ];
 
 function HeroSection() {
+  // activeSlide remembers which feature card is currently visible.
   const [activeSlide, setActiveSlide] = useState(0);
+  const [stats, setStats] = useState({ courses: null, faculty: null });
 
   useEffect(() => {
+    let active = true;
+
+    Promise.all([
+      getCourses({ page: 1, limit: 1 }),
+      getFaculty({ page: 1, limit: 1 }),
+    ])
+      .then(([courseResponse, facultyResponse]) => {
+        if (!active) return;
+        setStats({
+          courses: courseResponse?.data?.pagination?.total ?? null,
+          faculty: facultyResponse?.data?.pagination?.total ?? null,
+        });
+      })
+      .catch(() => {
+        if (active) setStats({ courses: null, faculty: null });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    // Automatically move the feature carousel every 4.5 seconds.
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % featureSlides.length);
     }, 4500);
@@ -84,27 +113,30 @@ function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <Button className="h-12 rounded-full bg-slate-900 px-6 text-base text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg">
+            <Link
+              to="/courses"
+              className="inline-flex h-12 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg"
+            >
               Explore Courses
-              <ArrowRight aria-hidden="true" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-12 rounded-full border-slate-300 bg-white/70 px-6 text-base text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+            <a
+              href="#faculty"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
             >
               Meet the Faculty
-            </Button>
+            </a>
           </div>
 
           <div className="mt-10 flex justify-center gap-8 lg:justify-start">
-            {highlights.map(({ icon: Icon, value, label }) => (
+            {highlights.map(({ icon: Icon, key, label }) => (
               <div key={label} className="flex items-center gap-3 text-left">
                 <span className="grid size-10 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <span>
                   <strong className="block text-lg font-semibold text-slate-900">
-                    {value}
+                    {stats[key] ?? "-"}
                   </strong>
                   <span className="text-sm text-slate-500">{label}</span>
                 </span>
@@ -172,7 +204,7 @@ function HeroSection() {
                           {feature.statLabel}
                         </p>
                         <p className="mt-1 text-2xl font-semibold text-emerald-950">
-                          {feature.statValue}
+                          {feature.statKey ? (stats[feature.statKey] ?? "-") : "Explore"}
                         </p>
                       </div>
                       <BookOpen className="size-7 text-emerald-600" aria-hidden="true" />

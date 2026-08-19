@@ -1,26 +1,39 @@
+// This component displays the desktop and mobile navigation at the top of the site.
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
-import { ArrowRight, Menu, X } from "lucide-react";
-import {useNavigate,Link} from "react-router-dom";
+import { ArrowRight, LogIn, LogOut, Menu, UserPlus, UserRound, X } from "lucide-react";
+import { Link, useLocation } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
-  { label: "Courses", href: "#courses" },
-  { label: "Faculty", href: "#faculty" },
-  { label: "About", href: "#about" },
+  { label: "Courses", href: "/courses" },
+  { label: "Faculty", href: "/faculty" },
+  { label: "About", href: "/#about" },
 ];
 
 function Navbar() {
+  // This value controls whether the mobile navigation menu is open or closed.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  const { student, isAuthenticated, signOut } = useAuth();
+
+  // A short name keeps the desktop navigation balanced on medium-width screens.
+  const studentFirstName = student?.name?.split(" ")[0] || "Student";
+
+  function handleLogout() {
+    signOut();
+    setIsMenuOpen(false);
+  }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
+    <header id="top" className="sticky top-0 z-50 border-b border-slate-200/80 bg-[#fbfdfb]/90 shadow-[0_1px_12px_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <nav
         className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary navigation"
       >
-        <a
-          href="#"
+        <Link
+          to="/"
           className="group flex items-center gap-3"
           aria-label="Course Compass home"
         >
@@ -41,25 +54,65 @@ function Navbar() {
               Know Your Courses. Know Your Faculty.
             </span>
           </span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-3 md:flex">
           <div className="flex items-center rounded-full border border-slate-200/80 bg-white/70 p-1 shadow-sm">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.label}
-                href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-800"
+                to={link.href}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-emerald-50 hover:text-emerald-800 ${pathname === link.href ? "bg-emerald-50 text-emerald-800" : "text-slate-600"}`}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
 
-          <Button className="h-10 rounded-full bg-slate-900 px-5 text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md">
-            Explore Courses
-            <ArrowRight aria-hidden="true" />
-          </Button>
+          {/* Authentication controls react immediately to the shared session state. */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
+              <Link
+                to="/profile/write-review"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full bg-slate-900 px-4 text-sm font-semibold text-white hover:bg-emerald-700"
+              >
+                Write a Review <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+              <Link
+                to="/profile"
+                className="inline-flex items-center gap-2 px-3 text-sm font-semibold text-slate-700 hover:text-emerald-700"
+              >
+                <UserRound className="size-4 text-emerald-700" aria-hidden="true" />
+                {studentFirstName}
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="grid size-8 place-items-center rounded-full text-slate-500 transition-colors hover:bg-red-50 hover:text-red-600"
+                aria-label="Log out"
+                title="Log out"
+              >
+                <LogOut className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-emerald-300 hover:text-emerald-700"
+              >
+                <LogIn className="size-4" aria-hidden="true" />
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="inline-flex h-10 items-center gap-2 rounded-full bg-emerald-700 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-800"
+              >
+                <UserPlus className="size-4" aria-hidden="true" />
+                Register
+              </Link>
+            </div>
+          )}
         </div>
 
         <Button
@@ -120,9 +173,9 @@ function Navbar() {
           >
             <div className="grid grid-cols-3 rounded-full border border-slate-200/80 bg-slate-50/80 p-1">
               {navLinks.map((link, index) => (
-                <a
+                <Link
                   key={link.label}
-                  href={link.href}
+                  to={link.href}
                   tabIndex={isMenuOpen ? 0 : -1}
                   style={{
                     opacity: isMenuOpen ? 1 : 0,
@@ -133,22 +186,62 @@ function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 
-            <Button
-              tabIndex={isMenuOpen ? 0 : -1}
-              style={{
-                opacity: isMenuOpen ? 1 : 0,
-                transform: isMenuOpen ? "translateY(0)" : "translateY(-1rem)",
-                transition: "opacity 450ms ease 550ms, transform 450ms ease 550ms",
-              }}
-              className="mt-3 h-11 w-full rounded-full bg-slate-900 px-5 text-white shadow-sm hover:bg-emerald-700 hover:shadow-md"
-            >
-              Explore Courses
-              <ArrowRight aria-hidden="true" />
-            </Button>
+            {/* Mobile users receive the same session controls as desktop users. */}
+            {isAuthenticated ? (
+              <div className="mt-3 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <Link
+                  to="/profile"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold text-slate-700 hover:text-emerald-700"
+                >
+                  <UserRound className="size-4 shrink-0 text-emerald-700" aria-hidden="true" />
+                  <span className="truncate">Signed in as {studentFirstName}</span>
+                </Link>
+                <Link
+                  to="/profile/write-review"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="ml-3 inline-flex shrink-0 items-center rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Write a Review
+                </Link>
+                <button
+                  type="button"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={handleLogout}
+                  className="ml-3 inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-red-600"
+                >
+                  <LogOut className="size-4" aria-hidden="true" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Link
+                  to="/login"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 hover:border-emerald-300 hover:text-emerald-700"
+                >
+                  <LogIn className="size-4" aria-hidden="true" />
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800"
+                >
+                  <UserPlus className="size-4" aria-hidden="true" />
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

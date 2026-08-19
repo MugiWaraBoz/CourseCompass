@@ -1,3 +1,5 @@
+// Reusable button component used throughout the frontend.
+// The variants below control styles such as default, outline, and ghost buttons.
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva } from "class-variance-authority";
 
