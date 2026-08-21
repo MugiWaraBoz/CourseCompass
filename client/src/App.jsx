@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom';
 
 // page imports
-import Home from './pages/home.jsx';
-import Dashboard from './pages/dashboard.jsx';
+import Home from './pages/Adminhome.jsx';
+import Dashboard from './pages/Admindashboard.jsx';
 import AllCourses from './pages/allCourse.jsx';
 import AllFaculty from './pages/allFaculty.jsx';
 import AllModerators from './pages/allModerators.jsx';
