@@ -33,9 +33,22 @@ export async function getCourseInfo(id) {
   }
 }
 
+export async function addCourse(courseData) {
+  try {
+    const response = await clientApi.post('/courses', courseData);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error?.message;
+    throw new Error(message || 'Unable to add course. Please try again.', {
+      cause: error,
+    });
+  }
+}
+
 export async function updateCourse(id, updatedData) {
   try {
-    const response = await clientApi.put(`/courses/${id}`, updatedData);
+    const response = await clientApi.patch(`/courses/${id}`, updatedData);
     // console.log(response.data);
     return response.data;
   } catch (error) {

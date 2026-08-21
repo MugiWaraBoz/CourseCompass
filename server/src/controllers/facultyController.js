@@ -220,12 +220,12 @@ const getFacultyReview = async (req, res) => {
 // add faculty
 const addFaculty = async (req, res) => {
   let db = database.getDb();
-  const { name, code, department, about, designation } = req.body;
+  const { name, shortCode, department, about, designation } = req.body;
 
+  let existingFaculty = await db
+    .collection('Faculty')
+    .findOne({ shortCode: shortCode });
   try {
-    let existingFaculty = await db
-      .collection('Faculty')
-      .findOne({ code: code });
     if (existingFaculty) {
       return res.status(400).json({
         success: false,
@@ -238,7 +238,7 @@ const addFaculty = async (req, res) => {
 
     let newFaculty = {
       name,
-      code,
+      shortCode,
       department,
       about,
       designation,
@@ -283,14 +283,14 @@ const updateFaculty = async (req, res) => {
     });
   }
 
-  const { name, code, department, about, designation } = req.body;
+  const { name, shortCode, department, about, designation } = req.body;
   try {
     await db.collection('Faculty').updateOne(
       { _id: new ObjectId(facultyId) },
       {
         $set: {
           name: name || faculty.name,
-          code: code || faculty.code,
+          shortCode: shortCode || faculty.shortCode,
           department: department || faculty.department,
           about: about || faculty.about,
           designation: designation || faculty.designation,

@@ -19,6 +19,7 @@ import { useEffect, useState } from 'react';
 import {
   getFacultys,
   getFacultyInfo,
+  addFaculty,
   updateFaculty,
   deleteFaculty,
 } from '../api/facultyApi';
@@ -118,7 +119,15 @@ function AllFaculty() {
   };
 
   const handleDelete = (facultyMember) => {
-    // Implement delete functionality here
+    try {
+      deleteFaculty(facultyMember._id);
+      setFaculty((prevFaculty) =>
+        prevFaculty.filter((f) => f._id !== facultyMember._id)
+      );
+      alert('Faculty deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting faculty:', error);
+    }
   };
 
   const submitEdit = async (e) => {
@@ -126,6 +135,7 @@ function AllFaculty() {
     try {
       await updateFaculty(selectedFaculty._id, formData);
       setSelectedFaculty(null);
+      alert('Faculty updated successfully!');
     } catch (error) {
       console.error('Error updating faculty:', error);
     }
@@ -134,6 +144,13 @@ function AllFaculty() {
   const submitNewFaculty = async (e) => {
     e.preventDefault();
     // implement the logic to submit new faculty data to the server
+    try {
+      await addFaculty(formData);
+      setNewFaculty(null);
+      alert('Faculty added successfully!');
+    } catch (error) {
+      console.error('Error adding new faculty:', error);
+    }
   };
 
   const searchIcon = {

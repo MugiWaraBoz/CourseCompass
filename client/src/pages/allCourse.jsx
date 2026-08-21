@@ -16,7 +16,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 import { useEffect, useState } from 'react';
-import { getCourses, getCourseInfo, updateCourse } from '../api/courseApi';
+import {
+  getCourses,
+  getCourseInfo,
+  updateCourse,
+  deleteCourse,
+  addCourse,
+} from '../api/courseApi';
 import { Link } from 'react-router-dom';
 
 function AllCourses() {
@@ -97,7 +103,7 @@ function AllCourses() {
       code: '',
       name: '',
       department: '',
-      credit: '',
+      credit: 0,
     });
   };
 
@@ -111,6 +117,15 @@ function AllCourses() {
 
   const handleDelete = (course) => {
     // Implement delete functionality here
+    try {
+      deleteCourse(course._id);
+      setCourses((prevCourses) =>
+        prevCourses.filter((c) => c._id !== course._id)
+      );
+      alert('Course deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting course:', error);
+    }
   };
 
   const submitEdit = async (e) => {
@@ -118,6 +133,7 @@ function AllCourses() {
     try {
       await updateCourse(selectedCourse._id, formData);
       setSelectedCourse(null);
+      alert('Course updated successfully!');
     } catch (error) {
       console.error('Error updating course:', error);
     }
@@ -126,6 +142,14 @@ function AllCourses() {
   const submitNewCourse = async (e) => {
     e.preventDefault();
     // implement the logic to submit new course data to the server
+    try {
+      await addCourse(formData);
+      setNewCourse(null);
+      // message to user that course has been added successfully
+      alert('Course added successfully!');
+    } catch (error) {
+      console.error('Error adding new course:', error);
+    }
   };
 
   const searchIcon = {
@@ -368,7 +392,8 @@ function AllCourses() {
                   Credits
                 </FieldLabel>
                 <Input
-                  name="credits"
+                  name="credit"
+                  type="text"
                   value={`${formData.credit}`}
                   placeholder="Ex: 3"
                   onChange={handleChange}

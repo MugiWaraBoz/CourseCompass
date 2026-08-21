@@ -33,9 +33,22 @@ export async function getFacultyInfo(id) {
   }
 }
 
+export async function addFaculty(facultyData) {
+  try {
+    const response = await clientApi.post('/faculty', facultyData);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error?.message;
+    throw new Error(message || 'Unable to add faculty. Please try again.', {
+      cause: error,
+    });
+  }
+}
+
 export async function updateFaculty(id, updatedData) {
   try {
-    const response = await clientApi.put(`/faculty/${id}`, updatedData);
+    const response = await clientApi.patch(`/faculty/${id}`, updatedData);
     // console.log(response.data);
     return response.data;
   } catch (error) {
