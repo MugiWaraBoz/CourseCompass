@@ -217,8 +217,145 @@ const getFacultyReview = async (req, res) => {
   }
 };
 
+// add faculty
+const addFaculty = async (req, res) => {
+  let db = database.getDb();
+  const { name, code, department, about, designation } = req.body;
+
+  try {
+    let existingFaculty = await db
+      .collection('Faculty')
+      .findOne({ code: code });
+    if (existingFaculty) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'FACULTY_EXISTS',
+          message: 'Faculty with this code already exists',
+        },
+      });
+    }
+
+    let newFaculty = {
+      name,
+      code,
+      department,
+      about,
+      designation,
+      avgRating: 0,
+      reviewCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    await db.collection('Faculty').insertOne(newFaculty);
+    return res.status(201).json({
+      success: true,
+      data: {
+        message: 'Faculty added successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while adding the faculty',
+      },
+    });
+  }
+};
+
+// Edit faculty
+const updateFaculty = async (req, res) => {
+  let db = database.getDb();
+  let facultyId = req.params.id;
+  let faculty = await db
+    .collection('Faculty')
+    .findOne({ _id: new ObjectId(facultyId) });
+  if (!faculty) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Faculty not found',
+      },
+    });
+  }
+
+  const { name, code, department, about, designation } = req.body;
+  try {
+    await db.collection('Faculty').updateOne(
+      { _id: new ObjectId(facultyId) },
+      {
+        $set: {
+          name: name || faculty.name,
+          code: code || faculty.code,
+          department: department || faculty.department,
+          about: about || faculty.about,
+          designation: designation || faculty.designation,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Faculty updated successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while updating the faculty',
+      },
+    });
+  }
+};
+// Delete faculty
+const deleteFaculty = async (req, res) => {
+  let db = database.getDb();
+  let facultyId = req.params.id;
+  let faculty = await db
+    .collection('Faculty')
+    .findOne({ _id: new ObjectId(facultyId) });
+  if (!faculty) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Faculty not found',
+      },
+    });
+  }
+
+  try {
+    await db.collection('Faculty').deleteOne({ _id: new ObjectId(facultyId) });
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Faculty deleted successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while deleting the faculty',
+      },
+    });
+  }
+};
+
 module.exports = {
   getFaculties,
   getFaculty,
   getFacultyReview,
+  updateFaculty,
+  deleteFaculty,
+  addFaculty,
 };

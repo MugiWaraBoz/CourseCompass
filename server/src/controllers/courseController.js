@@ -215,8 +215,141 @@ const getCourseReview = async (req, res) => {
   }
 };
 
+// add Course
+const addCourse = async (req, res) => {
+  let db = database.getDb();
+  const { name, code, department, credit } = req.body;
+
+  try {
+    let existingCourse = await db.collection('Course').findOne({ code: code });
+    if (existingCourse) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'COURSE_EXISTS',
+          message: 'Course with this code already exists',
+        },
+      });
+    }
+
+    let newCourse = {
+      name,
+      code,
+      department,
+      credit,
+      avgRating: 0,
+      reviewCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    await db.collection('Course').insertOne(newCourse);
+    return res.status(201).json({
+      success: true,
+      data: {
+        message: 'Course added successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while adding the course',
+      },
+    });
+  }
+};
+
+// Edit Course
+const updateCourse = async (req, res) => {
+  let db = database.getDb();
+  let courseId = req.params.id;
+  let course = await db
+    .collection('Course')
+    .findOne({ _id: new ObjectId(courseId) });
+  if (!course) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Course not found',
+      },
+    });
+  }
+
+  const { name, code, department, credit } = req.body;
+  try {
+    await db.collection('Course').updateOne(
+      { _id: new ObjectId(courseId) },
+      {
+        $set: {
+          name: name || course.name,
+          code: code || course.code,
+          department: department || course.department,
+          credit: credit || course.credit,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Course updated successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while updating the course',
+      },
+    });
+  }
+};
+// Delete Course
+const deleteCourse = async (req, res) => {
+  let db = database.getDb();
+  let courseId = req.params.id;
+  let course = await db
+    .collection('Course')
+    .findOne({ _id: new ObjectId(courseId) });
+  if (!course) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Course not found',
+      },
+    });
+  }
+
+  try {
+    await db.collection('Course').deleteOne({ _id: new ObjectId(courseId) });
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Course deleted successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while deleting the course',
+      },
+    });
+  }
+};
+
 module.exports = {
   getCourses,
   getCourse,
   getCourseReview,
+  addCourse,
+  updateCourse,
+  deleteCourse,
 };

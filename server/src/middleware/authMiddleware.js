@@ -29,4 +29,32 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-module.exports = verifyToken;
+const verifyAdmin = (req, res, next) => {
+  if (req.student && req.student.role === 'admin') {
+    next();
+  } else {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'FORBIDDEN',
+        message: 'Access denied. Admin privileges required.',
+      },
+    });
+  }
+};
+
+const verifyModerator = (req, res, next) => {
+  if (req.student && req.student.role === 'moderator') {
+    next();
+  } else {
+    return res.status(403).json({
+      success: false,
+      error: {
+        code: 'FORBIDDEN',
+        message: 'Access denied. Moderator privileges required.',
+      },
+    });
+  }
+};
+
+module.exports = { verifyToken, verifyAdmin, verifyModerator };
