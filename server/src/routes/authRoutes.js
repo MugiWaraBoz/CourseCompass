@@ -9,6 +9,7 @@ const {
   changePassword,
   forgotPassword,
   verifyUser,
+  postAdminLogin,
 } = require('../controllers/authController');
 
 let authRouter = express.Router();
@@ -18,6 +19,7 @@ authRouter.route('/register').post(postRegister);
 
 // Login a user
 authRouter.route('/login').post(postLogin);
+authRouter.route('/adminLogin').post(postAdminLogin);
 
 // Forgot password
 authRouter.route('/forgot-password').post(forgotPassword);

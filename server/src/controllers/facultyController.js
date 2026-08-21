@@ -296,7 +296,7 @@ const updateFaculty = async (req, res) => {
           designation: designation || faculty.designation,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     return res.status(200).json({

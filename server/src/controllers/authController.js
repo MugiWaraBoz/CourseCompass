@@ -231,6 +231,65 @@ const postLogin = async (req, res) => {
   }
 };
 
+// admin/moderator login
+const postAdminLogin = async (req, res) => {
+  let db = database.getDb();
+  const { email, password, role } = req.body;
+  let student = await db.collection('Student').findOne({ email: email });
+
+  if (student) {
+    if (student.role !== role) {
+      return res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Access denied. Admin or Moderator privileges required.',
+        },
+      });
+    }
+
+    let confirmation = await bcrypt.compare(password, student.password);
+    if (confirmation) {
+      /*
+                jwt token expiration time set to 30 days.
+            */
+      const token = jwt.sign(
+        {
+          _id: student._id.toString(),
+          role: student.role,
+          purpose: 'login',
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '30d' },
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          message: 'Admin/Moderator logged in successfully',
+        },
+        token: token,
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        error: {
+          code: 'INVALID_PASSWORD',
+          message: 'Invalid password, please try again!',
+        },
+      });
+    }
+  } else {
+    return res.status(401).json({
+      success: false,
+      error: {
+        code: 'EMAIL_NOT_FOUND',
+        message: 'Email not found, please register first!',
+      },
+    });
+  }
+};
+
 // forgot password
 const forgotPassword = async (req, res) => {
   let db = database.getDb();
@@ -498,4 +557,5 @@ module.exports = {
   showResetPassword,
   changePassword,
   verifyUser,
+  postAdminLogin,
 };

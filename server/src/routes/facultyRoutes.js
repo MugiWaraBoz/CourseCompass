@@ -8,11 +8,7 @@ const {
   updateFaculty,
   deleteFaculty,
 } = require('../controllers/facultyController');
-const {
-  verifyToken,
-  verifyAdmin,
-  verifyModerator,
-} = require('../middleware/authMiddleware');
+const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
 
 let facultyRouter = express.Router();
 

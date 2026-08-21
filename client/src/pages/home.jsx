@@ -1,4 +1,5 @@
-import { InputForm } from "@/components/auth/login_form.jsx";
+import { Compass } from 'lucide-react';
+import { InputForm } from '@/components/auth/login_form.jsx';
 
 function Home() {
   return (
@@ -9,7 +10,8 @@ function Home() {
         <div className="w-full">
           <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="flex h-full flex-col justify-center rounded-[28px] border border-cyan-400/15 bg-white/5 p-8 shadow-2xl shadow-cyan-950/30 backdrop-blur-sm md:p-10">
-              <div className="mb-6 inline-flex max-w-fit items-center rounded-full border border-cyan-300/30 bg-cyan-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200">
+              <div className="mb-6 inline-flex max-w-fit items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200">
+                <Compass className="h-3 w-3" />
                 Moderator portal
               </div>
 
@@ -18,8 +20,18 @@ function Home() {
               </h1>
 
               <p className="max-w-xl text-lg leading-8 text-slate-200 md:text-xl">
-                Moderate and control the CourseCompass platform with ease. Access the admin dashboard to manage courses, faculty, and student data efficiently.
+                Moderate and control the CourseCompass platform with ease.
+                Access the admin dashboard to manage courses, faculty, and
+                student data efficiently.
               </p>
+
+              <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-xs font-semibold tracking-wide text-slate-400 uppercase">
+                <span>Courses</span>
+                <span className="text-slate-700">·</span>
+                <span>Faculty</span>
+                <span className="text-slate-700">·</span>
+                <span>Students</span>
+              </div>
             </div>
 
             <div className="rounded-[28px] border border-cyan-400/15 bg-slate-950/60 p-6 shadow-2xl shadow-cyan-950/30 backdrop-blur-sm md:p-8">
@@ -28,12 +40,12 @@ function Home() {
                   Access portal
                 </p>
                 <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
-                  Admin Login
+                  Admin login
                 </h2>
               </div>
 
               <p className="mb-6 text-base leading-7 text-slate-300">
-                Please enter your credentials to access the admin/moderator dashboard.
+                Enter your credentials to access the admin/moderator dashboard.
               </p>
 
               <InputForm />

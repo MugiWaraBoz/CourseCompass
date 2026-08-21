@@ -11,10 +11,13 @@ import Home from './pages/home.jsx';
 import Dashboard from './pages/dashboard.jsx';
 import AllCourses from './pages/allCourse.jsx';
 import AllFaculty from './pages/allFaculty.jsx';
+import AllModerators from './pages/allModerators.jsx';
+import AllReviews from './pages/allReviews.jsx';
 import { Layout } from './layouts/pageContainer.jsx';
+import AllStudent from './pages/allStudent';
 
 function isAuthenticated() {
-  return localStorage.getItem('courseCompassAuth') === 'true';
+  return Boolean(localStorage.getItem('token'));
 }
 
 function ProtectedRoute({ children }) {
@@ -65,6 +68,39 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <AllFaculty />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/students"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AllStudent />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reviews"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AllReviews />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/moderators"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AllModerators />
               </Layout>
             </ProtectedRoute>
           }

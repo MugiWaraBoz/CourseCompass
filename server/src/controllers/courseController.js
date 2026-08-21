@@ -290,7 +290,7 @@ const updateCourse = async (req, res) => {
           credit: credit || course.credit,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     return res.status(200).json({

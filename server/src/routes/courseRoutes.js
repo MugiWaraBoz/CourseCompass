@@ -8,11 +8,7 @@ const {
   updateCourse,
   deleteCourse,
 } = require('../controllers/courseController');
-const {
-  verifyToken,
-  verifyAdmin,
-  verifyModerator,
-} = require('../middleware/authMiddleware');
+const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
 
 let courseRouter = express.Router();
 

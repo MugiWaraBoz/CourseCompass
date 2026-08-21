@@ -7,14 +7,22 @@ function Navbar() {
             C
           </div>
           <div>
-            <p className="text-lg font-bold tracking-tight text-white">CourseCompass</p>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-cyan-200">Admin</p>
+            <p className="text-lg font-bold tracking-tight text-white">
+              CourseCompass
+            </p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-cyan-200">
+              Admin
+            </p>
           </div>
         </div>
 
         <div className="hidden items-center gap-6 text-sm text-slate-200 md:flex">
-          <a href="/" className="transition hover:text-cyan-300">Home</a>
-          <a href="/dashboard" className="transition hover:text-cyan-300">Dashboard</a>
+          <a href="/" className="transition hover:text-cyan-300">
+            Home
+          </a>
+          <a href="/dashboard" className="transition hover:text-cyan-300">
+            Dashboard
+          </a>
         </div>
       </div>
     </nav>

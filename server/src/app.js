@@ -8,6 +8,7 @@ const faculty = require('./routes/facultyRoutes');
 const student = require('./routes/studentRoutes');
 const review = require('./routes/reviewRoutes');
 const ai = require('./routes/aiRoutes');
+const status = require('./routes/statusRoutes');
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use('/faculty', faculty);
 app.use('/students', student);
 app.use('/reviews', review);
 app.use('/ai', ai);
+app.use('/status', status);
 
 module.exports = app;
