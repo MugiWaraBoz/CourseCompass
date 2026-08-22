@@ -3,13 +3,13 @@ name: frontend CI
 on:
   push:
     paths:
-      - 'client/**'
-      - '.github/workflows/frontend-ci.yml'
+      - 'admin/**'
+      - '.github/workflows/admin-ci.yml'
 
   pull_request:
     paths:
-      - 'client/**'
-      - '.github/workflows/frontend-ci.yml'
+      - 'admin/**'
+      - '.github/workflows/admin-ci.yml'
 
 jobs:
   test:
@@ -17,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: client
+        working-directory: admin
 
     steps:
       - name: Checkout repository
