@@ -14,8 +14,11 @@ import AllFaculty from './pages/allFaculty.jsx';
 import AllModerators from './pages/allModerators.jsx';
 import AllReviews from './pages/allReviews.jsx';
 import NotFound from './pages/NotFound.jsx';
-import { Layout } from './layouts/pageContainer.jsx';
 import AllStudent from './pages/allStudent';
+import StudentReviews from './pages/StudentReviews.jsx';
+import CourseReviews from './pages/CourseReviews.jsx';
+import FacultyReviews from './pages/FacultyReviews.jsx';
+import { Layout } from './layouts/pageContainer.jsx';
 
 function isAuthenticated() {
   return Boolean(localStorage.getItem('token'));
@@ -102,6 +105,39 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <AllModerators />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reviews/student/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <StudentReviews />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reviews/course/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <CourseReviews />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reviews/faculty/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <FacultyReviews />
               </Layout>
             </ProtectedRoute>
           }

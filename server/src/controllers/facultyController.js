@@ -216,6 +216,29 @@ const getFacultyReview = async (req, res) => {
     });
   }
 };
+const getFacultyReviewsAdmin = async (req, res) => {
+  let db = database.getDb();
+  // console.log("facultyId:", req.params.id);
+  let facultyId = req.params.facultyId;
+  try {
+    const reviews = await db.collection('Review').find({ facultyId: new ObjectId(facultyId) }).toArray();
+    return res.status(200).json({
+      success: true,
+      data: {
+        reviews: reviews
+      }
+    });
+  } catch {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'No reviews found for this faculty',
+      },
+    });
+  }
+
+}
 
 // add faculty
 const addFaculty = async (req, res) => {
@@ -358,4 +381,5 @@ module.exports = {
   updateFaculty,
   deleteFaculty,
   addFaculty,
+  getFacultyReviewsAdmin,
 };

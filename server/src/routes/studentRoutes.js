@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
+const { verifyToken, verifyAdmin, verifyModerator } = require('../middleware/authMiddleware');
 const {
   getStudent,
   getStudentReviews,
@@ -10,6 +10,8 @@ const {
   getAllStudents,
   deleteStudent,
   changeVerifyStatus,
+  getStudentReviewsAdmin,
+  getAStudent
 } = require('../controllers/studentController');
 
 let studentRouter = express.Router();
@@ -18,11 +20,10 @@ let studentRouter = express.Router();
 studentRouter.route('/me').get(verifyToken, getStudent);
 
 // Get a student by studentId
-// Currently this route is not usable!!!
-// studentRouter.route("/:studentId").get(getStudent);
+studentRouter.route("/:studentId").get(verifyToken,verifyAdmin ,getAStudent);
 
 // Get all student
-studentRouter.route('/').get(getAllStudents);
+studentRouter.route('/').get(verifyToken, verifyAdmin, getAllStudents);
 
 // Delete a student by studentId
 studentRouter
@@ -39,6 +40,7 @@ studentRouter.route('/me').patch(verifyToken, patchStudent);
 
 // Get reviews for a specific student
 studentRouter.route('/me/reviews').get(verifyToken, getStudentReviews);
+studentRouter.route('/admin/:studentId/reviews').get(verifyToken, verifyAdmin, getStudentReviewsAdmin);
 
 // set api key for a student
 studentRouter.route('/me/apikey').patch(verifyToken, setApiKey);

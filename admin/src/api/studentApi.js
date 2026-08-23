@@ -20,6 +20,19 @@ export async function getAllStudent(search) {
   }
 }
 
+// grab a single student by studentId
+export async function getStudentInfo(studentId) {
+  try {
+    const response = await clientApi.get(`/students/${studentId}`);
+    return response.data;
+  } catch (error) {
+    const message = error.response?.data?.error?.message;
+    throw new Error(message || 'Unable to load student. Please try again.', {
+      cause: error,
+    });
+  }
+}
+
 // Delete a student by studentId
 export async function deleteStudent(studentId) {
   try {

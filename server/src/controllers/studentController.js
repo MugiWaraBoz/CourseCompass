@@ -35,7 +35,34 @@ const getStudent = async (req, res) => {
     });
   }
 };
+const getAStudent = async (req, res) => {
+  let db = database.getDb();
+  let studentId = req.params.studentId;
+  let data = await db.collection('Student').findOne({
+    _id: new ObjectId(studentId),
+  });
 
+  let student = data;
+  delete student.password;
+  delete student.apiKey;
+
+  if (data) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        student: student,
+      },
+    });
+  } else {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Student not found',
+      },
+    });
+  }
+};
 // patchStudent function to handle updating a student by studentId
 const patchStudent = async (req, res) => {
   let db = database.getDb();
@@ -123,6 +150,30 @@ const getStudentReviews = async (req, res) => {
     });
   }
 };
+const getStudentReviewsAdmin = async (req, res) => {
+  let db = database.getDb();
+  let studentId = req.params.studentId;
+
+  try {
+    const reviews = await db.collection('Review').find({ studentId: new ObjectId(studentId) }).toArray();
+    console.log(reviews);
+    return res.status(200).json({
+      success: true,
+      data: {
+        reviews: reviews
+      }
+    });
+  } catch {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'No reviews found for this student',
+      },
+    });
+  }
+
+}
 
 const setApiKey = async (req, res) => {
   let db = database.getDb();
@@ -303,4 +354,6 @@ module.exports = {
   removeApiKey,
   getAllStudents,
   deleteStudent,
+  getStudentReviewsAdmin,
+  getAStudent,
 };

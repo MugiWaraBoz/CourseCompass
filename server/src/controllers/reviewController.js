@@ -4,6 +4,7 @@ require('dotenv').config({
   path: '../../.env',
   quiet: true, // Suppress warnings if the .env file is missing
 });
+
 const updateReviewStatus = require('../utils/updateReviewStatus.js');
 
 // postReview function to handle posting a review
@@ -98,15 +99,15 @@ const getAllReviews = async (req, res) => {
         The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
         for anonymity, if the review is anonymous, the author name will be set to "Anonymous", otherwise it will be set to the student's name.
     */
-  let reviews = await db
-    .collection('Review')
-    .aggregate([
-      {
-        $lookup: {
-          from: 'Student',
-          localField: 'studentId',
-          foreignField: '_id',
-          as: 'student',
+   let reviews = await db
+   .collection('Review')
+   .aggregate([
+     {
+       $lookup: {
+         from: 'Student',
+         localField: 'studentId',
+         foreignField: '_id',
+         as: 'student',
         },
       },
       {
@@ -139,14 +140,16 @@ const getAllReviews = async (req, res) => {
       },
     ])
     .toArray();
-
-  // let reviews = await db.collection("Review").find({}).toArray();
-
-  if (reviews) {
-    res.status(200).json({
-      success: true,
-      data: {
-        reviews: reviews,
+    
+    // console.log(reviews)
+    
+    // let reviews = await db.collection("Review").find({}).toArray();
+    
+    if (reviews) {
+      res.status(200).json({
+        success: true,
+        data: {
+          reviews: reviews,
         message: 'Reviews fetched successfully',
       },
     });
@@ -160,6 +163,32 @@ const getAllReviews = async (req, res) => {
     });
   }
 };
+const getAllReviewsAdmin = async (req, res) => {
+  let db = database.getDb();
+
+   let reviews = await db
+   .collection('Review').find({}).toArray()
+
+   if(reviews){
+    return res.status(200).json({
+      success : "true",
+      data : {
+        reviews : reviews
+      },
+      message : "Review Fetched"
+    })
+   } else {
+    return res.status(404).json({
+      success : "false",
+      error : {
+        code : "NOT_FOUND",
+        message : "No reviews found"
+      }
+    })
+   }
+
+}
+
 
 // deleteReview function to handle deleting a review
 const deleteReview = async (req, res) => {
@@ -189,6 +218,50 @@ const deleteReview = async (req, res) => {
     await db.collection('Review').deleteOne({
       _id: reviewId,
       studentId: stdId,
+    });
+
+    await updateReviewStatus(db, review.courseId, review.facultyId);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        message: 'Review deleted successfully',
+      },
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error occurred while deleting the review',
+      },
+    });
+  }
+};
+const deleteReviewAdmin = async (req, res) => {
+  let db = database.getDb();
+  let reviewId = new ObjectId(req.params.id);
+
+  /*
+        check if the review exists 
+    */
+  let review = await db.collection('Review').findOne({
+    _id: reviewId,
+  });
+
+  if (!review) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Review not found',
+      },
+    });
+  }
+
+  try {
+    await db.collection('Review').deleteOne({
+      _id: reviewId,
     });
 
     await updateReviewStatus(db, review.courseId, review.facultyId);
@@ -282,10 +355,82 @@ const patchReview = async (req, res) => {
     });
   }
 };
+const patchReviewAdmin = async (req, res) => {
+  let db = database.getDb();
+  let reviewId = new ObjectId(req.params.id);
+  const { rating, difficultyRating, semester, comment } = req.body;
+
+  /*
+        check if the review exists 
+    */
+  let review = await db.collection('Review').findOne({
+    _id: reviewId,
+  });
+
+  if (!review) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Review not found',
+      },
+    });
+  }
+
+  let reviewObj = {
+    $set: {
+      rating: rating,
+      difficultyRating: difficultyRating,
+      semester: semester,
+      comment: comment,
+      updatedAt: new Date(),
+      updatedByAdmin: true,
+    },
+  };
+
+  await updateReviewStatus(db, reviewObj.courseId, reviewObj.facultyId);
+
+  try {
+    review = await db
+      .collection('Review')
+      .findOneAndUpdate({ _id: reviewId }, reviewObj, {
+        new: true,
+      });
+
+    if (review) {
+      res.status(200).json({
+        success: true,
+        data: {
+          review: review,
+          message: 'Review updated successfully',
+        },
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Review not found',
+        },
+      });
+    }
+  } catch {
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error occurred while updating the review',
+      },
+    });
+  }
+};
 
 module.exports = {
   postReview,
   patchReview,
   deleteReview,
   getAllReviews,
+  getAllReviewsAdmin,
+  patchReviewAdmin,
+  deleteReviewAdmin
 };
