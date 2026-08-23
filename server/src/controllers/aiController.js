@@ -6,7 +6,10 @@ const { buildReviewSummaryInput, generatePrompt } = require('../utils/aiUtils');
 const { decryptApiKey } = require('../utils/encryptionUtils');
 
 const testAIResponse = async (req, res) => {
-  let key = decryptApiKey(req.student.apiKey);
+  let db = database.getDb()
+  let student = await db.collection('Student').findOne({_id : new ObjectId(req.student._id)})
+  // console.log(student.apiKey)
+  let key = decryptApiKey(student.apiKey);
 
   if (!key) {
     return res.status(403).json({

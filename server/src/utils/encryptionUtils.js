@@ -24,6 +24,7 @@ function encryptApiKey(apiKey) {
 }
 
 function decryptApiKey({ iv, encrypted, tag }) {
+  // console.log(iv, encrypted, tag)
   const decipher = crypto.createDecipheriv(
     'aes-256-gcm',
     key,
