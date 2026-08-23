@@ -95,14 +95,14 @@ function HeroSection() {
         className="absolute -right-32 -top-20 -z-10 size-96 rounded-full bg-lime-100/60 blur-3xl"
       />
 
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-        <div className="max-w-2xl text-center lg:text-left">
+      <div className="mx-auto grid min-h-[calc(100vh-5rem)] min-w-0 max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+        <div className="min-w-0 max-w-2xl text-center lg:text-left">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-4 py-2 text-sm font-medium text-emerald-800 shadow-sm">
             <Search className="size-4" aria-hidden="true" />
             Built to make course selection easier
           </div>
 
-          <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl lg:leading-[1.08]">
+          <h1 className="max-w-full break-words text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl lg:leading-[1.08]">
             Choose courses with
             <span className="block text-emerald-700">confidence.</span>
           </h1>
@@ -112,23 +112,23 @@ function HeroSection() {
             decisions—all in one place.
           </p>
 
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+          <div className="mt-8 flex min-w-0 flex-col justify-center gap-3 sm:flex-row lg:justify-start">
             <Link
               to="/courses"
-              className="inline-flex h-12 items-center justify-center gap-1.5 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg"
+              className="inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-slate-900 px-6 text-base font-medium text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg sm:w-auto"
             >
               Explore Courses
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
             <a
               href="#faculty"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-slate-300 bg-white/70 px-6 text-base font-medium text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 sm:w-auto"
             >
               Meet the Faculty
             </a>
           </div>
 
-          <div className="mt-10 flex justify-center gap-8 lg:justify-start">
+          <div className="mt-10 flex flex-wrap justify-center gap-6 sm:gap-8 lg:justify-start">
             {highlights.map(({ icon: Icon, key, label }) => (
               <div key={label} className="flex items-center gap-3 text-left">
                 <span className="grid size-10 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
@@ -145,7 +145,7 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-lg">
+        <div className="relative mx-auto w-full min-w-0 max-w-lg">
           <div className="absolute inset-8 -z-10 rounded-[2.5rem] bg-emerald-200/60 blur-2xl" />
           <div
             className="overflow-hidden rounded-[2rem] border border-white/80 bg-white/85 shadow-[0_24px_70px_rgba(15,23,42,0.14)] backdrop-blur"
@@ -190,7 +190,7 @@ function HeroSection() {
                         {feature.details.map((detail) => (
                           <span
                             key={detail}
-                            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm"
+                            className="break-words rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm"
                           >
                             {detail}
                           </span>

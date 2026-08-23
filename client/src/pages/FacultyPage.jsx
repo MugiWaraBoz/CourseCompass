@@ -299,14 +299,14 @@ function FacultyPage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="grid min-w-0 gap-3 sm:flex sm:flex-wrap">
             <label className="relative">
               <span className="sr-only">Department</span>
               <SlidersHorizontal className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <select
                 value={department}
                 onChange={handleDepartmentChange}
-                className="h-11 min-w-48 appearance-none rounded-xl border border-slate-200 bg-white pl-11 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white pl-11 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 sm:min-w-0"
               >
                 {departments.map((item) => (
                   <option key={item}>{item}</option>
@@ -320,7 +320,7 @@ function FacultyPage() {
               <select
                 value={designation}
                 onChange={handleDesignationChange}
-                className="h-11 min-w-52 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 sm:min-w-0"
               >
                 {designations.map((item) => (
                   <option key={item}>{item}</option>
@@ -334,7 +334,7 @@ function FacultyPage() {
               <select
                 value={sort}
                 onChange={handleSortChange}
-                className="h-11 min-w-40 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 sm:min-w-0"
               >
                 <option value="name">Faculty name</option>
                 <option value="rating">Top rated</option>
@@ -377,7 +377,7 @@ function FacultyPage() {
 
             {totalPages > 1 && (
               <nav
-                className="flex items-center justify-center gap-4 border-t border-slate-200 pt-8"
+                className="flex flex-wrap items-center justify-center gap-3 border-t border-slate-200 pt-8"
                 aria-label="Faculty pagination"
               >
                 <button
@@ -389,7 +389,7 @@ function FacultyPage() {
                   <ChevronLeft className="size-4" aria-hidden="true" />
                   Previous
                 </button>
-                <span className="text-sm font-medium text-slate-600">
+                <span className="w-full text-center text-sm font-medium text-slate-600 sm:w-auto">
                   Page {page} of {totalPages}
                 </span>
                 <button

@@ -52,7 +52,7 @@ function Footer() {
             </p>
             <nav className="mt-5 grid gap-2 sm:grid-cols-3 md:grid-cols-1" aria-label="Footer navigation">
               {footerLinks.map(({ label, href, icon: Icon }) => (
-                <a key={label} href={href} className="group flex min-w-44 items-center justify-between gap-8 border-b border-white/10 py-3 text-sm text-slate-300 transition-colors hover:text-white">
+                <a key={label} href={href} className="group flex min-w-0 items-center justify-between gap-4 border-b border-white/10 py-3 text-sm text-slate-300 transition-colors hover:text-white">
                   <span className="flex items-center gap-3">
                     <Icon className="size-4 text-slate-500 transition-colors group-hover:text-emerald-400" aria-hidden="true" />
                     {label}

@@ -55,7 +55,7 @@ function FeaturedFacultySection() {
               </Link>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:w-[34rem]">
+            <div className="grid min-w-0 gap-3 sm:grid-cols-3 lg:w-full lg:max-w-[34rem]">
               {status === "loading" && [0, 1, 2].map((item) => <div key={item} className="h-28 animate-pulse rounded-2xl bg-white/10" />)}
               {status === "error" && <p role="alert" className="text-sm text-emerald-100/80 sm:col-span-3">Faculty data could not be loaded right now.</p>}
               {status === "success" && faculty.length === 0 && <p className="text-sm text-emerald-100/80 sm:col-span-3">No faculty profiles are available yet.</p>}

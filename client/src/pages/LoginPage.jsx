@@ -90,12 +90,12 @@ function LoginPage() {
           </p>
 
           <form className="mt-9 space-y-5" onSubmit={handleSubmit}>
-            {location.state?.registrationMessage && (
+            {(location.state?.registrationMessage || location.state?.verificationMessage) && (
               <p
                 role="status"
                 className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
               >
-                {location.state.registrationMessage}
+                {location.state.registrationMessage || location.state.verificationMessage}
               </p>
             )}
             <label className="block">

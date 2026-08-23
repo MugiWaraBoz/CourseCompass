@@ -585,7 +585,7 @@ function StudentProfilePage() {
                 className="mt-2 h-12 w-full rounded-2xl border border-slate-200 px-4 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
               />
             </label>
-            <button type="submit" disabled={geminiSaving || !geminiKey.trim()} className="mt-7 inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
+            <button type="submit" disabled={geminiSaving || !geminiKey.trim()} className="sm:mt-7 inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
               {geminiSaving ? "Saving..." : geminiConfigured ? "Update key" : "Save key"}
             </button>
           </form>

@@ -56,7 +56,7 @@ function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <div className="flex items-center rounded-full border border-slate-200/80 bg-white/70 p-1 shadow-sm">
             {navLinks.map((link) => (
               <Link
@@ -119,7 +119,7 @@ function Navbar() {
           type="button"
           variant="ghost"
           size="icon"
-          className="rounded-full md:hidden"
+          className="rounded-full lg:hidden"
           aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
@@ -150,11 +150,11 @@ function Navbar() {
         id="mobile-navigation"
         aria-hidden={!isMenuOpen}
         style={{
-          maxHeight: isMenuOpen ? "24rem" : "0rem",
+          maxHeight: isMenuOpen ? "calc(100vh - 5rem)" : "0rem",
           opacity: isMenuOpen ? 1 : 0,
           transition: "max-height 700ms ease-in-out, opacity 350ms ease-in-out",
         }}
-        className={`overflow-hidden bg-[#fbfdfb]/95 md:hidden ${
+        className={`overflow-y-auto bg-[#fbfdfb]/95 lg:hidden ${
           isMenuOpen
             ? "border-t border-slate-200/80 shadow-[0_12px_30px_rgba(15,23,42,0.08)]"
             : "pointer-events-none"
@@ -192,7 +192,7 @@ function Navbar() {
 
             {/* Mobile users receive the same session controls as desktop users. */}
             {isAuthenticated ? (
-              <div className="mt-3 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <Link
                   to="/profile"
                   tabIndex={isMenuOpen ? 0 : -1}
@@ -206,7 +206,7 @@ function Navbar() {
                   to="/profile/write-review"
                   tabIndex={isMenuOpen ? 0 : -1}
                   onClick={() => setIsMenuOpen(false)}
-                  className="ml-3 inline-flex shrink-0 items-center rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
                 >
                   Write a Review
                 </Link>
@@ -214,7 +214,7 @@ function Navbar() {
                   type="button"
                   tabIndex={isMenuOpen ? 0 : -1}
                   onClick={handleLogout}
-                  className="ml-3 inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-red-600"
+                  className="inline-flex min-h-10 items-center gap-1.5 text-sm font-semibold text-red-600"
                 >
                   <LogOut className="size-4" aria-hidden="true" />
                   Logout

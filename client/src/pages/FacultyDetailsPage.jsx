@@ -342,8 +342,8 @@ function FacultyDetailsPage() {
 
       {/* Public reviews are ready for real records while presenting a useful empty state today. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+        <div className="flex min-w-0 flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
               Student feedback
             </p>
@@ -354,17 +354,17 @@ function FacultyDetailsPage() {
 
           <Link
             to={`/profile/write-review?facultyId=${facultyMember._id}`}
-            className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-emerald-700"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-slate-950 px-5 text-center text-sm font-semibold text-white hover:bg-emerald-700 sm:w-auto"
           >
             Write a review
           </Link>
 
-          <label className="relative">
+          <label className="relative w-full sm:w-auto">
             <span className="sr-only">Sort faculty reviews</span>
             <select
               value={reviewSort}
               onChange={handleReviewSortChange}
-              className="h-11 min-w-44 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="h-11 w-full min-w-0 appearance-none rounded-xl border border-slate-200 bg-white px-4 pr-10 text-sm font-medium text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 sm:min-w-44"
             >
               <option value="recent">Most recent</option>
               <option value="rating">Highest rated</option>
@@ -415,7 +415,7 @@ function FacultyDetailsPage() {
                       <UserRound className="size-4" aria-hidden="true" />
                     </span>
                     <div>
-                      <p className="flex items-center gap-1.5 font-semibold text-slate-900">
+                      <p className="flex min-w-0 flex-wrap items-center gap-1.5 break-words font-semibold text-slate-900">
                         {review.author?.name || "Anonymous"}
                         {review.verified && (
                           <BadgeCheck
@@ -424,7 +424,7 @@ function FacultyDetailsPage() {
                           />
                         )}
                       </p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 break-words text-xs text-slate-500">
                         {review.semester || "Semester unavailable"} · {formatReviewDate(review.createdAt)}
                       </p>
                     </div>
