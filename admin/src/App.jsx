@@ -13,6 +13,7 @@ import AllCourses from './pages/allCourse.jsx';
 import AllFaculty from './pages/allFaculty.jsx';
 import AllModerators from './pages/allModerators.jsx';
 import AllReviews from './pages/allReviews.jsx';
+import NotFound from './pages/NotFound.jsx';
 import { Layout } from './layouts/pageContainer.jsx';
 import AllStudent from './pages/allStudent';
 
@@ -105,6 +106,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
