@@ -126,16 +126,19 @@ function CoursesPage() {
     let active = true;
     const selectedSort = sortOptions[sort];
 
-    // Show loading state immediately when filters change
-    setLoading(true);
-
-    getCourses({
-      page,
-      limit: PAGE_SIZE,
-      search: debouncedQuery || undefined,
-      department: department === "All departments" ? undefined : department,
-      ...selectedSort,
-    })
+    // Schedule the request work so loading state is updated asynchronously.
+    Promise.resolve()
+      .then(() => {
+        if (!active) return null;
+        setLoading(true);
+        return getCourses({
+          page,
+          limit: PAGE_SIZE,
+          search: debouncedQuery || undefined,
+          department: department === "All departments" ? undefined : department,
+          ...selectedSort,
+        });
+      })
       .then((response) => {
         if (!active) return;
         setCourses(response?.data?.courses ?? []);
@@ -164,25 +167,21 @@ function CoursesPage() {
   // ===== EVENT HANDLERS =====
 
   function handleQueryChange(event) {
-    setLoading(true);
     setQuery(event.target.value);
     setPage(1); // Reset to first page on new search
   }
 
   function handleDepartmentChange(event) {
-    setLoading(true);
     setDepartment(event.target.value);
     setPage(1);
   }
 
   function handleSortChange(event) {
-    setLoading(true);
     setSort(event.target.value);
     setPage(1);
   }
 
   function changePage(nextPage) {
-    setLoading(true);
     setPage(nextPage);
   }
 

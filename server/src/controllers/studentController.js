@@ -16,9 +16,11 @@ const getStudent = async (req, res) => {
     _id: new ObjectId(req.student._id),
   });
 
-  let student = data;
-
   if (data) {
+    const student = sanitizeStudent(data);
+    // Expose only whether an AI key exists; never return the encrypted key.
+    student.hasApiKey = Boolean(data.apiKey);
+
     return res.status(200).json({
       success: true,
       data: {

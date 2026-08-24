@@ -35,7 +35,7 @@ import AiCookingState from "@/components/ui/AiCookingState";
  *
  * React concepts used here:
  * - useState for local UI state (form values, loading flags, errors)
- * - useEffect for side-effects (fetching reviews, checking Gemini status)
+ * - useEffect for side-effects such as fetching reviews
  * - Conditional rendering to toggle between read-only and edit modes
  * - Derived state (e.g. review form pre-fills from the selected review)
  */
@@ -95,46 +95,17 @@ function StudentProfilePage() {
   // ===== STATE: Gemini API key management =====
   // geminiKey holds the raw key the user is typing (never persisted locally).
   const [geminiKey, setGeminiKey] = useState("");
-  // geminiConfigured is true when a valid key is already saved on the backend.
-  const [geminiConfigured, setGeminiConfigured] = useState(false);
+  // geminiConfigured tracks whether the backend reports that a key is saved.
+  const [geminiConfigured, setGeminiConfigured] = useState(Boolean(student?.hasApiKey));
   // geminiSaving / geminiTesting / geminiRemoving track request states.
   const [geminiSaving, setGeminiSaving] = useState(false);
   const [geminiTesting, setGeminiTesting] = useState(false);
   const [geminiRemoving, setGeminiRemoving] = useState(false);
-  // geminiStatusLoading is true while the initial key-check runs.
-  const [geminiStatusLoading, setGeminiStatusLoading] = useState(true);
   // geminiMessage / geminiError provide inline feedback for Gemini actions.
   const [geminiMessage, setGeminiMessage] = useState("");
   const [geminiError, setGeminiError] = useState("");
 
   // ===== EFFECTS =====
-
-  // On mount, probe the backend to see whether a Gemini key is already
-  // configured. The "active" flag prevents state updates after unmount
-  // (a common React pattern to avoid memory-leak warnings).
-  useEffect(() => {
-    let active = true;
-
-    testGeminiApiKey(token)
-      .then(() => {
-        if (active) setGeminiConfigured(true);
-      })
-      .catch((requestError) => {
-        if (!active) return;
-        if (requestError.response?.data?.error?.code === "API_KEY_NOT_FOUND") {
-          setGeminiConfigured(false);
-        } else {
-          setGeminiError("Gemini status could not be checked. Try the Test API Key button.");
-        }
-      })
-      .finally(() => {
-        if (active) setGeminiStatusLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [token]);
 
   // Fetch the current student's review history on mount.
   // Same "active" cleanup pattern as above.
@@ -336,8 +307,6 @@ function StudentProfilePage() {
     const trimmedKey = geminiKey.trim();
     setGeminiError("");
     setGeminiMessage("");
-    setGeminiStatusLoading(false);
-
     if (!trimmedKey) {
       setGeminiError("Enter a Gemini API key before saving.");
       return;
@@ -678,7 +647,7 @@ function StudentProfilePage() {
           </form>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button type="button" onClick={handleTestGeminiKey} disabled={geminiTesting || geminiSaving || geminiStatusLoading} className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-200 px-4 text-sm font-semibold text-emerald-700 disabled:opacity-60">
+            <button type="button" onClick={handleTestGeminiKey} disabled={!geminiConfigured || geminiTesting || geminiSaving} className="inline-flex h-10 items-center justify-center rounded-full border border-emerald-200 px-4 text-sm font-semibold text-emerald-700 disabled:opacity-60">
               {geminiTesting ? "Testing..." : "Test API Key"}
             </button>
             {geminiConfigured && (
@@ -686,17 +655,13 @@ function StudentProfilePage() {
                 {geminiRemoving ? "Removing..." : "Remove key"}
               </button>
             )}
-            {geminiStatusLoading ? (
-              <span className="text-sm text-slate-500">Checking Gemini configuration...</span>
-            ) : (
-              <span className="text-sm text-slate-500">
-                {geminiConfigured ? "API key configured and ready" : "No API key configured"}
-              </span>
-            )}
+            <span className="text-sm text-slate-500">
+              {geminiConfigured ? "API key configured. Select Test API Key to validate it." : "Save an API key before testing it."}
+            </span>
           </div>
 
-          {(geminiStatusLoading || geminiTesting) && (
-            <AiCookingState label={geminiStatusLoading ? "Checking your Gemini connection" : "Testing your Gemini API key"} />
+          {geminiTesting && (
+            <AiCookingState label="Testing your Gemini API key" />
           )}
 
           {geminiMessage && <p role="status" className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{geminiMessage}</p>}
