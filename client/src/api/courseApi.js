@@ -1,10 +1,16 @@
-// This file contains the request used to load courses from the backend server.
 import { api } from "@/api/client";
 
-// Load a paginated course list with optional backend query parameters.
+/**
+ * COURSE API FUNCTIONS (public - no authentication required)
+ * 
+ * These functions fetch course data from the backend.
+ * All are public endpoints - no JWT token needed.
+ */
+
+// Get paginated list of courses with optional filters
+// GET /courses
 export async function getCourses(params = {}) {
   try {
-    // Ask the backend for all available courses and return only its data.
     const response = await api.get("/courses", {
       params: { page: 1, limit: 60, sortBy: "code", order: "asc", ...params },
     });
@@ -15,7 +21,8 @@ export async function getCourses(params = {}) {
   }
 }
 
-// Load one course using its MongoDB ID.
+// Get single course by MongoDB ID
+// GET /courses/:courseId
 export async function getCourseById(courseId) {
   try {
     const response = await api.get(`/courses/${courseId}`);
@@ -26,21 +33,22 @@ export async function getCourseById(courseId) {
   }
 }
 
-// Resolve prerequisite IDs in parallel. Successful requests are preserved
-// even if one prerequisite request fails.
+// Fetch multiple courses by IDs in parallel (for prerequisites)
+// Uses Promise.allSettled so one failure doesn't break all results
 export async function getCoursesByIds(courseIds = []) {
   const results = await Promise.allSettled(
     courseIds.map((courseId) => getCourseById(courseId)),
   );
 
+  // Keep only successful results and extract course data
   return results
     .filter((result) => result.status === "fulfilled")
     .map((result) => result.value?.data?.course)
     .filter(Boolean);
 }
 
-// Load a paginated review list for one course.
-// Reading reviews is public; posting and voting will require authentication later.
+// Get paginated reviews for a specific course
+// GET /courses/:courseId/reviews
 export async function getCourseReviews(courseId, params = {}) {
   const response = await api.get(`/courses/${courseId}/reviews`, {
     params: {
@@ -51,6 +59,5 @@ export async function getCourseReviews(courseId, params = {}) {
       ...params,
     },
   });
-
   return response.data;
 }

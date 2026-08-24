@@ -1,3 +1,5 @@
+// FeaturedFacultySection.jsx - Highlights top-rated faculty on the homepage
+// Fetches 3 faculty members sorted by rating, shows loading/error/empty states
 import { useEffect, useState } from "react";
 import { ArrowRight, Star, Users } from "lucide-react";
 import { Link } from "react-router";
@@ -5,10 +7,14 @@ import { getFaculty } from "@/api/facultyApi";
 
 // This section introduces the faculty directory without highlighting any one person.
 function FeaturedFacultySection() {
+  // Store the fetched faculty array (empty until loaded)
   const [faculty, setFaculty] = useState([]);
+  // Track fetch status: "loading" | "success" | "error"
   const [status, setStatus] = useState("loading");
 
+  // useEffect with [] runs once on mount to fetch featured faculty
   useEffect(() => {
+    // "active" flag prevents setting state on an unmounted component
     let active = true;
 
     getFaculty({ page: 1, limit: 3, sortBy: "avgRating", order: "desc" })
@@ -21,6 +27,7 @@ function FeaturedFacultySection() {
         if (active) setStatus("error");
       });
 
+    // Cleanup function runs when component unmounts
     return () => {
       active = false;
     };
@@ -29,13 +36,14 @@ function FeaturedFacultySection() {
   return (
     <section id="faculty" className="overflow-hidden bg-[#f4f7f4] py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Dark green card container for visual emphasis */}
         <div className="relative overflow-hidden rounded-[2rem] border border-emerald-900/10 bg-emerald-950 px-6 py-10 text-white shadow-[0_20px_55px_rgba(6,78,59,0.16)] sm:px-10 sm:py-12 lg:px-14">
-          {/* Soft background shapes add depth without representing a real faculty member. */}
+          {/* Decorative background shapes */}
           <div className="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full border border-white/10" aria-hidden="true" />
           <div className="pointer-events-none absolute -bottom-36 right-32 size-72 rounded-full bg-emerald-700/30 blur-2xl" aria-hidden="true" />
 
           <div className="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
-            {/* Faculty directory heading and explanation. */}
+            {/* Left: heading, description, and CTA button */}
             <div className="max-w-2xl">
               <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-emerald-300">
                 <Users className="size-4" aria-hidden="true" />
@@ -55,6 +63,7 @@ function FeaturedFacultySection() {
               </Link>
             </div>
 
+            {/* Right: faculty mini-cards (loading/error/empty/success states) */}
             <div className="grid min-w-0 gap-3 sm:grid-cols-3 lg:w-full lg:max-w-[34rem]">
               {status === "loading" && [0, 1, 2].map((item) => <div key={item} className="h-28 animate-pulse rounded-2xl bg-white/10" />)}
               {status === "error" && <p role="alert" className="text-sm text-emerald-100/80 sm:col-span-3">Faculty data could not be loaded right now.</p>}

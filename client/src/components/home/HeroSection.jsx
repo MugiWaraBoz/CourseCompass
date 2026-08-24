@@ -1,4 +1,5 @@
-// This component creates the large introduction area at the top of the homepage.
+// HeroSection.jsx - The main hero/banner area at the top of the homepage
+// Displays headline, call-to-action buttons, live stats, and a feature carousel
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
@@ -12,11 +13,13 @@ import { Link } from "react-router";
 import { getCourses } from "@/api/courseApi";
 import { getFaculty } from "@/api/facultyApi";
 
+// Highlight stats shown below the CTA buttons
 const highlights = [
   { icon: BookOpen, key: "courses", label: "Courses" },
   { icon: Users, key: "faculty", label: "Faculty" },
 ];
 
+// Carousel slides - each describes a platform feature with icon, text, and details
 const featureSlides = [
   {
     icon: Search,
@@ -48,13 +51,17 @@ const featureSlides = [
 ];
 
 function HeroSection() {
-  // activeSlide remembers which feature card is currently visible.
+  // Track which carousel slide is currently visible (index into featureSlides)
   const [activeSlide, setActiveSlide] = useState(0);
+  // Store fetched counts for courses and faculty (null until loaded)
   const [stats, setStats] = useState({ courses: null, faculty: null });
 
+  // useEffect with empty deps [] runs once on mount to fetch stats from the API
   useEffect(() => {
+    // "active" flag prevents state updates if component unmounts before response
     let active = true;
 
+    // Fetch both course and faculty counts in parallel
     Promise.all([
       getCourses({ page: 1, limit: 1 }),
       getFaculty({ page: 1, limit: 1 }),
@@ -70,22 +77,25 @@ function HeroSection() {
         if (active) setStats({ courses: null, faculty: null });
       });
 
+    // Cleanup: mark component as inactive so stale responses are ignored
     return () => {
       active = false;
     };
   }, []);
 
+  // Auto-advance carousel every 4.5 seconds using setInterval
   useEffect(() => {
-    // Automatically move the feature carousel every 4.5 seconds.
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % featureSlides.length);
     }, 4500);
 
+    // Cleanup: clear interval when component unmounts to prevent memory leaks
     return () => window.clearInterval(intervalId);
   }, []);
 
   return (
     <section className="relative isolate overflow-hidden bg-[#fbfdfb]">
+      {/* Decorative blurred background circles */}
       <div
         aria-hidden="true"
         className="absolute -left-32 top-20 -z-10 size-80 rounded-full bg-emerald-100/70 blur-3xl"
@@ -96,6 +106,7 @@ function HeroSection() {
       />
 
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] min-w-0 max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
+        {/* Left column: headline, description, CTA buttons, and live stats */}
         <div className="min-w-0 max-w-2xl text-center lg:text-left">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-4 py-2 text-sm font-medium text-emerald-800 shadow-sm">
             <Search className="size-4" aria-hidden="true" />
@@ -112,6 +123,7 @@ function HeroSection() {
             decisions—all in one place.
           </p>
 
+          {/* Primary and secondary call-to-action buttons */}
           <div className="mt-8 flex min-w-0 flex-col justify-center gap-3 sm:flex-row lg:justify-start">
             <Link
               to="/courses"
@@ -128,6 +140,7 @@ function HeroSection() {
             </a>
           </div>
 
+          {/* Live stats - values come from API, show "-" while loading */}
           <div className="mt-10 flex flex-wrap justify-center gap-6 sm:gap-8 lg:justify-start">
             {highlights.map(({ icon: Icon, key, label }) => (
               <div key={label} className="flex items-center gap-3 text-left">
@@ -145,6 +158,7 @@ function HeroSection() {
           </div>
         </div>
 
+        {/* Right column: feature carousel */}
         <div className="relative mx-auto w-full min-w-0 max-w-lg">
           <div className="absolute inset-8 -z-10 rounded-[2.5rem] bg-emerald-200/60 blur-2xl" />
           <div
@@ -153,6 +167,7 @@ function HeroSection() {
             aria-roledescription="carousel"
             aria-label="Course Compass features"
           >
+            {/* Slides container - translateX shifts to show the active slide */}
             <div
               className="flex transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${activeSlide * 100}%)` }}
@@ -214,6 +229,7 @@ function HeroSection() {
               })}
             </div>
 
+            {/* Carousel dot indicators - click to jump to a specific slide */}
             <div className="flex items-center justify-center gap-2 border-t border-slate-100 px-5 py-4">
               {featureSlides.map((feature, index) => (
                 <button

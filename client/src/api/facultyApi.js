@@ -1,7 +1,14 @@
-// Frontend requests for the public faculty endpoints.
 import { api } from "@/api/client";
 
-// Load a paginated faculty list with optional backend query parameters.
+/**
+ * FACULTY API FUNCTIONS (public - no authentication required)
+ * 
+ * These functions fetch faculty data from the backend.
+ * All are public endpoints - no JWT token needed.
+ */
+
+// Get paginated list of faculty with optional filters
+// GET /faculty
 export async function getFaculty(params = {}) {
   try {
     const response = await api.get("/faculty", {
@@ -13,7 +20,6 @@ export async function getFaculty(params = {}) {
         ...params,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error("Failed to load faculty:", error);
@@ -21,12 +27,12 @@ export async function getFaculty(params = {}) {
   }
 }
 
-// Load the complete public profile for one faculty member by MongoDB ID.
+// Get single faculty member by MongoDB ID
+// GET /faculty/:facultyId
 export async function getFacultyById(facultyId) {
   try {
     const response = await api.get(`/faculty/${facultyId}`);
-
-    // This endpoint places the faculty object directly inside `data`.
+    // This endpoint returns faculty object directly in response.data
     return response.data;
   } catch (error) {
     console.error(`Failed to load faculty member ${facultyId}:`, error);
@@ -34,8 +40,8 @@ export async function getFacultyById(facultyId) {
   }
 }
 
-// Load public reviews for one faculty member.
-// Review submission is intentionally excluded until JWT authentication is added.
+// Get paginated reviews for a specific faculty member
+// GET /faculty/:facultyId/reviews
 export async function getFacultyReviews(facultyId, params = {}) {
   try {
     const response = await api.get(`/faculty/${facultyId}/reviews`, {
@@ -47,7 +53,6 @@ export async function getFacultyReviews(facultyId, params = {}) {
         ...params,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(`Failed to load reviews for faculty ${facultyId}:`, error);
