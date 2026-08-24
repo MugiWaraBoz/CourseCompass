@@ -222,7 +222,12 @@ const deleteReview = async (req, res) => {
       studentId: stdId,
     });
 
-    await updateReviewStatus(db,review.studentId, review.courseId, review.facultyId);
+    await updateReviewStatus(
+      db,
+      review.studentId,
+      review.courseId,
+      review.facultyId,
+    );
 
     res.status(200).json({
       success: true,
@@ -266,7 +271,12 @@ const deleteReviewAdmin = async (req, res) => {
       _id: reviewId,
     });
 
-    await updateReviewStatus(db,review.studentId, review.courseId, review.facultyId);
+    await updateReviewStatus(
+      db,
+      review.studentId,
+      review.courseId,
+      review.facultyId,
+    );
 
     res.status(200).json({
       success: true,
@@ -321,7 +331,12 @@ const patchReview = async (req, res) => {
     },
   };
 
-  await updateReviewStatus(db, reviewObj.studentId, reviewObj.courseId, reviewObj.facultyId);
+  await updateReviewStatus(
+    db,
+    reviewObj.studentId,
+    reviewObj.courseId,
+    reviewObj.facultyId,
+  );
 
   try {
     review = await db
@@ -390,7 +405,12 @@ const patchReviewAdmin = async (req, res) => {
     },
   };
 
-  await updateReviewStatus(db, reviewObj.studentId, reviewObj.courseId, reviewObj.facultyId);
+  await updateReviewStatus(
+    db,
+    reviewObj.studentId,
+    reviewObj.courseId,
+    reviewObj.facultyId,
+  );
 
   try {
     review = await db
