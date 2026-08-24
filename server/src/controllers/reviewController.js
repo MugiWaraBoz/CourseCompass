@@ -297,73 +297,59 @@ const deleteReviewAdmin = async (req, res) => {
 
 // patchReview function to handle updating a review
 const patchReview = async (req, res) => {
-  let db = database.getDb();
-  let reviewId = new ObjectId(req.params.id);
-  let stdId = new ObjectId(req.student._id);
-  console.log('reviewId: ', reviewId);
-  const { rating, difficultyRating, semester, comment } = req.body;
-
-  /*
-        check if the review exists and belongs to the student
-    */
-  let review = await db.collection('Review').findOne({
-    _id: reviewId,
-    studentId: stdId,
-  });
-
-  if (req.student._id.toString() !== review.studentId.toString()) {
-    return res.status(403).json({
-      success: false,
-      error: {
-        code: 'FORBIDDEN',
-        message: 'You are not authorized to update this review',
-      },
-    });
-  }
-
-  let reviewObj = {
-    $set: {
-      rating: rating,
-      difficultyRating: difficultyRating,
-      semester: semester,
-      comment: comment,
-      updatedAt: new Date(),
-    },
-  };
-
-  await updateReviewStatus(
-    db,
-    reviewObj.studentId,
-    reviewObj.courseId,
-    reviewObj.facultyId,
-  );
-
   try {
-    review = await db
-      .collection('Review')
-      .findOneAndUpdate({ _id: reviewId, studentId: stdId }, reviewObj, {
-        new: true,
-      });
+    const db = database.getDb();
+    const reviewId = new ObjectId(req.params.id);
+    const studentId = new ObjectId(req.student._id);
+    const { rating, difficultyRating, semester, comment } = req.body;
 
-    if (review) {
-      res.status(200).json({
-        success: true,
-        data: {
-          review: review,
-          message: 'Review updated successfully',
-        },
-      });
-    } else {
-      res.status(404).json({
+    const review = await db.collection('Review').findOne({
+      _id: reviewId,
+      studentId,
+    });
+
+    if (!review) {
+      return res.status(404).json({
         success: false,
         error: {
           code: 'NOT_FOUND',
-          message: 'Review not found',
+          message: 'Review not found or you do not have permission to update it',
         },
       });
     }
+
+    const updatedReview = await db
+      .collection('Review')
+      .findOneAndUpdate(
+        { _id: reviewId, studentId },
+        {
+          $set: {
+            rating,
+            difficultyRating,
+            semester,
+            comment,
+            updatedAt: new Date(),
+          },
+        },
+        { returnDocument: 'after' },
+      );
+
+    await updateReviewStatus(
+      db,
+      updatedReview.studentId,
+      updatedReview.courseId,
+      updatedReview.facultyId,
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        review: updatedReview,
+        message: 'Review updated successfully',
+      },
+    });
   } catch {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'INTERNAL_SERVER_ERROR',

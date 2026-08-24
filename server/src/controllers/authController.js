@@ -118,6 +118,7 @@ const postRegister = async (req, res) => {
       courses: [],
       apiKey: null,
       role: 'student',
+      reviewCount: 0,
     };
 
     let data = await db.collection('Student').insertOne(stdObj);

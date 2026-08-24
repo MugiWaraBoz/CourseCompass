@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./misc/course_compass_logo.png" alt="CourseCompass logo" width="500">
+<img src="./misc/course_compass_logo.png" alt="CourseCompass logo" width="500" style="border-radius: 16px;">
 
 ![React]
 ![Vite]
@@ -12,7 +12,7 @@
 ![JWT]
 ![Axios]
 
-[Frontend](https://course-compass-lcmf.vercel.app/) · [Admin portal](https://course-compass-admin-portal.vercel.app/) · [Backend](https://coursecompass-backend-8pe2.onrender.com)
+[Frontend](https://course-compass-live.vercel.app/) · [Admin portal](https://course-compass-admin-portal.vercel.app/) · [Backend](https://coursecompass-backend-8pe2.onrender.com)
 
 _A modern course-review platform for university students._
 
@@ -22,15 +22,16 @@ _A modern course-review platform for university students._
 
 CourseCompass helps students make informed academic decisions through transparent course and faculty reviews. Students can discover courses, rate instructors, share experiences, and post anonymously when they choose.
 
-## Tech stack
-
-| Component | Technology | Purpose |
-| --- | --- | --- |
-| Frontend | React, Vite, Tailwind CSS, shadcn/ui | Student-facing web app |
-| Admin portal | React, Vite, Tailwind CSS | Administration interface |
-| Backend | Node.js, Express | REST API and server-side logic |
-| Database | MongoDB | Stores users, courses, faculty, reviews, and votes |
-| Authentication | JWT and bcrypt | Session and password security |
+## Tech Stack
+| **Component** | **Technology** | **Description** |
+| :------------ | :------------- | :-------------- |
+| **Frontend and Admin Poral** | <img src="https://skillicons.dev/icons?i=react,vite,tailwind" height="40" /> <img src="https://avatars.githubusercontent.com/u/139895814?s=200&v=4" height="40" /> | Modern and responsive user interface. |
+| **Backend** | <img src="https://skillicons.dev/icons?i=nodejs,express" height="40" /> | RESTful API and server-side logic. |
+| **Database** | <img src="https://skillicons.dev/icons?i=mongodb" height="40" /> | MongoDB stores application data and reviews. |
+| **Authentication** | <img src="https://skillicons.dev/icons?i=nodejs" height="40" /> <img src="https://jwt.io/img/pic_logo.svg" height="40" /> | JWT for Secure authentication and password hashing. |
+| **Testing** | <img src="https://skillicons.dev/icons?i=jest" height="40" /> | Jest+Supertest for API testing and endpoint validation. |
+| **Development** | <img src="https://skillicons.dev/icons?i=git,github,postman" height="40" /> | Version control, development, and API testing. |
+| **Deploy** | <img src="https://skillicons.dev/icons?i=vercel" height="40" /><img src="./misc/Readme/Render logomark - Black.jpg" alt="CourseCompass logo" width="40" style="border-radius: 8px; padding-left: 2px;" /> | Version control, development, and API testing. |
 
 ## Features
 

@@ -34,6 +34,7 @@ function AllCourses() {
   const [alertMessage, setAlertMessage] = useState(null);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [formData, setFormData] = useState(emptyForm);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 400);
@@ -105,12 +106,30 @@ function AllCourses() {
 
   const submitEdit = async (e) => {
     e.preventDefault();
+
+    if (!selectedCourse || isSaving) return;
+
+    setIsSaving(true);
     try {
-      await updateCourse(selectedCourse._id, formData);
+      const updatedCourse = {
+        ...selectedCourse,
+        ...formData,
+        credit: Number(formData.credit),
+      };
+
+      await updateCourse(selectedCourse._id, updatedCourse);
+      setCourses((prev) =>
+        prev.map((course) =>
+          course._id === selectedCourse._id ? updatedCourse : course,
+        ),
+      );
       setSelectedCourse(null);
       notify('Course updated');
     } catch (err) {
       console.error('Error updating course:', err);
+      notify(err.message || 'Unable to update course');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -268,7 +287,10 @@ function AllCourses() {
       {/* EDIT PANEL */}
       {selectedCourse && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-3xl border border-cyan-400/20 bg-slate-900 p-8 shadow-2xl">
+          <form
+            className="w-full max-w-2xl rounded-3xl border border-cyan-400/20 bg-slate-900 p-8 shadow-2xl"
+            onSubmit={submitEdit}
+          >
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <Coord tone="cyan">{selectedCourse.code}</Coord>
@@ -277,6 +299,7 @@ function AllCourses() {
                 </h2>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedCourse(null)}
                 className="rounded-full p-2 text-slate-400 hover:bg-white/5 hover:text-white"
                 aria-label="Close"
@@ -336,13 +359,14 @@ function AllCourses() {
                 Cancel
               </button>
               <button
-                onClick={submitEdit}
-                className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-black hover:bg-cyan-400"
+                type="submit"
+                disabled={isSaving}
+                className="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-black hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Save changes
+                {isSaving ? 'Saving...' : 'Save changes'}
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
 
