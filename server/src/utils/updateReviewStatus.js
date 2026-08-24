@@ -1,10 +1,11 @@
 const ObjectId = require('mongodb').ObjectId;
 
-const updateReviewStatus = async (db, courseId, facultyId) => {
+const updateReviewStatus = async (db, studentId, courseId, facultyId) => {
   // console.log("Updating review status for courseId: ", courseId, " and facultyId: ", facultyId);
 
   const courseObj = new ObjectId(courseId);
   const facultyObj = new ObjectId(facultyId);
+  const studentObj = new ObjectId(studentId);
 
   const courseStat = await db
     .collection('Review')
@@ -80,6 +81,39 @@ const updateReviewStatus = async (db, courseId, facultyId) => {
       },
     },
   );
-};
 
+  /*
+        update the student document with the new average rating and total reviews
+    */
+  const studentStat = await db
+    .collection('Review')
+    .aggregate([
+      {
+        $match: {
+          studentId: studentObj,
+        },
+      },
+      {
+        $group: {
+          // id is set to null because we want to aggregate all documents into a single result
+          _id: null,
+          reviewCount: { $sum: 1 },
+        },
+      },
+    ])
+    .toArray();
+
+  const studentResult = studentStat[0] || {
+    reviewCount: 0,
+  };
+
+  await db.collection('Student').updateOne(
+    { _id: studentObj },
+    {
+      $set: {
+        reviewCount: studentResult.reviewCount,
+      },
+    },
+  );
+};
 module.exports = updateReviewStatus;

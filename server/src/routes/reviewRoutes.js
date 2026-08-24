@@ -22,7 +22,9 @@ postRouter.route('/:id/vote').post(verifyToken, postReviewVote);
 
 // delete a review
 postRouter.route('/:id').delete(verifyToken, deleteReview);
-postRouter.route('/admin/:id').delete(verifyToken, verifyAdmin, deleteReviewAdmin);
+postRouter
+  .route('/admin/:id')
+  .delete(verifyToken, verifyAdmin, deleteReviewAdmin);
 
 // get all reviews
 postRouter.route('/').get(getAllReviews);
@@ -30,6 +32,8 @@ postRouter.route('/').get(getAllReviews);
 
 // patch a review
 postRouter.route('/:id').patch(verifyToken, patchReview);
-postRouter.route('/admin/:id').patch(verifyToken, verifyAdmin, patchReviewAdmin);
+postRouter
+  .route('/admin/:id')
+  .patch(verifyToken, verifyAdmin, patchReviewAdmin);
 
 module.exports = postRouter;

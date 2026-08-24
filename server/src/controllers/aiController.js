@@ -6,8 +6,10 @@ const { buildReviewSummaryInput, generatePrompt } = require('../utils/aiUtils');
 const { decryptApiKey } = require('../utils/encryptionUtils');
 
 const testAIResponse = async (req, res) => {
-  let db = database.getDb()
-  let student = await db.collection('Student').findOne({_id : new ObjectId(req.student._id)})
+  let db = database.getDb();
+  let student = await db
+    .collection('Student')
+    .findOne({ _id: new ObjectId(req.student._id) });
   // console.log(student.apiKey)
   let key = decryptApiKey(student.apiKey);
 
@@ -25,7 +27,7 @@ const testAIResponse = async (req, res) => {
   try {
     const prompt = 'Hello, this is a test prompt for AI response.';
     const aiResponse = await generateAIResponse(prompt, key);
-    console.log(aiResponse);
+    // console.log(aiResponse);
     res.status(200).json({
       success: true,
       data: {
@@ -115,7 +117,7 @@ const courseReviewAiResponse = async (req, res) => {
     }
 
     const aiResponse = await generateAIResponse(prompt, key);
-    console.log(aiResponse);
+    // console.log(aiResponse);
     res.status(200).json({
       success: true,
       data: {
@@ -201,7 +203,7 @@ const facultyReviewAiResponse = async (req, res) => {
     }
 
     const aiResponse = await generateAIResponse(prompt, key);
-    console.log(aiResponse);
+    // console.log(aiResponse);
     res.status(200).json({
       success: true,
       data: {

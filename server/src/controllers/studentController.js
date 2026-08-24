@@ -155,13 +155,16 @@ const getStudentReviewsAdmin = async (req, res) => {
   let studentId = req.params.studentId;
 
   try {
-    const reviews = await db.collection('Review').find({ studentId: new ObjectId(studentId) }).toArray();
-    console.log(reviews);
+    const reviews = await db
+      .collection('Review')
+      .find({ studentId: new ObjectId(studentId) })
+      .toArray();
+    // console.log(reviews);
     return res.status(200).json({
       success: true,
       data: {
-        reviews: reviews
-      }
+        reviews: reviews,
+      },
     });
   } catch {
     return res.status(404).json({
@@ -172,8 +175,7 @@ const getStudentReviewsAdmin = async (req, res) => {
       },
     });
   }
-
-}
+};
 
 const setApiKey = async (req, res) => {
   let db = database.getDb();

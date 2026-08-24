@@ -10,14 +10,19 @@ function NotFound() {
         <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-200 shadow-2xl shadow-cyan-950/40">
           <MapPinOff className="h-9 w-9" strokeWidth={1.6} />
         </div>
-        <p className="text-8xl font-black tracking-tight text-white md:text-9xl">404</p>
+        <p className="text-8xl font-black tracking-tight text-white md:text-9xl">
+          404
+        </p>
         <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-300">
           <Compass className="h-3.5 w-3.5" />
           CourseCompass
         </div>
-        <h1 className="mt-5 text-3xl font-bold text-white md:text-4xl">Page not found</h1>
+        <h1 className="mt-5 text-3xl font-bold text-white md:text-4xl">
+          Page not found
+        </h1>
         <p className="mx-auto mt-4 max-w-md text-base leading-7 text-slate-300">
-          The page you are looking for may have moved, or the address may be incorrect.
+          The page you are looking for may have moved, or the address may be
+          incorrect.
         </p>
         <Link
           to="/"

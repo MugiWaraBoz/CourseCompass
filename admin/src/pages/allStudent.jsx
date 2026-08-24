@@ -5,6 +5,7 @@ import {
   Check,
   MailCheck,
   BadgeCheck,
+  BellDot,
   Image,
   SquareOff,
   X,
@@ -241,14 +242,25 @@ function AllStudent() {
                 <div className="flex shrink-0 items-center gap-2">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <button
-                        type="button"
-                        title="View photo"
-                        aria-label={`View photo for ${student.name || 'student'}`}
-                        className="cursor-pointer rounded-xl border border-cyan-400/15 bg-slate-950/50 p-3 text-cyan-400 shadow-lg shadow-cyan-950/20 backdrop-blur-sm transition-colors hover:border-cyan-400/30 hover:text-cyan-300"
-                      >
-                        <Image className="h-5 w-5" />
-                      </button>
+                      <div className="relative">
+                        {student.photoUrl && !student.verified && (
+                          <span
+                            className="absolute -top-2 -right-2 z-10 rounded-full bg-amber-400 p-1 text-slate-950 ring-2 ring-slate-900"
+                            title="Photo awaiting verification"
+                            aria-label="Photo awaiting verification"
+                          >
+                            <BellDot className="h-3.5 w-3.5" />
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          title="View photo"
+                          aria-label={`View photo for ${student.name || 'student'}`}
+                          className="cursor-pointer rounded-xl border border-cyan-400/15 bg-slate-950/50 p-3 text-cyan-400 shadow-lg shadow-cyan-950/20 backdrop-blur-sm transition-colors hover:border-cyan-400/30 hover:text-cyan-300"
+                        >
+                          <Image className="h-5 w-5" />
+                        </button>
+                      </div>
                     </DialogTrigger>
                     <DialogContent className="bg-slate-950/90 shadow-2xl shadow-cyan-950/20 backdrop-blur-md">
                       <DialogHeader>

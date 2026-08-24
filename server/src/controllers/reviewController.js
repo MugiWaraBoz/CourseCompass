@@ -78,7 +78,12 @@ const postReview = async (req, res) => {
             update review status for course and faculty
         */
 
-    await updateReviewStatus(db, reviewObj.courseId, reviewObj.facultyId);
+    await updateReviewStatus(
+      db,
+      reviewObj.studentId,
+      reviewObj.courseId,
+      reviewObj.facultyId,
+    );
     res.status(201).json({
       success: true,
       data: {
@@ -99,15 +104,15 @@ const getAllReviews = async (req, res) => {
         The aggregation pipeline is used to perform complex data transformations and computations in MongoDB.
         for anonymity, if the review is anonymous, the author name will be set to "Anonymous", otherwise it will be set to the student's name.
     */
-   let reviews = await db
-   .collection('Review')
-   .aggregate([
-     {
-       $lookup: {
-         from: 'Student',
-         localField: 'studentId',
-         foreignField: '_id',
-         as: 'student',
+  let reviews = await db
+    .collection('Review')
+    .aggregate([
+      {
+        $lookup: {
+          from: 'Student',
+          localField: 'studentId',
+          foreignField: '_id',
+          as: 'student',
         },
       },
       {
@@ -140,16 +145,16 @@ const getAllReviews = async (req, res) => {
       },
     ])
     .toArray();
-    
-    // console.log(reviews)
-    
-    // let reviews = await db.collection("Review").find({}).toArray();
-    
-    if (reviews) {
-      res.status(200).json({
-        success: true,
-        data: {
-          reviews: reviews,
+
+  // console.log(reviews)
+
+  // let reviews = await db.collection("Review").find({}).toArray();
+
+  if (reviews) {
+    res.status(200).json({
+      success: true,
+      data: {
+        reviews: reviews,
         message: 'Reviews fetched successfully',
       },
     });
@@ -166,29 +171,26 @@ const getAllReviews = async (req, res) => {
 const getAllReviewsAdmin = async (req, res) => {
   let db = database.getDb();
 
-   let reviews = await db
-   .collection('Review').find({}).toArray()
+  let reviews = await db.collection('Review').find({}).toArray();
 
-   if(reviews){
+  if (reviews) {
     return res.status(200).json({
-      success : "true",
-      data : {
-        reviews : reviews
+      success: 'true',
+      data: {
+        reviews: reviews,
       },
-      message : "Review Fetched"
-    })
-   } else {
+      message: 'Review Fetched',
+    });
+  } else {
     return res.status(404).json({
-      success : "false",
-      error : {
-        code : "NOT_FOUND",
-        message : "No reviews found"
-      }
-    })
-   }
-
-}
-
+      success: 'false',
+      error: {
+        code: 'NOT_FOUND',
+        message: 'No reviews found',
+      },
+    });
+  }
+};
 
 // deleteReview function to handle deleting a review
 const deleteReview = async (req, res) => {
@@ -432,5 +434,5 @@ module.exports = {
   getAllReviews,
   getAllReviewsAdmin,
   patchReviewAdmin,
-  deleteReviewAdmin
+  deleteReviewAdmin,
 };

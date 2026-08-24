@@ -68,11 +68,16 @@ const getFaculties = async (req, res) => {
       },
     });
   } else {
-    res.status(404).json({
-      success: false,
-      error: {
-        code: 'NOT_FOUND',
-        message: 'No faculties found',
+    res.status(200).json({
+      success: true,
+      data: {
+        faculty: [],
+        pagination: {
+          page: pageNumber,
+          limit: limitNumber,
+          total: 0,
+          totalPages: 0,
+        },
       },
     });
   }
@@ -218,15 +223,18 @@ const getFacultyReview = async (req, res) => {
 };
 const getFacultyReviewsAdmin = async (req, res) => {
   let db = database.getDb();
-  // console.log("facultyId:", req.params.id);
-  let facultyId = req.params.facultyId;
+  let facultyId = req.params.id;
+  // console.log("facultyId:", req.params);
   try {
-    const reviews = await db.collection('Review').find({ facultyId: new ObjectId(facultyId) }).toArray();
+    const reviews = await db
+      .collection('Review')
+      .find({ facultyId: new ObjectId(facultyId) })
+      .toArray();
     return res.status(200).json({
       success: true,
       data: {
-        reviews: reviews
-      }
+        reviews: reviews,
+      },
     });
   } catch {
     return res.status(404).json({
@@ -237,8 +245,7 @@ const getFacultyReviewsAdmin = async (req, res) => {
       },
     });
   }
-
-}
+};
 
 // add faculty
 const addFaculty = async (req, res) => {

@@ -6,7 +6,7 @@ const { GoogleGenAI } = require('@google/genai');
 // }
 
 async function generateAIResponse(prompt, key) {
-  console.log('Generating AI response for prompt: ');
+  // console.log('Generating AI response for prompt: ');
   const ai = new GoogleGenAI({
     apiKey: key,
   });
@@ -37,7 +37,7 @@ async function generateAIResponse(prompt, key) {
       temperature: 0.3,
     },
   });
-  console.log('AI response generated');
+  // console.log('AI response generated');
   return interaction.output_text;
 }
 

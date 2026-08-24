@@ -68,11 +68,16 @@ const getCourses = async (req, res) => {
     });
   } else {
     // console.log("No courses found");
-    res.status(404).json({
-      success: false,
-      error: {
-        code: 'NOT_FOUND',
-        message: 'No courses found',
+    res.status(200).json({
+      success: true,
+      data: {
+        courses: [],
+        pagination: {
+          page: pageNumber,
+          limit: limitNumber,
+          total: 0,
+          totalPages: 0,
+        },
       },
     });
   }
@@ -190,7 +195,7 @@ const getCourseReview = async (req, res) => {
     .toArray();
 
   const total = await db.collection('Review').countDocuments(filter);
-    // console.log(reviews)
+  // console.log(reviews)
   if (reviews) {
     res.status(200).json({
       success: true,
@@ -216,14 +221,17 @@ const getCourseReview = async (req, res) => {
 };
 const getCoursesReviewsAdmin = async (req, res) => {
   let db = database.getDb();
-  let courseId = req.params.courseId;
+  let courseId = req.params.id;
   try {
-    const reviews = await db.collection('Review').find({ courseId: new ObjectId(courseId) }).toArray();
+    const reviews = await db
+      .collection('Review')
+      .find({ courseId: new ObjectId(courseId) })
+      .toArray();
     return res.status(200).json({
       success: true,
       data: {
-        reviews: reviews
-      }
+        reviews: reviews,
+      },
     });
   } catch {
     return res.status(404).json({
@@ -234,8 +242,7 @@ const getCoursesReviewsAdmin = async (req, res) => {
       },
     });
   }
-
-}
+};
 
 // add Course
 const addCourse = async (req, res) => {

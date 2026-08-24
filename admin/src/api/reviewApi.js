@@ -16,7 +16,7 @@ export const getAllStudentReviews = async (studentId) => {
 export const getAllCourseReviews = async (courseId) => {
   try {
     const response = await clientApi.get(`courses/admin/${courseId}/reviews`);
-    console.log("Course reviews response API:", response.data); // Log the response data
+    // console.log("Course reviews response API:", response.data); // Log the response data
     return response.data;
   } catch (error) {
     throw new Error('Unable to fetch course reviews. Please try again.', {
@@ -52,11 +52,14 @@ export const deleteReview = async (reviewId) => {
 // patch a review by reviewId
 export const patchReview = async (reviewId, updatedData) => {
   try {
-    const response = await clientApi.patch(`/reviews/admin/${reviewId}`, updatedData);
+    const response = await clientApi.patch(
+      `/reviews/admin/${reviewId}`,
+      updatedData
+    );
     return response.data;
   } catch (error) {
     throw new Error('Unable to update review. Please try again.', {
       cause: error,
     });
   }
-}
+};

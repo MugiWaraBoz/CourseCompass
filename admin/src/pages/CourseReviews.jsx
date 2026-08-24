@@ -5,7 +5,7 @@ function CourseReviews() {
   const { id } = useParams();
   return (
     <>
-    <Reviews id={id} type="course" />
+      <Reviews id={id} type="course" />
     </>
   );
 }
