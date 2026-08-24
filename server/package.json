@@ -1,8 +1,36 @@
 {
+  "name": "CourseCompass-server",
+  "version": "1.0.0",
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.3",
+    "@google/genai": "^2.15.0",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mongodb": "^7.4.0"
+    "jsonwebtoken": "^9.0.3",
+    "jwt-decode": "^4.0.0",
+    "mongodb": "^7.5.0",
+    "nodemailer": "^9.0.5",
+    "nodemon": "^3.1.14",
+    "playwright": "^1.61.1"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch": "jest --runInBand --detectOpenHandles --watch",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "jest": "^30.4.2",
+    "prettier": "^3.9.6",
+    "supertest": "^7.2.2"
   }
 }
