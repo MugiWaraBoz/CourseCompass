@@ -26,6 +26,20 @@ import { testGeminiApiKey } from "@/api/aiApi";
 import { useAuth } from "@/hooks/useAuth";
 import AiCookingState from "@/components/ui/AiCookingState";
 
+/**
+ * StudentProfilePage
+ *
+ * The main profile dashboard for logged-in students. It displays identity
+ * information, verification status, review history, editable personal
+ * fields, AI (Gemini) API key management, and security shortcuts.
+ *
+ * React concepts used here:
+ * - useState for local UI state (form values, loading flags, errors)
+ * - useEffect for side-effects (fetching reviews, checking Gemini status)
+ * - Conditional rendering to toggle between read-only and edit modes
+ * - Derived state (e.g. review form pre-fills from the selected review)
+ */
+
 // Format registration dates without exposing raw database timestamps.
 function formatJoinDate(dateValue) {
   if (!dateValue) return "Unavailable";
@@ -37,37 +51,67 @@ function formatJoinDate(dateValue) {
 }
 
 function StudentProfilePage() {
+  // ===== HOOKS =====
+  // useAuth provides the current student object, JWT token, and a
+  // helper to send profile-update requests to the backend.
   const { student, token, updateProfile } = useAuth();
+
+  // ===== STATE: Profile editing =====
+  // isEditing toggles between read-only view and the edit form.
   const [isEditing, setIsEditing] = useState(false);
+  // formData mirrors the editable profile fields so the form is controlled.
   const [formData, setFormData] = useState({
     name: student.name || "",
     cgpa: student.cgpa ?? "",
     photoUrl: student.photoUrl || "",
   });
+  // saving shows a spinner while the profile-update request is in flight.
   const [saving, setSaving] = useState(false);
+  // error / successMessage provide inline feedback for the edit form.
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  // ===== STATE: Reviews =====
+  // reviews holds the list of reviews written by this student.
   const [reviews, setReviews] = useState([]);
+  // reviewsLoading is true while the initial fetch is in progress.
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  // reviewsError stores a message if the fetch fails.
   const [reviewsError, setReviewsError] = useState("");
+  // editingReviewId tracks which review is currently in edit mode (null = none).
   const [editingReviewId, setEditingReviewId] = useState(null);
+  // reviewForm holds the in-progress edits for the active review.
   const [reviewForm, setReviewForm] = useState({
     rating: "",
     difficultyRating: "",
     semester: "",
     comment: "",
   });
+  // reviewSaving is true while a save/delete request is in flight.
   const [reviewSaving, setReviewSaving] = useState(false);
+  // reviewActionError stores feedback for review save/delete failures.
   const [reviewActionError, setReviewActionError] = useState("");
+
+  // ===== STATE: Gemini API key management =====
+  // geminiKey holds the raw key the user is typing (never persisted locally).
   const [geminiKey, setGeminiKey] = useState("");
+  // geminiConfigured is true when a valid key is already saved on the backend.
   const [geminiConfigured, setGeminiConfigured] = useState(false);
+  // geminiSaving / geminiTesting / geminiRemoving track request states.
   const [geminiSaving, setGeminiSaving] = useState(false);
   const [geminiTesting, setGeminiTesting] = useState(false);
   const [geminiRemoving, setGeminiRemoving] = useState(false);
+  // geminiStatusLoading is true while the initial key-check runs.
   const [geminiStatusLoading, setGeminiStatusLoading] = useState(true);
+  // geminiMessage / geminiError provide inline feedback for Gemini actions.
   const [geminiMessage, setGeminiMessage] = useState("");
   const [geminiError, setGeminiError] = useState("");
 
+  // ===== EFFECTS =====
+
+  // On mount, probe the backend to see whether a Gemini key is already
+  // configured. The "active" flag prevents state updates after unmount
+  // (a common React pattern to avoid memory-leak warnings).
   useEffect(() => {
     let active = true;
 
@@ -92,6 +136,8 @@ function StudentProfilePage() {
     };
   }, [token]);
 
+  // Fetch the current student's review history on mount.
+  // Same "active" cleanup pattern as above.
   useEffect(() => {
     let active = true;
 
@@ -118,11 +164,16 @@ function StudentProfilePage() {
     };
   }, [token]);
 
+  // ===== HANDLERS: Profile form =====
+
+  // Generic controlled-input handler – updates whichever field matches
+  // the input's `name` attribute.
   function handleInputChange(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   }
 
+  // Resets the form back to the original student data and exits edit mode.
   function cancelEditing() {
     setFormData({
       name: student.name || "",
@@ -133,6 +184,10 @@ function StudentProfilePage() {
     setIsEditing(false);
   }
 
+  // ===== HANDLERS: Reviews =====
+
+  // Populates the review form with the selected review's current values
+  // so the user can edit inline.
   function startReviewEditing(review) {
     setReviewActionError("");
     setEditingReviewId(review._id);
@@ -144,16 +199,20 @@ function StudentProfilePage() {
     });
   }
 
+  // Exits review-edit mode without saving.
   function cancelReviewEditing() {
     setEditingReviewId(null);
     setReviewActionError("");
   }
 
+  // Controlled-input handler for the review edit form.
   function handleReviewInputChange(event) {
     const { name, value } = event.target;
     setReviewForm((current) => ({ ...current, [name]: value }));
   }
 
+  // Sends the updated review to the backend, then replaces it in the
+  // local reviews array so the UI updates without a full refetch.
   async function handleReviewSave(event) {
     event.preventDefault();
     setReviewActionError("");
@@ -191,6 +250,8 @@ function StudentProfilePage() {
     }
   }
 
+  // Asks for confirmation, then deletes the review and removes it from
+  // local state.
   async function handleReviewDelete(reviewId) {
     if (!window.confirm("Delete this review? This action cannot be undone.")) return;
 
@@ -209,6 +270,7 @@ function StudentProfilePage() {
     }
   }
 
+  // Validates and submits the profile-edit form.
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
@@ -257,6 +319,9 @@ function StudentProfilePage() {
     }
   }
 
+  // ===== HANDLERS: Gemini API key =====
+
+  // Maps common backend error codes to user-friendly messages.
   function getGeminiError(requestError, fallback) {
     const code = requestError.response?.data?.error?.code;
     if (code === "API_KEY_NOT_FOUND") return "Please configure your Gemini API key first.";
@@ -265,6 +330,7 @@ function StudentProfilePage() {
     return fallback;
   }
 
+  // Saves or updates the Gemini API key on the backend.
   async function handleSaveGeminiKey(event) {
     event.preventDefault();
     const trimmedKey = geminiKey.trim();
@@ -290,6 +356,7 @@ function StudentProfilePage() {
     }
   }
 
+  // Verifies the stored key by sending a test request to the backend.
   async function handleTestGeminiKey() {
     setGeminiError("");
     setGeminiMessage("");
@@ -308,6 +375,7 @@ function StudentProfilePage() {
     }
   }
 
+  // Deletes the stored Gemini key from the backend.
   async function handleRemoveGeminiKey() {
     setGeminiError("");
     setGeminiMessage("");
@@ -325,7 +393,10 @@ function StudentProfilePage() {
 
   return (
     <main className="min-h-screen bg-[#f8faf9]">
-      {/* Identity header is based only on sanitized session data. */}
+
+      {/* ===== HEADER SECTION =====
+          Displays the student's name, email, and a decorative avatar.
+          All data comes from the session – nothing is fetched here. */}
       <section className="bg-slate-950 px-4 py-16 text-white sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-5xl flex-col gap-6 sm:flex-row sm:items-center">
           <span className="grid size-20 shrink-0 place-items-center rounded-3xl border border-white/10 bg-emerald-400/10 text-emerald-300">
@@ -343,7 +414,9 @@ function StudentProfilePage() {
         </div>
       </section>
 
-      {/* Verification status helps students understand their current account access. */}
+      {/* ===== VERIFICATION STATUS =====
+          Shows whether the student's identity has been verified.
+          Uses conditional classes to tint the card green or amber. */}
       <section className="mx-auto max-w-5xl px-4 pt-10 sm:px-6 lg:px-8">
         <div
           className={`flex items-start gap-4 rounded-3xl border p-6 ${
@@ -370,7 +443,9 @@ function StudentProfilePage() {
         </div>
       </section>
 
-      {/* Read-only fields are safe while the backend profile-update endpoint is reviewed. */}
+      {/* ===== READ-ONLY PROFILE FIELDS =====
+          These cards show identity data that is not yet editable via
+          the form (Student ID number, email, join date). */}
       <section className="mx-auto grid max-w-5xl gap-5 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:px-8">
         <ProfileField icon={IdCard} label="Student ID" value={student.studentIdNumber} />
         <ProfileField icon={Mail} label="University email" value={student.email} />
@@ -386,8 +461,12 @@ function StudentProfilePage() {
         />
       </section>
 
-      {/* Only backend-approved profile fields are editable in this form. */}
+      {/* ===== EDITABLE SECTIONS (reviews, settings, AI, security) ===== */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+
+        {/* ----- Review history -----
+            Lists all reviews the student has written.
+            Each review can be edited inline or deleted with confirmation. */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -415,6 +494,7 @@ function StudentProfilePage() {
               {reviews.map((review) => (
                 <article key={review._id} className="rounded-2xl border border-slate-200 p-5">
                   {editingReviewId === review._id ? (
+                    /* Inline edit form – shown only for the active review */
                     <form className="grid gap-4" onSubmit={handleReviewSave}>
                       <div className="grid gap-4 sm:grid-cols-3">
                         <ReviewNumberInput label="Rating" name="rating" value={reviewForm.rating} onChange={handleReviewInputChange} />
@@ -438,6 +518,7 @@ function StudentProfilePage() {
                       </div>
                     </form>
                   ) : (
+                    /* Read-only review card with Edit / Delete buttons */
                     <>
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -463,6 +544,9 @@ function StudentProfilePage() {
           )}
         </div>
 
+        {/* ----- Account settings -----
+            Lets the student edit their name, CGPA, and profile photo URL.
+            Uses a toggle: click "Edit profile" to reveal the form. */}
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -564,6 +648,9 @@ function StudentProfilePage() {
           )}
         </div>
 
+        {/* ----- AI (Gemini) settings -----
+            Manage the Google Gemini API key used for AI-powered features.
+            The key is never displayed back – only save / test / remove. */}
         <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
             AI settings
@@ -616,7 +703,9 @@ function StudentProfilePage() {
           {geminiError && <p role="alert" className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{geminiError}</p>}
         </div>
 
-        {/* Password management lives on a focused protected page. */}
+        {/* ----- Security: Password -----
+            Password changes are handled on a separate dedicated page
+            for better UX and security (current-password verification). */}
         <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -638,6 +727,8 @@ function StudentProfilePage() {
           </Link>
         </div>
 
+        {/* ----- Student feedback: Write a review -----
+            Quick-link to the review creation page. */}
         <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -663,6 +754,12 @@ function StudentProfilePage() {
   );
 }
 
+// ===== SHARED SUB-COMPONENTS =====
+
+/**
+ * ReviewNumberInput – A reusable numeric input for rating/difficulty fields.
+ * Accepts a label, field name, current value, and onChange callback.
+ */
 function ReviewNumberInput({ label, name, value, onChange }) {
   return (
     <label className="block">
@@ -672,6 +769,10 @@ function ReviewNumberInput({ label, name, value, onChange }) {
   );
 }
 
+/**
+ * ProfileField – A read-only card that displays a single profile attribute
+ * (icon + label + value). Used for Student ID, email, CGPA, and join date.
+ */
 function ProfileField({ icon: Icon, label, value }) {
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

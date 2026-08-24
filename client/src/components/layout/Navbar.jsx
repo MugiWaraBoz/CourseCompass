@@ -1,4 +1,6 @@
-// This component displays the desktop and mobile navigation at the top of the site.
+// Navbar.jsx - Site-wide navigation header
+// Shows logo, nav links, and auth controls (login/register or profile/logout)
+// Uses responsive design: desktop nav always visible, mobile nav toggles open/close
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/CourseCompass.png";
@@ -6,6 +8,7 @@ import { ArrowRight, LogIn, LogOut, Menu, UserPlus, UserRound, X } from "lucide-
 import { Link, useLocation } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
 
+// Static array of navigation links - easy to add/remove/reorder links here
 const navLinks = [
   { label: "Courses", href: "/courses" },
   { label: "Faculty", href: "/faculty" },
@@ -13,14 +16,17 @@ const navLinks = [
 ];
 
 function Navbar() {
-  // This value controls whether the mobile navigation menu is open or closed.
+  // useState manages the mobile menu open/close state (boolean)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // useLocation gives us the current URL path to highlight the active link
   const { pathname } = useLocation();
+  // useAuth provides the logged-in student info and auth functions from context
   const { student, isAuthenticated, signOut } = useAuth();
 
-  // A short name keeps the desktop navigation balanced on medium-width screens.
+  // Extract first name for display; fallback to "Student" if not logged in
   const studentFirstName = student?.name?.split(" ")[0] || "Student";
 
+  // Event handler: sign out the user and close the mobile menu
   function handleLogout() {
     signOut();
     setIsMenuOpen(false);
@@ -32,6 +38,7 @@ function Navbar() {
         className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Primary navigation"
       >
+        {/* Logo and site name - links to homepage */}
         <Link
           to="/"
           className="group flex items-center gap-3"
@@ -56,7 +63,9 @@ function Navbar() {
           </span>
         </Link>
 
+        {/* Desktop navigation - hidden on small screens */}
         <div className="hidden items-center gap-3 lg:flex">
+          {/* Nav links pill container */}
           <div className="flex items-center rounded-full border border-slate-200/80 bg-white/70 p-1 shadow-sm">
             {navLinks.map((link) => (
               <Link
@@ -69,7 +78,7 @@ function Navbar() {
             ))}
           </div>
 
-          {/* Authentication controls react immediately to the shared session state. */}
+          {/* Conditional rendering: show profile/logout if logged in, otherwise show login/register */}
           {isAuthenticated ? (
             <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white p-1 shadow-sm">
               <Link
@@ -85,6 +94,7 @@ function Navbar() {
                 <UserRound className="size-4 text-emerald-700" aria-hidden="true" />
                 {studentFirstName}
               </Link>
+              {/* Logout button triggers handleLogout on click */}
               <button
                 type="button"
                 onClick={handleLogout}
@@ -115,6 +125,7 @@ function Navbar() {
           )}
         </div>
 
+        {/* Mobile hamburger/X toggle button - only visible below lg breakpoint */}
         <Button
           type="button"
           variant="ghost"
@@ -146,6 +157,7 @@ function Navbar() {
         </Button>
       </nav>
 
+      {/* Mobile navigation dropdown - animated open/close via inline styles */}
       <div
         id="mobile-navigation"
         aria-hidden={!isMenuOpen}
@@ -171,6 +183,7 @@ function Navbar() {
             }}
             className="mx-auto my-5 max-w-md rounded-3xl border border-slate-200/80 bg-white/80 p-3 shadow-sm"
           >
+            {/* Mobile nav links in a 3-column grid */}
             <div className="grid grid-cols-3 rounded-full border border-slate-200/80 bg-slate-50/80 p-1">
               {navLinks.map((link, index) => (
                 <Link
@@ -190,7 +203,7 @@ function Navbar() {
               ))}
             </div>
 
-            {/* Mobile users receive the same session controls as desktop users. */}
+            {/* Mobile auth controls - same logic as desktop, different layout */}
             {isAuthenticated ? (
               <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <Link

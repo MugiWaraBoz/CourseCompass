@@ -28,34 +28,41 @@ function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  /**
+   * Handle input changes for controlled form inputs.
+   * Uses the input's name attribute to update the correct field.
+   */
   function handleInputChange(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   }
 
+  /**
+   * Validate form data before submission.
+   * Returns error message string if invalid, empty string if valid.
+   */
   function validateForm() {
     if (!formData.email.trim().toLowerCase().endsWith("@eastdelta.edu.bd")) {
       return "Use your East Delta University email address.";
     }
-
     if (formData.password.length < 8) {
       return "Password must contain at least 8 characters.";
     }
-
     if (formData.password !== formData.confirmPassword) {
       return "Passwords do not match.";
     }
-
     if (formData.cgpa !== "") {
       const cgpa = Number(formData.cgpa);
       if (Number.isNaN(cgpa) || cgpa < 0 || cgpa > 4) {
         return "CGPA must be between 0 and 4.";
       }
     }
-
     return "";
   }
 
+  /**
+   * Handle form submission: validate, call API, redirect on success.
+   */
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
@@ -69,7 +76,7 @@ function RegisterPage() {
     setSubmitting(true);
 
     try {
-      // confirmPassword belongs only to the UI and must not be sent to the backend.
+      // Exclude confirmPassword - it's only for UI validation
       const response = await registerStudent({
         name: formData.name.trim(),
         studentIdNumber: formData.studentIdNumber.trim(),
@@ -78,12 +85,11 @@ function RegisterPage() {
         cgpa: formData.cgpa === "" ? null : Number(formData.cgpa),
       });
 
-      // The backend asks newly registered students to log in before continuing.
+      // Redirect to login with success message
       navigate("/login", {
         replace: true,
         state: {
-          registrationMessage:
-            response?.data?.message || "Account created successfully. Please sign in.",
+          registrationMessage: response?.data?.message || "Account created successfully. Please sign in.",
         },
       });
     } catch (requestError) {
@@ -96,7 +102,7 @@ function RegisterPage() {
 
   return (
     <main className="grid min-h-[calc(100vh-5rem)] bg-[#f8faf9] lg:grid-cols-[0.8fr_1.2fr]">
-      {/* The brand panel stays concise because the registration form is longer. */}
+      {/* Left panel: marketing content (hidden on mobile) */}
       <section className="hidden bg-slate-950 px-12 py-16 text-white lg:flex lg:flex-col lg:justify-between">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300">
@@ -115,13 +121,10 @@ function RegisterPage() {
         </p>
       </section>
 
-      {/* Controlled inputs provide immediate validation before API submission. */}
+      {/* Right panel: registration form */}
       <section className="flex items-center justify-center px-4 py-14 sm:px-6 lg:px-12">
         <div className="w-full max-w-2xl">
-          <Link
-            to="/login"
-            className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
-          >
+          <Link to="/login" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">
             ← Back to login
           </Link>
 
@@ -197,10 +200,7 @@ function RegisterPage() {
             />
 
             {error && (
-              <p
-                role="alert"
-                className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2"
-              >
+              <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2">
                 {error}
               </p>
             )}
@@ -220,16 +220,16 @@ function RegisterPage() {
   );
 }
 
-// Shared field markup keeps labels, icons, focus styles, and required state consistent.
+/**
+ * Reusable form field component with label, icon, and consistent styling.
+ * All fields except CGPA are required.
+ */
 function Field({ label, icon: Icon, ...inputProps }) {
   return (
     <label className="block">
       <span className="text-sm font-semibold text-slate-700">{label}</span>
       <span className="relative mt-2 block">
-        <Icon
-          className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400"
-          aria-hidden="true"
-        />
+        <Icon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
         <input
           {...inputProps}
           required={inputProps.name !== "cgpa"}
@@ -240,15 +240,15 @@ function Field({ label, icon: Icon, ...inputProps }) {
   );
 }
 
+/**
+ * Reusable password field with show/hide toggle.
+ */
 function PasswordField({ label, showPassword, onToggle, ...inputProps }) {
   return (
     <label className="block">
       <span className="text-sm font-semibold text-slate-700">{label}</span>
       <span className="relative mt-2 block">
-        <LockKeyhole
-          className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400"
-          aria-hidden="true"
-        />
+        <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
         <input
           {...inputProps}
           type={showPassword ? "text" : "password"}
@@ -261,11 +261,7 @@ function PasswordField({ label, showPassword, onToggle, ...inputProps }) {
           className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? (
-            <EyeOff className="size-5" aria-hidden="true" />
-          ) : (
-            <Eye className="size-5" aria-hidden="true" />
-          )}
+          {showPassword ? <EyeOff className="size-5" aria-hidden="true" /> : <Eye className="size-5" aria-hidden="true" />}
         </button>
       </span>
     </label>

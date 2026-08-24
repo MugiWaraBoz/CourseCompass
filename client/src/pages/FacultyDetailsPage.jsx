@@ -1,3 +1,13 @@
+/**
+ * FacultyDetailsPage
+ *
+ * Displays a detailed profile for a single faculty member.  Sections include
+ * basic info cards (department, designation, rating), a short biography,
+ * an optional AI-generated review summary, and a paginated list of student
+ * reviews that users can vote on.
+ *
+ * Route: /faculty/:facultyId
+ */
 import { useEffect, useState } from "react";
 import {
   ArrowLeft,
@@ -20,7 +30,12 @@ import { getFacultyById, getFacultyReviews } from "@/api/facultyApi";
 import { useAuth } from "@/hooks/useAuth";
 import AiCookingState from "@/components/ui/AiCookingState";
 
-// Produce a dependable avatar when the backend does not provide profile photos.
+// ===== UTILITY FUNCTIONS =====
+
+/**
+ * Produce a dependable avatar when the backend does not provide profile photos.
+ * Returns the first letter of each of the first two words in `name`, upper-cased.
+ */
 function getInitials(name = "") {
   return name
     .split(" ")
@@ -31,7 +46,10 @@ function getInitials(name = "") {
     .toUpperCase();
 }
 
-// Convert stored review timestamps into a compact date for readers.
+/**
+ * Convert stored review timestamps into a compact, human-readable date string.
+ * Uses the browser's Intl API for locale-aware formatting.
+ */
 function formatReviewDate(dateValue) {
   if (!dateValue) return "Date unavailable";
 
@@ -42,30 +60,69 @@ function formatReviewDate(dateValue) {
   }).format(new Date(dateValue));
 }
 
+// Fetch course info for each review and return { courseId: courseObject }
+async function fetchCoursesForReviews(reviews) {
+  const courseIds = [...new Set(reviews.map((r) => r.courseId).filter(Boolean))];
+  const results = await Promise.allSettled(
+    courseIds.map(async (id) => {
+      const response = await getCourseById(id);
+      return [id, response?.data?.course];
+    }),
+  );
+  return Object.fromEntries(
+    results
+      .filter((r) => r.status === "fulfilled" && r.value[1])
+      .map((r) => r.value),
+  );
+}
+
+// ===== MAIN COMPONENT =====
+
 function FacultyDetailsPage() {
-  // Read the selected MongoDB faculty ID from /faculty/:facultyId.
+  // ===== STATE =====
+
+  // Route parameter — the MongoDB `_id` of the faculty member, pulled from the URL.
   const { facultyId } = useParams();
+
+  // Auth token supplied by the global AuthContext; needed for voting and AI summary.
   const { token } = useAuth();
+
+  // Faculty profile data (null until loaded successfully).
   const [facultyMember, setFacultyMember] = useState(null);
+
+  // UI status for the faculty profile fetch.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Reviews load independently so a review error never hides the faculty profile.
   const [reviews, setReviews] = useState([]);
+
+  // Current sort mode for the review list ("recent" | "rating" | "votes").
   const [reviewSort, setReviewSort] = useState("recent");
+
+  // Loading / error states specific to the reviews section.
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reviewsError, setReviewsError] = useState("");
+
+  // Tracks which review is currently being voted on (used to disable both buttons).
   const [votingReviewId, setVotingReviewId] = useState(null);
   const [voteError, setVoteError] = useState("");
+
+  // Maps courseId -> course object so each review can show the related course name.
   const [reviewCourseById, setReviewCourseById] = useState({});
+
+  // AI-generated summary of all reviews for this faculty member.
   const [aiSummary, setAiSummary] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
 
+  // ===== EFFECTS =====
+
+  // Fetch the faculty profile whenever the URL parameter changes.
+  // The `active` flag prevents state updates after the component unmounts.
   useEffect(() => {
     let active = true;
 
-    // Request the complete public profile and ignore late responses after unmounting.
     getFacultyById(facultyId)
       .then(async (response) => {
         if (active) setFacultyMember(response?.data ?? null);
@@ -82,6 +139,9 @@ function FacultyDetailsPage() {
     };
   }, [facultyId]);
 
+  // Fetch reviews (and their associated course names) whenever the faculty ID or
+  // sort mode changes.  Each review references a courseId; we batch-resolve those
+  // to show the course code and name alongside each review.
   useEffect(() => {
     let active = true;
 
@@ -91,19 +151,11 @@ function FacultyDetailsPage() {
 
         const loadedReviews = response?.data?.reviews ?? [];
         setReviews(loadedReviews);
-        const courseIds = [...new Set(loadedReviews.map((review) => review.courseId).filter(Boolean))];
-        const relatedCourses = await Promise.allSettled(
-          courseIds.map(async (courseId) => [courseId, (await getCourseById(courseId))?.data?.course]),
-        );
-        if (active) {
-          setReviewCourseById(
-            Object.fromEntries(
-              relatedCourses
-                .filter((result) => result.status === "fulfilled" && result.value[1])
-                .map((result) => result.value),
-            ),
-          );
-        }
+
+        // Fetch course info for each review
+        const courseMap = await fetchCoursesForReviews(loadedReviews);
+        if (active) setReviewCourseById(courseMap);
+
         setReviewsError("");
       })
       .catch(() => {
@@ -121,11 +173,18 @@ function FacultyDetailsPage() {
     };
   }, [facultyId, reviewSort]);
 
+  // ===== EVENT HANDLERS =====
+
+  /** Responds to the sort <select> change — triggers a re-fetch of reviews. */
   function handleReviewSortChange(event) {
     setReviewsLoading(true);
     setReviewSort(event.target.value);
   }
 
+  /**
+   * Cast an upvote or downvote on a single review, then re-fetch the full
+   * review list to pick up the new vote totals.  Requires a valid auth token.
+   */
   async function handleVote(reviewId, voteType) {
     if (!token) {
       setVoteError("Please log in to vote on reviews.");
@@ -139,18 +198,8 @@ function FacultyDetailsPage() {
       const response = await getFacultyReviews(facultyId, { sortBy: reviewSort });
       const loadedReviews = response?.data?.reviews ?? [];
       setReviews(loadedReviews);
-      const relatedCourses = await Promise.allSettled(
-        [...new Set(loadedReviews.map((review) => review.courseId).filter(Boolean))].map(
-          async (courseId) => [courseId, (await getCourseById(courseId))?.data?.course],
-        ),
-      );
-      setReviewCourseById(
-        Object.fromEntries(
-          relatedCourses
-            .filter((result) => result.status === "fulfilled" && result.value[1])
-            .map((result) => result.value),
-        ),
-      );
+      const courseMap = await fetchCoursesForReviews(loadedReviews);
+      setReviewCourseById(courseMap);
     } catch (requestError) {
       setVoteError(
         requestError.response?.data?.error?.message ||
@@ -161,6 +210,10 @@ function FacultyDetailsPage() {
     }
   }
 
+  /**
+   * Request an AI-generated summary of all student reviews for this faculty
+   * member.  Handles common API-key and quota errors with friendly messages.
+   */
   async function handleAiSummary() {
     if (!token) {
       setAiError("Please log in to use the Gemini review summary.");
@@ -183,6 +236,9 @@ function FacultyDetailsPage() {
     }
   }
 
+  // ===== EARLY RETURNS =====
+
+  // Skeleton placeholder shown while the profile is still loading.
   if (loading) {
     return (
       <main className="min-h-screen bg-[#f8faf9] px-4 py-16">
@@ -218,7 +274,10 @@ function FacultyDetailsPage() {
     );
   }
 
+  // Derived numeric rating used for conditional styling.
   const rating = Number(facultyMember.avgRating || 0);
+
+  // ===== JSX =====
 
   return (
     <main className="min-h-screen bg-[#f8faf9]">
@@ -234,6 +293,7 @@ function FacultyDetailsPage() {
           </Link>
 
           <div className="mt-10 flex flex-col gap-7 sm:flex-row sm:items-center">
+            {/* Avatar with initials fallback when no profile photo exists. */}
             <span className="grid size-24 shrink-0 place-items-center rounded-3xl border border-white/10 bg-emerald-400/10 text-2xl font-bold text-emerald-300">
               {getInitials(facultyMember.name)}
             </span>
@@ -307,6 +367,7 @@ function FacultyDetailsPage() {
           </p>
         </article>
 
+        {/* Optional server-side AI summary — only shown when the backend has one. */}
         {facultyMember.aiReviewSummary && (
           <article className="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-7 sm:p-9">
             <Quote className="size-5 text-emerald-700" aria-hidden="true" />
@@ -320,6 +381,7 @@ function FacultyDetailsPage() {
         )}
       </section>
 
+      {/* Client-triggered AI summary (Gemini) — distinct from the server-side one above. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -342,6 +404,7 @@ function FacultyDetailsPage() {
 
       {/* Public reviews are ready for real records while presenting a useful empty state today. */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
+        {/* Section header + sort controls */}
         <div className="flex min-w-0 flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">
@@ -359,6 +422,7 @@ function FacultyDetailsPage() {
             Write a review
           </Link>
 
+          {/* Sort dropdown — triggers handleReviewSortChange to re-fetch reviews. */}
           <label className="relative w-full sm:w-auto">
             <span className="sr-only">Sort faculty reviews</span>
             <select
@@ -377,6 +441,7 @@ function FacultyDetailsPage() {
           </label>
         </div>
 
+        {/* Conditional rendering: loading skeleton, error, empty state, or review cards. */}
         {reviewsLoading ? (
           <div className="mt-8 grid gap-4">
             {[1, 2].map((item) => (
@@ -404,12 +469,14 @@ function FacultyDetailsPage() {
           </div>
         ) : (
           <div className="mt-8 grid gap-4">
+            {/* Render one card per review with author info, rating, comment, and votes. */}
             {reviews.map((review) => (
               <article
                 key={review._id}
                 className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  {/* Author avatar + metadata (name, semester, date) */}
                   <div className="flex items-center gap-3">
                     <span className="grid size-10 place-items-center rounded-full bg-emerald-50 text-emerald-700">
                       <UserRound className="size-4" aria-hidden="true" />
@@ -430,6 +497,7 @@ function FacultyDetailsPage() {
                     </div>
                   </div>
 
+                  {/* Star rating display — fills stars up to the numeric rating. */}
                   <div className="flex gap-1" aria-label={`${review.rating} out of 5 stars`}>
                     {Array.from({ length: 5 }, (_, index) => (
                       <Star
@@ -445,16 +513,19 @@ function FacultyDetailsPage() {
                   </div>
                 </div>
 
+                {/* Review body text */}
                 <p className="mt-5 leading-7 text-slate-700">
                   {review.comment || "No written comment was provided."}
                 </p>
 
+                {/* Related course label (only shown if the course data was resolved). */}
                 {reviewCourseById[review.courseId] && (
                   <p className="mt-3 text-sm font-semibold text-emerald-700">
                     Course: {reviewCourseById[review.courseId].code} — {reviewCourseById[review.courseId].name}
                   </p>
                 )}
 
+                {/* Difficulty rating + upvote / downvote buttons */}
                 <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-slate-100 pt-4 text-sm text-slate-500">
                   <span>Difficulty: {review.difficultyRating ?? "Not rated"}/5</span>
                   <span className="inline-flex items-center gap-2">

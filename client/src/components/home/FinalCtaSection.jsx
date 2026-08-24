@@ -1,3 +1,5 @@
+// FinalCtaSection.jsx - Final call-to-action banner before the footer
+// Encourages students to explore courses or browse faculty with prominent buttons
 import { ArrowRight, BookOpen, Users } from "lucide-react";
 import { Link } from "react-router";
 
@@ -6,15 +8,16 @@ function FinalCtaSection() {
   return (
     <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Green gradient card with background decorations */}
         <div className="relative overflow-hidden rounded-[2rem] bg-emerald-700 px-6 py-14 text-white shadow-[0_24px_70px_rgba(4,120,87,0.2)] sm:px-10 sm:py-16 lg:px-16">
-          {/* Large background lettering gives the section character without adding content. */}
+          {/* Large decorative "GO" text in background */}
           <span className="pointer-events-none absolute -bottom-10 right-4 select-none text-[10rem] font-bold leading-none tracking-[-0.1em] text-white/[0.05] sm:text-[14rem]" aria-hidden="true">
             GO
           </span>
           <div className="pointer-events-none absolute -left-16 -top-20 size-64 rounded-full border-[2.5rem] border-white/[0.06]" aria-hidden="true" />
 
           <div className="relative grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-            {/* Main message explains the next action a student can take. */}
+            {/* Main message */}
             <div className="max-w-3xl">
               <p className="text-sm font-bold uppercase tracking-[0.12em] text-emerald-200">
                 Your next step
@@ -28,6 +31,7 @@ function FinalCtaSection() {
               </p>
             </div>
 
+            {/* Two CTA buttons: primary (solid) and secondary (outlined) */}
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <Link to="/courses" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base text-emerald-800 shadow-lg transition-all hover:-translate-y-0.5 hover:bg-emerald-50">
                 <BookOpen aria-hidden="true" />

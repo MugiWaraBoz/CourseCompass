@@ -1,9 +1,10 @@
+// Footer.jsx - Site-wide footer displayed at the bottom of every page
+// Contains site identity, navigation links, copyright info, and a back-to-top link
 import { ArrowUp, BookOpen, Compass, Users } from "lucide-react";
 import logo from "@/assets/CourseCompass.png";
 import { Link } from "react-router";
 
-// Footer links point to sections that already exist on the homepage.
-// Full page routes can replace these links during the routing phase.
+// Footer navigation links - uses hash links for homepage sections and route for courses
 const footerLinks = [
   { label: "Courses", href: "/courses", icon: BookOpen },
   { label: "Faculty", href: "/#faculty", icon: Users },
@@ -11,18 +12,17 @@ const footerLinks = [
 ];
 
 function Footer() {
-  // The year updates automatically instead of needing a manual change each year.
+  // Dynamic year so copyright stays current without manual edits
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t border-slate-800 bg-slate-950 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main footer area contains the project identity and navigation. */}
+        {/* Main footer grid: logo/description on left, nav links on right */}
         <div className="grid gap-12 py-14 md:grid-cols-[1.2fr_0.8fr] md:items-start lg:py-16">
           <div className="max-w-xl">
+            {/* Logo link back to homepage */}
             <Link to="/" className="inline-flex items-center gap-3" aria-label="Course Compass home">
-              {/* The source file is wide, so this small window crops it around only the compass symbol. */}
-              {/* Transparent background lets the compass symbol sit directly on the footer. */}
               <span className="relative size-12 shrink-0 overflow-hidden rounded-2xl">
                 <img
                   src={logo}
@@ -45,7 +45,7 @@ function Footer() {
             </p>
           </div>
 
-          {/* Compact navigation keeps the important sections easy to find. */}
+          {/* Navigation column with icons */}
           <div className="md:justify-self-end">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-400">
               Explore
@@ -64,7 +64,7 @@ function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar holds legal text and a quick return-to-top control. */}
+        {/* Bottom bar: copyright and back-to-top link */}
         <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© {currentYear} CourseCompass. Academic project.</p>
           <a href="#top" className="inline-flex w-fit items-center gap-2 font-medium text-slate-400 transition-colors hover:text-emerald-400">

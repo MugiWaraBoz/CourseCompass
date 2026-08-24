@@ -1,6 +1,8 @@
+// HowItWorksSection.jsx - Shows the 3-step process for using CourseCompass
+// Pure presentational component - renders a horizontal timeline on desktop, stacked on mobile
 import { CheckCircle2, Search, SlidersHorizontal } from "lucide-react";
 
-// These steps explain the simple journey a student follows on CourseCompass.
+// Step data - each step has a number, icon, title, and description
 const journeySteps = [
   {
     number: "01",
@@ -29,7 +31,7 @@ function HowItWorksSection() {
   return (
     <section className="bg-slate-950 py-20 text-white sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section heading introduces the three-step student journey. */}
+        {/* Section header with title and description */}
         <div className="grid gap-6 border-b border-white/15 pb-9 lg:grid-cols-[1fr_0.8fr] lg:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.12em] text-emerald-400">
@@ -45,13 +47,14 @@ function HowItWorksSection() {
           </p>
         </div>
 
-        {/* Steps become a horizontal timeline on desktop and stack on smaller screens. */}
+        {/* Steps grid with connecting line on desktop */}
         <div className="relative mt-12 grid gap-8 lg:grid-cols-3 lg:gap-0">
+          {/* Horizontal connecting line between step circles (desktop only) */}
           <div className="pointer-events-none absolute left-[16.66%] right-[16.66%] top-8 hidden h-px bg-white/20 lg:block" aria-hidden="true" />
 
           {journeySteps.map(({ number, icon: Icon, title, description }, index) => (
             <article key={number} className={`relative grid grid-cols-[4rem_1fr] gap-5 lg:block ${index > 0 ? "lg:pl-10" : ""} ${index < journeySteps.length - 1 ? "lg:pr-10" : ""}`}>
-              {/* The numbered circle shows the order of each step. */}
+              {/* Step number circle with icon */}
               <div className="relative z-10 grid size-16 place-items-center rounded-full border border-emerald-400/50 bg-slate-950 text-emerald-400 shadow-[0_0_0_8px_#020617]">
                 <Icon className="size-5" aria-hidden="true" />
               </div>

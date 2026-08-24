@@ -1,3 +1,5 @@
+// PlatformBenefitsSection.jsx - Explains why students should use CourseCompass
+// Pure presentational component with no state or effects - just renders benefit cards
 import {
   BookOpenCheck,
   Check,
@@ -6,8 +8,7 @@ import {
   UsersRound,
 } from "lucide-react";
 
-// These are the main benefits CourseCompass is designed to offer students.
-// Keeping them in one array makes the content easy to edit or replace later.
+// Platform feature data - easy to update text or add/remove features
 const platformFeatures = [
   {
     icon: SearchCheck,
@@ -33,13 +34,13 @@ function PlatformBenefitsSection() {
   return (
     <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Two-column layout: left explains value, right lists features */}
         <div className="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-[#fbfdfb] lg:grid-cols-[0.82fr_1.18fr]">
-          {/* Left side: explains the main value of the platform. */}
+          {/* Left column: value proposition and bullet points */}
           <div className="relative overflow-hidden border-b border-slate-200 bg-emerald-50 p-7 sm:p-10 lg:border-b-0 lg:border-r lg:p-12">
             <div className="pointer-events-none absolute -bottom-24 -right-20 size-64 rounded-full border-[2.5rem] border-emerald-100" aria-hidden="true" />
 
             <div className="relative flex h-full flex-col">
-              {/* A bold label makes the section name easy to notice at a glance. */}
               <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.08em] text-emerald-800">
                 <Compass className="size-4" aria-hidden="true" />
                 Why Course Compass
@@ -54,7 +55,7 @@ function PlatformBenefitsSection() {
                 need into one focused and easy to understand experience.
               </p>
 
-              {/* Short summary of the practical value students receive. */}
+              {/* Key benefits as checkmark list */}
               <div className="mt-10 space-y-4 border-t border-emerald-200 pt-7 lg:mt-auto">
                 {["Clear academic information", "Simple course discovery", "Useful faculty context"].map((benefit) => (
                   <div key={benefit} className="flex items-center gap-3 text-sm font-medium text-slate-700">
@@ -68,7 +69,7 @@ function PlatformBenefitsSection() {
             </div>
           </div>
 
-          {/* Right side: centered icon-and-text rows explain the platform's features. */}
+          {/* Right column: feature rows with icon, title, and description */}
           <div className="px-6 py-3 sm:px-10 lg:px-12">
             {platformFeatures.map(({ icon: Icon, title, description }) => (
               <article key={title} className="group grid gap-4 border-b border-slate-200 py-8 last:border-b-0 sm:grid-cols-[3rem_minmax(0,32rem)] sm:items-start sm:justify-center sm:gap-5">

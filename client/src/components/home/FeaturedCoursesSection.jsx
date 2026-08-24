@@ -1,4 +1,5 @@
-// This component displays the Featured Courses section on the homepage.
+// FeaturedCoursesSection.jsx - Displays the top-rated courses on the homepage
+// Fetches 3 courses sorted by rating, shows loading/error/empty states, and links to full catalog
 import { useEffect, useState } from "react";
 import { ArrowUpRight, BookOpen, Clock3, Star } from "lucide-react";
 import webTechnologiesImage from "@/assets/courses/web-technologies.png";
@@ -7,6 +8,7 @@ import databaseSystemsImage from "@/assets/courses/database-systems.png";
 import { Link } from "react-router";
 import { getCourses } from "@/api/courseApi";
 
+// Static array of course card images - maps by index to the fetched courses
 const courseImages = [
   webTechnologiesImage,
   dataStructuresImage,
@@ -14,10 +16,14 @@ const courseImages = [
 ];
 
 function FeaturedCoursesSection() {
+  // Store the fetched courses array (empty until loaded)
   const [courses, setCourses] = useState([]);
+  // Track fetch status: "loading" | "success" | "error"
   const [status, setStatus] = useState("loading");
 
+  // useEffect with [] runs once on mount to fetch featured courses
   useEffect(() => {
+    // "active" flag prevents setting state on an unmounted component
     let active = true;
 
     getCourses({ page: 1, limit: 3, sortBy: "avgRating", order: "desc" })
@@ -30,6 +36,7 @@ function FeaturedCoursesSection() {
         if (active) setStatus("error");
       });
 
+    // Cleanup function runs when component unmounts
     return () => {
       active = false;
     };
@@ -38,7 +45,7 @@ function FeaturedCoursesSection() {
   return (
     <section id="courses" className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section heading and introduction. */}
+        {/* Section header with title and "Browse" link */}
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700">
@@ -59,6 +66,7 @@ function FeaturedCoursesSection() {
           </Link>
         </div>
 
+        {/* Loading state: animated skeleton placeholders */}
         {status === "loading" && (
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[0, 1, 2].map((item) => (
@@ -67,22 +75,26 @@ function FeaturedCoursesSection() {
           </div>
         )}
 
+        {/* Error state: friendly error message */}
         {status === "error" && (
           <p role="alert" className="mt-12 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
             Featured courses could not be loaded right now.
           </p>
         )}
 
+        {/* Empty state: no courses exist yet */}
         {status === "success" && courses.length === 0 && (
           <p className="mt-12 rounded-2xl border border-dashed border-slate-300 px-5 py-12 text-center text-sm text-slate-500">
             No courses are available yet.
           </p>
         )}
 
+        {/* Success state: render course cards in a responsive grid */}
         {status === "success" && courses.length > 0 && (
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course, index) => (
             <Link key={course._id} to={`/courses/${course._id}`} className="group block overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_45px_rgba(15,23,42,0.12)]">
+              {/* Course card image area with overlay */}
               <div className="relative h-40 overflow-hidden bg-slate-100">
                 <img
                   src={courseImages[index]}
@@ -99,6 +111,7 @@ function FeaturedCoursesSection() {
                 </span>
               </div>
 
+              {/* Course card body: title, description, rating, and credits */}
               <div className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <h3 className="text-xl font-semibold tracking-tight text-slate-950">{course.name}</h3>

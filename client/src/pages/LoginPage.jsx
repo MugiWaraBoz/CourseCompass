@@ -8,21 +8,33 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { signIn } = useAuth();
+
+  // Form state: email and password entered by user
   const [formData, setFormData] = useState({ email: "", password: "" });
+  // Toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
+  // Loading state during API call
   const [submitting, setSubmitting] = useState(false);
+  // Error message to display
   const [error, setError] = useState("");
 
+  /**
+   * Handle input changes for controlled form inputs.
+   * Updates only the field that changed using its name attribute.
+   */
   function handleInputChange(event) {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
   }
 
+  /**
+   * Handle form submission: validate, call API, handle response.
+   */
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
 
-    // Browser validation handles empty fields; this check enforces the university domain.
+    // Validate university email domain (browser handles required fields)
     if (!formData.email.toLowerCase().endsWith("@eastdelta.edu.bd")) {
       setError("Use your East Delta University email address.");
       return;
@@ -31,15 +43,19 @@ function LoginPage() {
     setSubmitting(true);
 
     try {
+      // Call login API with normalized email
       const response = await loginStudent({
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
       });
 
-      // The shared provider persists the JWT and exposes the student across the app.
+      // Sign in via AuthContext: saves token + student to localStorage & state
       signIn(response);
+      
+      // Redirect to intended page (or home) after successful login
       navigate(location.state?.from || "/", { replace: true });
     } catch (requestError) {
+      // Extract backend error message or use fallback
       const backendMessage = requestError.response?.data?.error?.message;
       setError(backendMessage || "Login failed. Please try again.");
     } finally {
@@ -49,7 +65,7 @@ function LoginPage() {
 
   return (
     <main className="grid min-h-[calc(100vh-5rem)] bg-[#f8faf9] lg:grid-cols-2">
-      {/* The supporting panel connects authentication to the product purpose. */}
+      {/* Left panel: marketing content (hidden on mobile) */}
       <section className="hidden bg-slate-950 px-12 py-16 text-white lg:flex lg:flex-col lg:justify-between">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300">
@@ -63,19 +79,15 @@ function LoginPage() {
             Sign in to access student features and contribute verified course and faculty feedback.
           </p>
         </div>
-
         <p className="text-sm text-slate-400">
           Course Compass · East Delta University
         </p>
       </section>
 
-      {/* The form uses controlled inputs so validation and API state stay predictable. */}
+      {/* Right panel: login form */}
       <section className="flex items-center justify-center px-4 py-14 sm:px-6 lg:px-12">
         <div className="w-full max-w-md">
-          <Link
-            to="/"
-            className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
-          >
+          <Link to="/" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">
             ← Back to home
           </Link>
 
@@ -90,6 +102,7 @@ function LoginPage() {
           </p>
 
           <form className="mt-9 space-y-5" onSubmit={handleSubmit}>
+            {/* Show success message from registration/verification redirect */}
             {(location.state?.registrationMessage || location.state?.verificationMessage) && (
               <p
                 role="status"
@@ -98,15 +111,12 @@ function LoginPage() {
                 {location.state.registrationMessage || location.state.verificationMessage}
               </p>
             )}
+
+            {/* Email input */}
             <label className="block">
-              <span className="text-sm font-semibold text-slate-700">
-                University email
-              </span>
+              <span className="text-sm font-semibold text-slate-700">University email</span>
               <span className="relative mt-2 block">
-                <Mail
-                  className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400"
-                  aria-hidden="true"
-                />
+                <Mail className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                 <input
                   type="email"
                   name="email"
@@ -120,23 +130,16 @@ function LoginPage() {
               </span>
             </label>
 
+            {/* Password input with show/hide toggle */}
             <label className="block">
               <span className="flex items-center justify-between gap-4">
-                <span className="text-sm font-semibold text-slate-700">
-                  Password
-                </span>
-                <Link
-                  to="/forgot-password"
-                  className="text-sm font-semibold text-emerald-700 hover:text-emerald-800"
-                >
+                <span className="text-sm font-semibold text-slate-700">Password</span>
+                <Link to="/forgot-password" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800">
                   Forgot password?
                 </Link>
               </span>
               <span className="relative mt-2 block">
-                <LockKeyhole
-                  className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400"
-                  aria-hidden="true"
-                />
+                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -153,24 +156,19 @@ function LoginPage() {
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-700"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? (
-                    <EyeOff className="size-5" aria-hidden="true" />
-                  ) : (
-                    <Eye className="size-5" aria-hidden="true" />
-                  )}
+                  {showPassword ? <EyeOff className="size-5" aria-hidden="true" /> : <Eye className="size-5" aria-hidden="true" />}
                 </button>
               </span>
             </label>
 
+            {/* Error message display */}
             {error && (
-              <p
-                role="alert"
-                className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-              >
+              <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}
 
+            {/* Submit button */}
             <button
               type="submit"
               disabled={submitting}
