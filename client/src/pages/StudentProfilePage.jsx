@@ -195,18 +195,21 @@ function StudentProfilePage() {
 
     setReviewSaving(true);
     try {
-      const response = await updateReview(token, editingReviewId, {
+      const changes = {
         rating: Number(reviewForm.rating),
         difficultyRating: Number(reviewForm.difficultyRating),
         semester: reviewForm.semester.trim(),
         comment: reviewForm.comment.trim(),
-      });
+      };
+      const response = await updateReview(token, editingReviewId, changes);
       const updatedReview = response?.data?.review;
 
       setReviews((current) =>
         current.map((review) =>
           review._id === editingReviewId
-            ? updatedReview || { ...review, ...reviewForm }
+            // Always apply the submitted values. This keeps the UI in sync
+            // even if an API returns a stale/pre-update review document.
+            ? { ...review, ...updatedReview, ...changes }
             : review,
         ),
       );
