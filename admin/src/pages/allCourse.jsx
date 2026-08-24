@@ -120,8 +120,8 @@ function AllCourses() {
       await updateCourse(selectedCourse._id, updatedCourse);
       setCourses((prev) =>
         prev.map((course) =>
-          course._id === selectedCourse._id ? updatedCourse : course,
-        ),
+          course._id === selectedCourse._id ? updatedCourse : course
+        )
       );
       setSelectedCourse(null);
       notify('Course updated');

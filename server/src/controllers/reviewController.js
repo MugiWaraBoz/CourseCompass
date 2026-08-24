@@ -313,26 +313,25 @@ const patchReview = async (req, res) => {
         success: false,
         error: {
           code: 'NOT_FOUND',
-          message: 'Review not found or you do not have permission to update it',
+          message:
+            'Review not found or you do not have permission to update it',
         },
       });
     }
 
-    const updatedReview = await db
-      .collection('Review')
-      .findOneAndUpdate(
-        { _id: reviewId, studentId },
-        {
-          $set: {
-            rating,
-            difficultyRating,
-            semester,
-            comment,
-            updatedAt: new Date(),
-          },
+    const updatedReview = await db.collection('Review').findOneAndUpdate(
+      { _id: reviewId, studentId },
+      {
+        $set: {
+          rating,
+          difficultyRating,
+          semester,
+          comment,
+          updatedAt: new Date(),
         },
-        { returnDocument: 'after' },
-      );
+      },
+      { returnDocument: 'after' },
+    );
 
     await updateReviewStatus(
       db,
