@@ -22,4 +22,24 @@ clientApi.interceptors.request.use(
   }
 );
 
+// The API checks the account and its current role on every protected request.
+// If access is revoked, remove the stale session and return to the login page
+// instead of leaving the portal visible with a token that can no longer work.
+clientApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+
+    if ((status === 401 || status === 403) && localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+
+      if (window.location.pathname !== '/') {
+        window.location.replace('/');
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default clientApi;
