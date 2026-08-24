@@ -42,14 +42,16 @@ function VerifyEmailPage() {
       .then((response) => {
         // Only update state if the component is still mounted
         if (active) {
+          const verificationMessage =
+            response?.data?.message || "Email verified successfully. You can now log in.";
           setState({
             status: "success",
-            message: response?.data?.message || "Your email has been verified.",
+            message: verificationMessage,
           });
-          // Redirect to login with a success message passed through navigation state
+          // Successful verification always takes the student to the login page.
           navigate("/login", {
             replace: true,
-            state: { verificationMessage: "Email verified successfully. You can now log in." },
+            state: { verificationMessage },
           });
         }
       })
