@@ -105,7 +105,7 @@ server/
 - [✅] forgot password
 - [✅] Password reset
 - [✅] Change password
-- [ ] Statistics endpoint (`GET /courses/:id/stats`) for charts
+- [✅] Statistics endpoint (`GET /courses/:id/stats`) for charts
 - [ ] Recently reviewed endpoint (`GET /reviews/recent`)
 - [ ] Environment variable validation on server startup
 
@@ -116,7 +116,7 @@ server/
 - [✅] Course detail from ai (GET /courses/:id/ai)
 - [✅] Faculty/Course review overview from ai ( GET /courses/:id/reviews/ai, GET /faculties/:id/reviews/ai)
 - [ ] Let user choose AI model (Gemini 1.5, Gemini 1.5 Pro, Gemini 1.5 Turbo)
-- [ ] Let user provide their own Gemini API key for AI requests
+- [✅] Let user provide their own Gemini API key for AI requests
 
 ---
 
@@ -124,7 +124,7 @@ server/
 
 ## Authentication & Security
 
-- [ ] Role-based access control (Admin, Student, Moderator)
+- [ ] Role-based access control (Admin(done), Student(done), Moderator)
 - [ ] Bookmark/Favorite courses
 - [ ] Two-factor authentication (2FA)
 
