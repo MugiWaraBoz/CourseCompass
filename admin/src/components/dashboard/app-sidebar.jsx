@@ -7,6 +7,7 @@ import {
   Users,
   UserShield,
   BarChart2,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -27,6 +28,7 @@ const navItems = [
   { title: 'Faculty', url: '/faculty', icon: Building2 },
   { title: 'Students', url: '/students', icon: Users },
   { title: 'Reviews', url: '/reviews', icon: MessagesSquare },
+  { title: 'Pending Reviews', url: '/pending-reviews', icon: ShieldCheck },
   { title: 'Moderators', url: '/moderators', icon: UserShield },
 ];
 

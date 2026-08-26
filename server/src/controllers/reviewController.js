@@ -6,6 +6,8 @@ require('dotenv').config({
 });
 
 const updateReviewStatus = require('../utils/updateReviewStatus.js');
+const autoApproveReview = require('../utils/autoApproveReview.js');
+//
 
 // postReview function to handle posting a review
 const postReview = async (req, res) => {
@@ -70,7 +72,10 @@ const postReview = async (req, res) => {
       downvotes: 0,
       votescore: 0,
       isAnonymous: isAnonymous,
+      isApproved: false,
     };
+
+    reviewObj = autoApproveReview(reviewObj);
 
     let review = await db.collection('Review').insertOne(reviewObj);
 
@@ -78,13 +83,25 @@ const postReview = async (req, res) => {
             update review status for course and faculty
         */
 
+    if (!reviewObj.isApproved) {
+      return res.status(201).json({
+        success: true,
+        data: {
+          review: {
+            _id: review.insertedId,
+          },
+        },
+        message: 'Review posted successfully and is pending approval',
+      });
+    }
+
     await updateReviewStatus(
       db,
       reviewObj.studentId,
       reviewObj.courseId,
       reviewObj.facultyId,
     );
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: {
         review: {
@@ -432,6 +449,83 @@ const patchReviewAdmin = async (req, res) => {
   }
 };
 
+//
+const getAllPendingReviews = async (req, res) => {
+  let db = database.getDb();
+  try {
+    let reviews = await db
+      .collection('Review')
+      .find({ isApproved: false })
+      .toArray();
+    // console.log("Pending reviews fetched:", reviews); // Log the fetched reviews for debugging
+    if (reviews.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'No pending reviews found',
+        },
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: {
+        reviews: reviews,
+        message: 'Pending reviews fetched successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error occurred while fetching pending reviews',
+      },
+    });
+  }
+};
+const approveReview = async (req, res) => {
+  let db = database.getDb();
+  let reviewId = new ObjectId(req.params.id);
+
+  try {
+    let review = await db.collection('Review').findOne({ _id: reviewId });
+    if (!review) {
+      return res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Review not found',
+        },
+      });
+    }
+
+    await db
+      .collection('Review')
+      .updateOne(
+        { _id: reviewId },
+        { $set: { isApproved: true, updatedAt: new Date() } },
+      );
+
+    updateReviewStatus(db, review.studentId, review.courseId, review.facultyId);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        message: 'Review approved successfully',
+      },
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'An error occurred while approving the review',
+      },
+    });
+  }
+};
+
 module.exports = {
   postReview,
   patchReview,
@@ -440,4 +534,6 @@ module.exports = {
   getAllReviewsAdmin,
   patchReviewAdmin,
   deleteReviewAdmin,
+  getAllPendingReviews,
+  approveReview,
 };

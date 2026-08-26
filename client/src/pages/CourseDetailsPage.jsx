@@ -122,7 +122,8 @@ function CourseDetailsPage() {
         if (!active) return;
 
         const loadedReviews = response?.data?.reviews ?? [];
-        setReviews(loadedReviews);
+        const approvedReviews = loadedReviews.filter((r) => r.isApproved);
+        setReviews(approvedReviews);
 
         // Fetch faculty info for each review
         const facultyMap = await fetchFacultyForReviews(loadedReviews);

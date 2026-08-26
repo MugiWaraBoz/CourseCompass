@@ -24,7 +24,6 @@ courseRouter.route('/:id/reviews').get(verifyToken, getCourseReview);
 courseRouter
   .route('/admin/:id/reviews')
   .get(verifyToken, verifyAdmin, getCoursesReviewsAdmin);
-
 // add Course
 courseRouter.route('/').post(verifyToken, verifyAdmin, addCourse);
 

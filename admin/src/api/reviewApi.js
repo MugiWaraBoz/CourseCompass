@@ -63,3 +63,28 @@ export const patchReview = async (reviewId, updatedData) => {
     });
   }
 };
+
+export const getAllPendingStudentReviews = async () => {
+  try {
+    const response = await clientApi.get('reviews/admin/pending');
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      'Unable to fetch pending student reviews. Please try again.',
+      {
+        cause: error,
+      }
+    );
+  }
+};
+
+export const approveReview = async (reviewId) => {
+  try {
+    const response = await clientApi.patch(`reviews/admin/${reviewId}/approve`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Unable to approve review. Please try again.', {
+      cause: error,
+    });
+  }
+};

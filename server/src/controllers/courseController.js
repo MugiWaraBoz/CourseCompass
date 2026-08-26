@@ -116,6 +116,7 @@ const getCourseReview = async (req, res) => {
 
   const filter = {
     courseId: new ObjectId(req.params.id),
+    isApproved: true,
   };
 
   if (facultyId) {
@@ -243,7 +244,6 @@ const getCoursesReviewsAdmin = async (req, res) => {
     });
   }
 };
-
 // add Course
 const addCourse = async (req, res) => {
   let db = database.getDb();

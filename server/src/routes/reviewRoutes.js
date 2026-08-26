@@ -8,6 +8,8 @@ const {
   patchReview,
   deleteReviewAdmin,
   patchReviewAdmin,
+  getAllPendingReviews,
+  approveReview,
   // getAllReviewsAdmin
 } = require('../controllers/reviewController');
 const { postReviewVote } = require('../controllers/voteController');
@@ -35,5 +37,15 @@ postRouter.route('/:id').patch(verifyToken, patchReview);
 postRouter
   .route('/admin/:id')
   .patch(verifyToken, verifyAdmin, patchReviewAdmin);
+
+// Fetch the pending review for admin
+postRouter
+  .route('/admin/pending')
+  .get(verifyToken, verifyAdmin, getAllPendingReviews);
+
+// Approve or reject a review by admin
+postRouter
+  .route('/admin/:id/approve')
+  .patch(verifyToken, verifyAdmin, approveReview);
 
 module.exports = postRouter;

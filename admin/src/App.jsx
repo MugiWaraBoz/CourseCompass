@@ -18,6 +18,7 @@ import AllStudent from './pages/allStudent';
 import StudentReviews from './pages/StudentReviews.jsx';
 import CourseReviews from './pages/CourseReviews.jsx';
 import FacultyReviews from './pages/FacultyReviews.jsx';
+import PendingReviewModeration from './pages/PendingReviewModeration.jsx';
 import { Layout } from './layouts/pageContainer.jsx';
 
 function isAuthenticated() {
@@ -138,6 +139,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <FacultyReviews />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/pending-reviews"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <PendingReviewModeration />
               </Layout>
             </ProtectedRoute>
           }

@@ -113,6 +113,7 @@ const getFacultyReview = async (req, res) => {
 
   const filter = {
     facultyId: new ObjectId(req.params.id),
+    isApproved: true,
   };
 
   if (courseId) {
