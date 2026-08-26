@@ -138,45 +138,45 @@ The complete API reference — every public, student, and admin route — lives 
 ### 🧑‍🎓 Student Website
 
 **📝 Register**
-![Register](./misc/gif/Register.gif)
+![Register](./misc/gif/Register.webp)
 
 **🔑 Login**
-![Login](./misc/gif/Login.gif)
+![Login](./misc/gif/Login.webp)
 
 **📘 Course Pages**
-![CoursePages](./misc/gif/CoursePages.gif)
+![CoursePages](./misc/gif/CoursePages.webp)
 
 **👩‍🏫 Faculty Pages**
-![FacultyPages](./misc/gif/FacultyPages.gif)
+![FacultyPages](./misc/gif/FacultyPages.webp)
 
 **✍️ Writing a Review**
-![WritingReview](./misc/gif/WritingReview.gif)
+![WritingReview](./misc/gif/WritingReview.webp)
 
 **👍 Upvote / Downvote**
-![UpVoteAndDownvote](./misc/gif/UpVoteAndDownvote.gif)
+![UpVoteAndDownvote](./misc/gif/UpVoteAndDownvote.webp)
 
 **📊 User Dashboard**
-![UserDashboard](./misc/gif/UserDashboard.gif)
+![UserDashboard](./misc/gif/UserDashboard.webp)
 
 **🤖 Gemini Key Setup**
-![GeminiKeySetup](./misc/gif/GeminiKeySetup.gif)
+![GeminiKeySetup](./misc/gif/GeminiKeySetup.webp)
 
 ### 🛡️ Admin Portal
 
 **📈 Panel & Stat Dashboard**
-![AdminPanel+StatDashboard](./misc/gif/AdminPanel+StatDashboard.gif)
+![AdminPanel+StatDashboard](./misc/gif/AdminPanel+StatDashboard.webp)
 
 **📘 Course Moderation**
-![CourseModeration](./misc/gif/CourseModeration.gif)
+![CourseModeration](./misc/gif/CourseModeration.webp)
 
 **👩‍🏫 Faculty Moderation**
-![FacultyModeration](./misc/gif/FacultyModeration.gif)
+![FacultyModeration](./misc/gif/FacultyModeration.webp)
 
 **⭐ Review Moderation**
-![ReviewModeration](./misc/gif/ReviewModeration.gif)
+![ReviewModeration](./misc/gif/ReviewModeration.webp)
 
 **🧑‍🎓 Student Moderation**
-![StudentModeration](./misc/gif/StudentModeration.gif)
+![StudentModeration](./misc/gif/StudentModeration.webp)
 
 <br>
 
