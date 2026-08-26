@@ -52,8 +52,6 @@ export async function getCoursesByIds(courseIds = []) {
 export async function getCourseReviews(courseId, params = {}) {
   const response = await api.get(`/courses/${courseId}/reviews`, {
     params: {
-      page: 1,
-      limit: 5,
       sortBy: "recent",
       order: "desc",
       ...params,

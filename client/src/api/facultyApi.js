@@ -46,8 +46,6 @@ export async function getFacultyReviews(facultyId, params = {}) {
   try {
     const response = await api.get(`/faculty/${facultyId}/reviews`, {
       params: {
-        page: 1,
-        limit: 5,
         sortBy: "createdAt",
         order: "desc",
         ...params,
