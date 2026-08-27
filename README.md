@@ -164,7 +164,7 @@ The complete API reference — every public, student, and admin route — lives 
 ### 🛡️ Admin Portal
 
 **📈 Panel & Stat Dashboard**
-![AdminPanel+StatDashboard](./misc/gif/adminpanel+statdashboard.webp)
+![AdminPanel+StatDashboard](./misc/gif/adminpanelandstatdashboard.webp)
 
 **📘 Course Moderation**
 ![CourseModeration](./misc/gif/coursemoderation.webp)
